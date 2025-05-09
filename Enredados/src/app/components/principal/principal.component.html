@@ -1,0 +1,72 @@
+<div>
+    <header class="header">
+          <nav class="nav">
+          <a href="#" routerLink="/mi-boda">Mi Boda</a>
+          <a href="#" routerLink="/lugares-para-boda">Lugares para Boda</a>
+          <a href="#" routerLink="/proveedores">Proveedores</a>
+          <a href="#" routerLink="/novias">Novias</a>
+          <a href="#" routerLink="novios">Novios</a>
+          <a href="#" routerLink="/vestidos">Vestidos</a>
+          <a href="#" routerLink="/ideas-boda">Ideas Boda</a>
+          <a href="#" routerLink="/comunidad">Comunidad</a>
+          <a href="#" routerLink="/acceso-empresa">Acceso Empresas</a>
+          </nav>
+          <div class="auth-buttons">
+              <button>Sign in</button>
+              <button class="register">Register</button>
+          </div>
+    </header>
+    
+    <main class="main">
+      <h1>Enredados</h1>
+      <p>Organiza tu boda ideal de manera facil y sin complicaciones</p>
+      <div class="search">
+        <input type="text" placeholder="Buscar...">
+        <button>Enviar</button>
+      </div>
+    
+      <section class="comunidad">
+        <div class="cards">
+          <div class="card" *ngFor="let user of users">
+            <p>{{ user.text }}</p>
+            <div class="user-info">
+              <img [src]="user.avatar" alt="avatar">
+              <div>
+                <strong>{{ user.name }}</strong>
+                <p>Description</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="footer">
+      <div class="footer-links">
+        <div>
+          <strong>Fiesta</strong>
+          <ul>
+            <li>Post Fiesta</li>
+            <li>DJs</li>
+            <li>Orquestas</li>
+          </ul>
+        </div>
+        <div>
+          <strong>Caterings</strong>
+          <ul>
+            <li>Design</li>
+            <li>Prototyping</li>
+            <li>Development features</li>
+          </ul>
+        </div>
+        <div>
+          <strong>Alojamientos</strong>
+          <ul>
+            <li>Blog</li>
+            <li>Best practices</li>
+            <li>Colors</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </div>
