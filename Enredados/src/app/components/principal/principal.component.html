@@ -1,29 +1,47 @@
 <div>
     <header class="header">
           <nav class="nav">
-          <a href="#" routerLink="/mi-boda">Mi Boda</a>
-          <a href="#" routerLink="/lugares-para-boda">Lugares para Boda</a>
-          <a href="#" routerLink="/proveedores">Proveedores</a>
-          <a href="#" routerLink="/novias">Novias</a>
-          <a href="#" routerLink="novios">Novios</a>
-          <a href="#" routerLink="/vestidos">Vestidos</a>
-          <a href="#" routerLink="/ideas-boda">Ideas Boda</a>
-          <a href="#" routerLink="/comunidad">Comunidad</a>
-          <a href="#" routerLink="/acceso-empresa">Acceso Empresas</a>
-          </nav>
-          <div class="auth-buttons">
-              <button>Sign in</button>
-              <button class="register">Register</button>
-          </div>
+  <div class="dropdown">
+    <a href="#" routerLink="/mi-boda">Mi Boda</a>
+    <div class="submenu">
+      <a href="#">Agenda</a>
+      <a href="#">Invitados</a>
+      <a href="#">Mesas</a>
+      <a href="#">Presupuestador</a>
+      <a href="#">Proveedores</a>
+      <a href="#">Vestidos</a>
+      <a href="#">Web de boda</a>
+    </div>
+  </div>
+  <a href="#" routerLink="/lugares-para-boda">Lugares para Boda</a>
+  <a href="#" routerLink="/proveedores">Proveedores</a>
+  <a href="#" routerLink="/novias">Novias</a>
+  <a href="#" routerLink="novios">Novios</a>
+  <a href="#" routerLink="/vestidos">Vestidos</a>
+  <a href="#" routerLink="/ideas-boda">Ideas Boda</a>
+  <a href="#" routerLink="/comunidad">Comunidad</a>
+  <a href="#" routerLink="/acceso-empresa">Acceso Empresas</a>
+</nav>
+
     </header>
     
     <main class="main">
+      <section class="slider">
+        <div class="slides" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+          <img src="https://via.placeholder.com/1000x400/FFDAB9/000000?text=Slide+1" alt="Slide 1">
+          <img src="https://via.placeholder.com/1000x400/ADD8E6/000000?text=Slide+2" alt="Slide 2">
+          <img src="https://via.placeholder.com/1000x400/90EE90/000000?text=Slide+3" alt="Slide 3">
+        </div>
+      </section>
+
       <h1>Enredados</h1>
       <p>Organiza tu boda ideal de manera facil y sin complicaciones</p>
       <div class="search">
         <input type="text" placeholder="Buscar...">
         <button>Enviar</button>
       </div>
+
+
     
       <section class="comunidad">
         <div class="cards">
