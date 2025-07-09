@@ -8,7 +8,6 @@ import { NoviosComponent } from './novios/novios.component';
 import { VestidosComponent } from './vestidos/vestidos.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { IdeasBodaComponent } from './ideas-boda/ideas-boda.component';
-import { AccesoEmpresasComponent } from './acceso-empresas/acceso-empresas.component';
 import { ComunidadComponent } from './comunidad/comunidad.component';
 
 
@@ -23,7 +22,6 @@ const routes: Routes = [
     { path: 'vestidos', component: VestidosComponent },
     { path: 'proveedores', component: ProveedoresComponent },
     { path: 'ideas-boda', component: IdeasBodaComponent },
-    { path: 'acceso-empresa', component: AccesoEmpresasComponent },
     { path: 'comunidad', component: ComunidadComponent },
     ];
     
