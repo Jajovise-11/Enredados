@@ -106,6 +106,87 @@
 
       <h1>Enredados</h1>
       <p>Organiza tu boda ideal de manera facil y sin complicaciones</p>
+<section class="disfruta-section">
+  <h2>Disfruta organizando tu boda</h2>
+  <p>Empieza a planificar tu boda con nosotros ¡es gratis!</p>
+
+  <div class="disfruta-grid">
+    <div class="disfruta-card large">
+      <div class="disfruta-text">
+        <h3>Espacios de celebración</h3>
+        <p>Fotos, opiniones y mucho más… ¡contáctalos desde aquí!</p>
+        <a href="#">Busca espacios</a>
+      </div>
+      <img src="https://via.placeholder.com/400x200?text=Espacios" alt="Espacios">
+    </div>
+
+    <div class="disfruta-card large">
+      <div class="disfruta-text">
+        <h3>Proveedores</h3>
+        <p>Encuentra a los mejores profesionales de tu zona para cada categoría</p>
+        <a href="#">Empieza tu selección</a>
+      </div>
+      <img src="https://via.placeholder.com/400x200?text=Proveedores" alt="Proveedores">
+    </div>
+
+    <div class="disfruta-card small">
+      <div>
+        <h3>Tu web de boda ¡gratis!</h3>
+        <p>Comparte los detalles del gran día con tus invitados con una web 100% personalizada</p>
+        <a href="#">Personaliza tu web gratis</a>
+      </div>
+    </div>
+
+    <div class="disfruta-card small">
+      <div>
+        <h3>Toda la inspiración</h3>
+        <p>Tendencias, ideas, novedades… toda la inspiración que necesitas para tu boda</p>
+        <a href="#">Inspírate aquí</a>
+      </div>
+    </div>
+
+    <div class="disfruta-card small">
+      <div>
+        <h3>Menú de planificación</h3>
+        <p>Todo bajo control: Lista de tareas, Presupuestador, Organizador de mesas y ¡mucho más!</p>
+        <a href="#">Descubre tu planificador</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bodas-reales">
+  <h2>Bodas reales</h2>
+  <p>Inspírate en las bodas de otros novios y si te gustan contacta con los proveedores que las organizaron</p>
+
+  <div class="bodas-grid">
+    <div class="boda-card" *ngFor="let boda of bodas">
+      <img class="boda-main" [src]="boda.imagenPrincipal" [alt]="boda.pareja">
+      <div class="boda-miniaturas">
+        <img *ngFor="let mini of boda.miniaturas" [src]="mini" alt="mini">
+      </div>
+      <div class="boda-info">
+        <strong>{{ boda.pareja }}</strong>
+        <p>{{ boda.fotos }} fotos · {{ boda.lugar }}</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-mas">Ver más bodas →</button>
+</section>
+<section class="ideas-consejos">
+  <h2>Ideas y consejos</h2>
+  <p>Encuentra más inspiración en nuestros artículos y sigue los consejos de nuestras redactoras expertas</p>
+
+  <div class="ideas-grid">
+    <div class="idea-item" *ngFor="let idea of ideas">
+      <img [src]="idea.imagen" [alt]="idea.titulo">
+      <p>{{ idea.titulo }}</p>
+    </div>
+  </div>
+</section>
+
+
       
       <section class="comunidad">
         <div class="cards">
