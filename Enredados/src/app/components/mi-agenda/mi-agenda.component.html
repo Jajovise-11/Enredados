@@ -5,9 +5,9 @@
              <a href="#" routerLink="/">Enredados</a>
         </div>
       <div class="dropdown">
-        <a href="#" routerLink="/mi-boda">Mi Boda</a>
+        <a href="#" routerLink="mi-boda">Mi Boda</a>
         <div class="submenu">
-          <a href="#" routerLink="/mi-agenda">Agenda</a>
+          <a href="#">Agenda</a>
           <a href="#">Invitados</a>
           <a href="#">Mesas</a>
           <a href="#">Presupuestador</a>
@@ -97,71 +97,102 @@
     </div>
   </nav>
 </header>
+<div class="agenda-container">
+  <section class="agenda-header">
+    <h1>Agenda de Tareas gratuita</h1>
+    <p>Organiza tu boda paso a paso. Sin agobios ni tareas mal cumplidas.</p>
 
-<!-- Aquí comienza el contenido principal de "Disfruta organizando tu boda" -->
-<div class="mi-boda-container">
-
-  <!-- SECCIÓN 1: Encabezado promocional -->
-  <section class="hero-section">
-    <div class="hero-content">
-      <h1>Disfruta organizando tu boda</h1>
-      <p>Herramientas gratuitas para que la planificación sea fácil, rápida y divertida.</p>
-      <form class="formulario">
-        <input type="text" placeholder="Nombre y apellidos" />
-        <input type="email" placeholder="Email" />
-        <button type="submit">Empieza a organizar</button>
-      </form>
-      <p>¿Ya tienes cuenta? <a href="#">Accede</a></p>
-    </div>
+    <form class="agenda-form">
+      <input type="text" placeholder="Nombre y apellidos">
+      <input type="email" placeholder="Email">
+      <button type="submit">Empieza a organizar</button>
+    </form>
+    <p class="agenda-login">
+      ¿Ya tienes cuenta? <a href="#">Accede</a>
+    </p>
   </section>
 
-  <!-- SECCIÓN 2: Organizar es fácil -->
-  <section class="seccion-blanca">
-    <h2>Organizar tu boda será muy fácil y divertido</h2>
-
-    <!-- Bloques de herramientas -->
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Agenda de Tareas</h3>
-        <p>Organiza tu boda paso a paso con tareas personalizadas según tu fecha y estilo.</p>
-        <a href="#" class="boton-secundario">Ver lista de tareas</a>
+  <section class="agenda-benefits">
+    <h2>El listado de tareas más detallado para tener al día la organización de tu boda</h2>
+    <div class="benefits-grid">
+      <div>
+        <img src="assets/icons/personaliza.svg" alt="">
+        <h3>Personaliza tus tareas</h3>
+        <p>Añade tus propias tareas o marca las que no necesites.</p>
       </div>
-      <div class="imagen">
-        <img src="assets/agenda.png" alt="Agenda de Tareas" />
+      <div>
+        <img src="assets/icons/consulta.svg" alt="">
+        <h3>Consulta tu progreso</h3>
+        <p>Visualiza tareas completas y por hacer. Accede desde la app o el navegador.</p>
       </div>
-    </div>
-
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Mis Proveedores</h3>
-        <p>Guarda tus favoritos y contacta con los mejores profesionales para tu boda.</p>
-        <a href="#" class="boton-secundario">Buscar proveedores</a>
-      </div>
-      <div class="imagen">
-        <img src="assets/proveedores.png" alt="Mis Proveedores" />
-      </div>
-    </div>
-
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Web de Boda</h3>
-        <p>Crea tu página personalizada para compartir toda la información con tus invitados.</p>
-        <a href="#" class="boton-secundario">Elige un diseño</a>
-      </div>
-      <div class="imagen">
-        <img src="assets/web-de-boda.png" alt="Web de Boda" />
+      <div>
+        <img src="assets/icons/todo.svg" alt="">
+        <h3>Todo en el mismo lugar</h3>
+        <p>Gestiona tareas, proveedores, presupuesto e invitados en un mismo espacio.</p>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN 3: Llamada a la acción final -->
-  <section class="registro-section">
-    <h3>Regístrate gratuitamente en Enredados y empieza ya a organizar tu boda</h3>
-    <div class="iconos">
-      <div><img src="assets/icono1.png" alt="Presupuesto" /><p>Presupuesto</p></div>
-      <div><img src="assets/icono2.png" alt="Mesas" /><p>Organizador de mesas</p></div>
-      <div><img src="assets/icono3.png" alt="Invitados" /><p>Gestor de invitados</p></div>
-      <div><img src="assets/icono4.png" alt="Vestidos" /><p>Catálogo vestidos</p></div>
+  <section class="agenda-gallery">
+    <div class="gallery-item">
+      <img src="assets/images/tarea1.png" alt="">
+      <div>
+        <h3>¿Por dónde empezar?</h3>
+        <p>Sigue las pistas y comienza con la primera gran tarea.</p>
+        <a href="#">Ver la primera tarea</a>
+      </div>
+    </div>
+
+    <div class="gallery-item reverse">
+      <div>
+        <h3>Consulta el progreso</h3>
+        <p>Comprueba fácilmente el avance de tus tareas y marca las completadas.</p>
+        <a href="#">Ver siguientes tareas</a>
+      </div>
+      <img src="assets/images/tarea2.png" alt="">
+    </div>
+
+    <div class="gallery-item">
+      <img src="assets/images/tarea3.png" alt="">
+      <div>
+        <h3>Sincroniza con el Presupuestador y los Proveedores</h3>
+        <p>Todas tus herramientas conectadas para no dejar ningún detalle atrás.</p>
+        <a href="#">Ver herramientas vinculadas</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="agenda-final">
+    <h2>La organización de tu boda, fácil y sencilla</h2>
+    <div class="final-grid">
+      <div>
+        <h4>Mis Proveedores</h4>
+        <p>Consulta los detalles y mantén contacto directo con tus proveedores.</p>
+        <a href="#">Gestiona tus proveedores</a>
+      </div>
+      <div>
+        <h4>Web de Boda</h4>
+        <p>Crea tu propia página web de boda y personalízala como quieras.</p>
+        <a href="#">Elige un diseño</a>
+      </div>
+      <div>
+        <h4>Presupuesto</h4>
+        <p>Controla los gastos de cada servicio, proveedor o artículo.</p>
+        <a href="#">Visualiza tu presupuesto</a>
+      </div>
+      <div>
+        <h4>Organizador de Mesas</h4>
+        <p>Organiza a tus invitados de forma sencilla con este sistema de arrastrar y soltar.</p>
+      </div>
+      <div>
+        <h4>Gestor de Invitados</h4>
+        <p>Crea tus listas, gestiona confirmaciones y alérgenos fácilmente.</p>
+      </div>
+      <div>
+        <h4>Vestidos</h4>
+        <p>Guarda tus favoritos y crea tu propia galería de inspiración.</p>
+      </div>
     </div>
   </section>
 </div>
+

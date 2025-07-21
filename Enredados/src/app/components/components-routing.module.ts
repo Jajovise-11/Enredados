@@ -9,6 +9,9 @@ import { VestidosComponent } from './vestidos/vestidos.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { IdeasBodaComponent } from './ideas-boda/ideas-boda.component';
 import { ComunidadComponent } from './comunidad/comunidad.component';
+import { MiAgendaComponent } from './mi-agenda/mi-agenda.component';
+import { InvitadosComponent } from './invitados/invitados.component';
+import { MesasComponent } from './mesas/mesas.component';
 
 
 
@@ -16,6 +19,9 @@ const routes: Routes = [
 
     { path: '', component: PrincipalComponent },
     { path: 'mi-boda', component: MiBodaComponent },
+    { path: 'mi-agenda', component: MiAgendaComponent },
+    { path: 'invitados', component: InvitadosComponent },
+    { path: 'mesas', component: MesasComponent },
     { path: 'lugares-para-boda', component: LugaresParaBodaComponent },
     { path: 'novias', component: NoviasComponent },
     { path: 'novios', component: NoviosComponent },

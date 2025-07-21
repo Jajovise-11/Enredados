@@ -1,0 +1,214 @@
+.menu-zona {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown > a {
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  padding: 10px;
+  display: inline-block;
+  transition: color 0.3s;
+}
+
+.dropdown:hover > a {
+  color: #d82a7a;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 200px;
+}
+
+.submenu a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s;
+}
+
+.submenu a:hover {
+  background-color: #f8f8f8;
+}
+
+.dropdown:hover .submenu {
+  display: block;
+}
+
+.invitados-hero {
+  display: flex;
+  background: #fbeeee;
+  padding: 40px 20px;
+  border-radius: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.invitados-intro {
+  flex: 1 1 400px;
+}
+
+.invitados-intro h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.invitados-intro p {
+  margin: 10px 0 20px;
+}
+
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.formulario input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex: 1 1 200px;
+}
+
+.formulario button {
+  background: #ec4b6c;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.acciones a {
+  color: #ec4b6c;
+  font-weight: bold;
+}
+
+.social {
+  margin-top: 10px;
+}
+
+.social i {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.invitados-img {
+  flex: 1 1 300px;
+  text-align: center;
+}
+
+.invitados-img img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.funciones {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.funciones h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.iconos-funciones {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.iconos-funciones div {
+  max-width: 150px;
+  margin: 10px;
+}
+
+.iconos-funciones img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.info-invitados {
+  padding: 40px 20px;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.fila.reverse {
+  flex-direction: row-reverse;
+}
+
+.fila img {
+  width: 250px;
+  border-radius: 10px;
+}
+
+.fila .texto {
+  flex: 1;
+}
+
+.fila h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.fila a {
+  color: #ec4b6c;
+  font-weight: bold;
+  font-size: 14px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.herramientas-extra {
+  background: #fafafa;
+  padding: 40px 20px;
+}
+
+.herramientas-extra h3 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.herramientas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  text-align: center;
+}
+
