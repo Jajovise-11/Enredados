@@ -53,13 +53,13 @@
   display: block;
 }
 
-.proveedores-section {
+.presupuestador-section {
   font-family: Arial, sans-serif;
   color: #333;
   padding: 2rem;
 }
 
-.header-proveedores {
+.header-presupuestador {
   display: flex;
   background: #fdf3f3;
   padding: 2rem;
@@ -68,16 +68,16 @@
   justify-content: space-between;
 }
 
-.header-proveedores .texto {
+.header-presupuestador .texto {
   flex: 1;
 }
 
-.header-proveedores h2 {
+.header-presupuestador h2 {
   font-size: 24px;
   margin-bottom: 0.5rem;
 }
 
-.header-proveedores p {
+.header-presupuestador p {
   margin-bottom: 1rem;
 }
 
@@ -103,7 +103,7 @@
   border-radius: 5px;
 }
 
-.header-proveedores .imagen img {
+.header-presupuestador .imagen img {
   width: 300px;
   border-radius: 10px;
 }
