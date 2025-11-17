@@ -5,7 +5,10 @@ from .views import (
     CategoriaServicioViewSet,
     ServicioViewSet,
     ReservaViewSet,
-    ValoracionViewSet
+    ValoracionViewSet,
+    register,
+    login,
+    profile
 )
 
 router = DefaultRouter()
@@ -17,4 +20,7 @@ router.register(r'valoraciones', ValoracionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('auth/register/', register, name='register'),
+    path('auth/login/', login, name='login'),
+    path('auth/profile/', profile, name='profile'),
 ]
