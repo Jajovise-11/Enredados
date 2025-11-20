@@ -1,0 +1,105 @@
+<div class="servicios-container">
+  <!-- Header -->
+  <header class="servicios-header">
+    <h1>Servicios para tu Boda</h1>
+    <p>Encuentra los mejores proveedores para tu día especial</p>
+  </header>
+
+  <!-- Filtros -->
+  <section class="filtros">
+    <div class="filtro-grupo">
+      <label>Buscar:</label>
+      <input 
+        type="text" 
+        [(ngModel)]="busqueda" 
+        (input)="aplicarFiltros()"
+        placeholder="Busca por nombre o proveedor..."
+      />
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Categoría:</label>
+      <select [(ngModel)]="categoriaSeleccionada" (change)="aplicarFiltros()">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Precio mínimo: {{ precioMin }}€</label>
+      <input 
+        type="range" 
+        [(ngModel)]="precioMin" 
+        (input)="aplicarFiltros()"
+        min="0" 
+        max="5000" 
+        step="100"
+      />
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Precio máximo: {{ precioMax }}€</label>
+      <input 
+        type="range" 
+        [(ngModel)]="precioMax" 
+        (input)="aplicarFiltros()"
+        min="0" 
+        max="10000" 
+        step="100"
+      />
+    </div>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">
+      Limpiar Filtros
+    </button>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading">
+    <p>Cargando servicios...</p>
+  </div>
+
+  <!-- Lista de servicios -->
+  <section class="servicios-grid" *ngIf="!cargando">
+    <div class="servicio-card" *ngFor="let servicio of serviciosFiltrados">
+      <div class="servicio-imagen">
+        <img 
+          [src]="servicio.imagen || 'https://via.placeholder.com/300x200?text=' + servicio.nombre" 
+          [alt]="servicio.nombre"
+        />
+        <span class="categoria-badge">{{ servicio.categoria_nombre }}</span>
+      </div>
+      
+      <div class="servicio-info">
+        <h3>{{ servicio.nombre }}</h3>
+        <p class="proveedor">
+          <i class="icon">🏢</i> {{ servicio.proveedor_nombre }}
+        </p>
+        <p class="descripcion">{{ servicio.descripcion }}</p>
+        
+        <div class="servicio-footer">
+          <div class="precio">
+            <span class="precio-label">Desde</span>
+            <span class="precio-valor">{{ servicio.precio }}€</span>
+          </div>
+          
+          <button class="btn-detalle" [routerLink]="['/servicio', servicio.id]">
+            Ver Detalles
+          </button>
+        </div>
+      </div>
+
+      <div class="disponibilidad" [class.no-disponible]="!servicio.disponible">
+        {{ servicio.disponible ? 'Disponible' : 'No disponible' }}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sin resultados -->
+  <div *ngIf="!cargando && serviciosFiltrados.length === 0" class="sin-resultados">
+    <p>No se encontraron servicios con los filtros aplicados.</p>
+    <button (click)="limpiarFiltros()">Mostrar todos</button>
+  </div>
+</div>

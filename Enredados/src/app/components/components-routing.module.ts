@@ -13,12 +13,14 @@ import { MiAgendaComponent } from './mi-agenda/mi-agenda.component';
 import { InvitadosComponent } from './invitados/invitados.component';
 import { MesasComponent } from './mesas/mesas.component';
 import { PresupuestadorComponent } from './presupuestador/presupuestador.component';
+import { ServiciosComponent } from './servicios/servicios';
 
 
 
 const routes: Routes = [
 
     { path: '', component: PrincipalComponent },
+    { path: 'servicios', component: ServiciosComponent }, 
     { path: 'mi-boda', component: MiBodaComponent },
     { path: 'mi-agenda', component: MiAgendaComponent },
     { path: 'invitados', component: InvitadosComponent },
