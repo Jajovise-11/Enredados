@@ -14,13 +14,15 @@ import { InvitadosComponent } from './invitados/invitados.component';
 import { MesasComponent } from './mesas/mesas.component';
 import { PresupuestadorComponent } from './presupuestador/presupuestador.component';
 import { ServiciosComponent } from './servicios/servicios';
+import { ServicioDetalleComponent } from './servicio-detalle/servicio-detalle';
 
 
 
 const routes: Routes = [
 
     { path: '', component: PrincipalComponent },
-    { path: 'servicios', component: ServiciosComponent }, 
+    { path: 'servicios', component: ServiciosComponent },
+    { path: 'servicio/:id', component: ServicioDetalleComponent }, 
     { path: 'mi-boda', component: MiBodaComponent },
     { path: 'mi-agenda', component: MiAgendaComponent },
     { path: 'invitados', component: InvitadosComponent },

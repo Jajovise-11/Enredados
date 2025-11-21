@@ -1,0 +1,177 @@
+<div class="detalle-container" *ngIf="!cargando && servicio">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a routerLink="/">Inicio</a> > 
+    <a routerLink="/servicios">Servicios</a> > 
+    <span>{{ servicio.nombre }}</span>
+  </div>
+
+  <!-- Header del servicio -->
+  <div class="servicio-header">
+    <div class="servicio-imagen-principal">
+      <img 
+        [src]="servicio.imagen || 'https://via.placeholder.com/800x500?text=' + servicio.nombre" 
+        [alt]="servicio.nombre"
+      />
+      <span class="categoria-badge">{{ servicio.categoria_nombre }}</span>
+    </div>
+
+    <div class="servicio-info-principal">
+      <h1>{{ servicio.nombre }}</h1>
+      
+      <div class="proveedor-info">
+        <h3>🏢 {{ servicio.proveedor_nombre }}</h3>
+      </div>
+
+      <div class="valoracion-resumen" *ngIf="valoraciones.length > 0">
+        <span class="estrellas">
+          <ng-container *ngFor="let star of generarEstrellas(calcularPromedioValoraciones())">
+            {{ star }}
+          </ng-container>
+        </span>
+        <span class="promedio">{{ calcularPromedioValoraciones() }}</span>
+        <span class="total">({{ valoraciones.length }} valoraciones)</span>
+      </div>
+
+      <div class="precio-principal">
+        <span class="desde">Desde</span>
+        <span class="valor">{{ servicio.precio }}€</span>
+      </div>
+
+      <div class="disponibilidad" [class.no-disponible]="!servicio.disponible">
+        {{ servicio.disponible ? '✅ Disponible' : '❌ No disponible' }}
+      </div>
+
+      <button 
+        class="btn-reservar" 
+        (click)="toggleFormularioReserva()"
+        [disabled]="!servicio.disponible"
+      >
+        {{ mostrarFormularioReserva ? 'Cancelar' : 'Reservar Ahora' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario de Reserva -->
+  <div class="formulario-reserva" *ngIf="mostrarFormularioReserva">
+    <h3>Solicitar Reserva</h3>
+    
+    <div *ngIf="reservaExitosa" class="mensaje-exito">
+      ✅ ¡Reserva realizada con éxito! Te contactaremos pronto.
+    </div>
+
+    <form *ngIf="!reservaExitosa" (ngSubmit)="realizarReserva()">
+      <div class="form-group">
+        <label>Fecha del evento:</label>
+        <input 
+          type="date" 
+          [(ngModel)]="fechaEvento" 
+          name="fechaEvento"
+          required
+          [min]="new Date().toISOString().split('T')[0]"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Comentarios adicionales:</label>
+        <textarea 
+          [(ngModel)]="comentarios" 
+          name="comentarios"
+          rows="4"
+          placeholder="Cuéntanos más sobre tu evento..."
+        ></textarea>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-enviar"
+        [disabled]="reservaEnviando"
+      >
+        {{ reservaEnviando ? 'Enviando...' : 'Confirmar Reserva' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Descripción -->
+  <div class="descripcion-completa">
+    <h2>Descripción</h2>
+    <p>{{ servicio.descripcion }}</p>
+  </div>
+
+  <!-- Valoraciones -->
+  <div class="valoraciones-seccion">
+    <div class="valoraciones-header">
+      <h2>Valoraciones ({{ valoraciones.length }})</h2>
+      <button class="btn-valorar" (click)="toggleFormularioValoracion()">
+        {{ mostrarFormularioValoracion ? 'Cancelar' : '⭐ Dejar Valoración' }}
+      </button>
+    </div>
+
+    <!-- Formulario Nueva Valoración -->
+    <div class="formulario-valoracion" *ngIf="mostrarFormularioValoracion">
+      <h3>Deja tu opinión</h3>
+      <form (ngSubmit)="enviarValoracion()">
+        <div class="form-group">
+          <label>Puntuación:</label>
+          <select [(ngModel)]="nuevaValoracion.puntuacion" name="puntuacion">
+            <option [value]="5">⭐⭐⭐⭐⭐ (5 estrellas)</option>
+            <option [value]="4">⭐⭐⭐⭐ (4 estrellas)</option>
+            <option [value]="3">⭐⭐⭐ (3 estrellas)</option>
+            <option [value]="2">⭐⭐ (2 estrellas)</option>
+            <option [value]="1">⭐ (1 estrella)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Comentario:</label>
+          <textarea 
+            [(ngModel)]="nuevaValoracion.comentario" 
+            name="comentario"
+            rows="4"
+            placeholder="Comparte tu experiencia..."
+            required
+          ></textarea>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn-enviar"
+          [disabled]="valoracionEnviando"
+        >
+          {{ valoracionEnviando ? 'Enviando...' : 'Publicar Valoración' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de Valoraciones -->
+    <div class="valoraciones-lista">
+      <div class="valoracion-item" *ngFor="let val of valoraciones">
+        <div class="valoracion-header">
+          <strong>{{ val.usuario_nombre }}</strong>
+          <span class="estrellas">
+            <ng-container *ngFor="let star of generarEstrellas(val.puntuacion)">
+              {{ star }}
+            </ng-container>
+          </span>
+        </div>
+        <p class="valoracion-comentario">{{ val.comentario }}</p>
+        <span class="valoracion-fecha">{{ val.fecha | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <p *ngIf="valoraciones.length === 0" class="sin-valoraciones">
+        Aún no hay valoraciones. ¡Sé el primero en opinar!
+      </p>
+    </div>
+  </div>
+
+  <!-- Botón volver -->
+  <div class="acciones-footer">
+    <button class="btn-volver" routerLink="/servicios">
+      ← Volver a Servicios
+    </button>
+  </div>
+</div>
+
+<div class="loading" *ngIf="cargando">
+  <p>Cargando servicio...</p>
+</div>
