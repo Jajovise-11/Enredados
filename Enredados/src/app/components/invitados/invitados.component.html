@@ -1,106 +1,98 @@
 <app-navbar></app-navbar>
 
-<!-- Resto del contenido igual... -->
-<div class="invitados-hero">
-  <!-- ... tu contenido existente ... -->
+<div class="invitados-container">
+  <!-- Hero Section -->
+  <section class="invitados-hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Gestor de Invitados</h1>
+        <p>Organiza la lista de invitados de tu boda, divide por grupos, confirma asistencias y gestiona menús sin perder ningún detalle.</p>
+        <div class="hero-cta">
+          <button class="btn-primary" routerLink="/registro">Comenzar Gratis</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop" alt="Gestión de invitados">
+      </div>
+    </div>
+  </section>
+
+  <!-- Funcionalidades -->
+  <section class="funcionalidades-section">
+    <h2 class="section-title">Mantén tu lista de invitados al día</h2>
+    <div class="funcionalidades-grid">
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">📝</div>
+        <h3>Añade Invitados</h3>
+        <p>Crea y gestiona tu lista completa de invitados de forma sencilla</p>
+      </div>
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">👥</div>
+        <h3>Organiza por Grupos</h3>
+        <p>Divide por familia, amigos, trabajo y otros grupos personalizados</p>
+      </div>
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">✅</div>
+        <h3>Confirma Asistencias</h3>
+        <p>Lleva el control de quién asistirá y quién no a tu boda</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Características -->
+  <section class="caracteristicas-section">
+    <h2 class="section-title">Toda la información en un solo lugar</h2>
+
+    <div class="caracteristica">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600&auto=format&fit=crop" alt="Grupos de invitados">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Crea Grupos de Invitados</h3>
+        <p>Organiza a tus invitados por familia, amigos, trabajo o cualquier categoría que necesites para tener todo más claro.</p>
+        <a routerLink="/registro" class="btn-secondary">Crear Grupos</a>
+      </div>
+    </div>
+
+    <div class="caracteristica reverse">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop" alt="Confirmaciones">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Gestiona las Confirmaciones</h3>
+        <p>Mantente al día con las confirmaciones que recibes y controla en todo momento cuántos invitados asistirán.</p>
+        <a routerLink="/registro" class="btn-secondary">Gestionar Confirmaciones</a>
+      </div>
+    </div>
+
+    <div class="caracteristica">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop" alt="Menús">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Asigna los Menús</h3>
+        <p>Elige qué menú recibirá cada invitado para gestionar alergias, preferencias vegetarianas y otros detalles importantes.</p>
+        <a routerLink="/registro" class="btn-secondary">Asignar Menús</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Herramientas -->
+  <section class="herramientas-section">
+    <h2 class="section-title">Todas las herramientas que necesitas</h2>
+    <div class="herramientas-grid">
+      <div class="herramienta-card">
+        <h4>📋 Agenda de Tareas</h4>
+        <p>Organiza paso a paso tu boda</p>
+      </div>
+      <div class="herramienta-card">
+        <h4>💰 Presupuestador</h4>
+        <p>Controla tus gastos fácilmente</p>
+      </div>
+      <div class="herramienta-card">
+        <h4>🪑 Organizador de Mesas</h4>
+        <p>Distribuye a tus invitados</p>
+      </div>
+    </div>
+  </section>
 </div>
-<div class="invitados-hero">
-  <div class="invitados-intro">
-    <h2>Gestor de Invitados</h2>
-    <p>Crea el grupo de invitados de tu boda, divide por grupos, confirma asistencias y gestiona menús sin perder detalle.</p>
-    <div class="formulario">
-      <input type="text" placeholder="Nombre y apellidos" />
-      <input type="email" placeholder="Email" />
-      <button>Empieza a organizar</button>
-    </div>
-    <div class="acciones">
-      <a href="#">¿Ya tienes cuenta? Accede</a>
-    </div>
-    <div class="social">
-      <i class="fab fa-facebook-f"></i>
-      <i class="fab fa-google"></i>
-      <i class="fab fa-apple"></i>
-    </div>
-  </div>
-  <div class="invitados-img">
-    <img src="assets/invitados/invitados-principal.png" alt="Invitados imagen">
-  </div>
-</div>
-
-<section class="funciones">
-  <h3>Mantén tu lista de invitados al día</h3>
-  <div class="iconos-funciones">
-    <div>
-      <img src="assets/icons/añade-icon.png" alt="Añade invitados">
-      <p>Añade tus invitados</p>
-    </div>
-    <div>
-      <img src="assets/icons/agrupa-icon.png" alt="Agrupa invitados">
-      <p>Agrúpalos</p>
-    </div>
-    <div>
-      <img src="assets/icons/confirma-icon.png" alt="Confirmaciones">
-      <p>Pide confirmación de asistencia</p>
-    </div>
-  </div>
-</section>
-
-<section class="info-invitados">
-  <h3>La información de los invitados en un solo lugar</h3>
-  
-  <div class="fila">
-    <img src="assets/invitados/lista-invitados.png" alt="Lista de invitados">
-    <div class="texto">
-      <h4>Crea grupos de invitados</h4>
-      <p>Organiza por familia, amigos o compañeros de trabajo para tenerlo más claro todo.</p>
-      <a href="#">CREA UN NUEVO GRUPO</a>
-    </div>
-  </div>
-
-  <div class="fila reverse">
-    <img src="assets/invitados/confirma-asistencia.png" alt="Confirmación de asistencia">
-    <div class="texto">
-      <h4>Comprueba si han confirmado asistencia</h4>
-      <p>Mantente al día con las confirmaciones que recibes por parte de tus invitados.</p>
-      <a href="#">VER LA LISTA DE INVITADOS</a>
-    </div>
-  </div>
-
-  <div class="fila">
-    <img src="assets/invitados/asignar-menus.png" alt="Asignar menús">
-    <div class="texto">
-      <h4>Asigna los menús</h4>
-      <p>Elige qué menús va a recibir cada invitado para organizar alergias, vegetarianos y otros detalles.</p>
-    </div>
-  </div>
-</section>
-
-<section class="herramientas-extra">
-  <h3>La organización de tu boda, fácil y sencilla</h3>
-  <div class="herramientas">
-    <div class="card">
-      <h4>Tareas</h4>
-      <p>Consulta tus tareas y organízate paso a paso.</p>
-    </div>
-    <div class="card">
-      <h4>Mi Proveedores</h4>
-      <p>Gestiona los proveedores que has contactado.</p>
-    </div>
-    <div class="card">
-      <h4>Web de Boda</h4>
-      <p>Elige tu diseño y comparte la web con los invitados.</p>
-    </div>
-    <div class="card">
-      <h4>Presupuestador</h4>
-      <p>Distribuye el dinero y lleva el control total.</p>
-    </div>
-    <div class="card">
-      <h4>Organizador de Mesas</h4>
-      <p>Coloca a cada invitado en su lugar ideal.</p>
-    </div>
-    <div class="card">
-      <h4>Gestor de Invitados</h4>
-      <p>Centraliza toda la información en un mismo sitio.</p>
-    </div>
-  </div>
-</section>

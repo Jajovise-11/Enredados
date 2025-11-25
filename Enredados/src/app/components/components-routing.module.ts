@@ -4,7 +4,6 @@ import { PrincipalComponent } from './principal/principal.component';
 import { MiBodaComponent } from './mi-boda/mi-boda.component';
 import { NoviasComponent } from './novias/novias.component';
 import { NoviosComponent } from './novios/novios.component';
-import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { InvitadosComponent } from './invitados/invitados.component';
 import { MesasComponent } from './mesas/mesas.component';
 import { ServiciosComponent } from './servicios/servicios';
@@ -28,10 +27,8 @@ const routes: Routes = [
     { path: 'mi-boda', component: MiBodaComponent },
     { path: 'invitados', component: InvitadosComponent },
     { path: 'mesas', component: MesasComponent },
-    { path: 'proveedor', component: ProveedoresComponent },
     { path: 'novias', component: NoviasComponent },
     { path: 'novios', component: NoviosComponent },
-    { path: 'proveedores', component: ProveedoresComponent },
     ];
     
     

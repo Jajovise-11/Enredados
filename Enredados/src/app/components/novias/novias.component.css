@@ -1,0 +1,97 @@
+.novias-container {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe6f0 100%);
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  color: #d82a7a;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.3rem;
+  color: #555;
+  margin-bottom: 2.5rem;
+}
+
+.btn-primary {
+  background: #d82a7a;
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background: #bd2368;
+  transform: translateY(-2px);
+}
+
+.categorias-section {
+  padding: 5rem 2rem;
+  background: white;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 3rem;
+}
+
+.categorias-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.categoria-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.categoria-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0
+  8px 24px rgba(0, 0, 0, 0.15);
+}.categoria-image {
+    height: 250px;
+    overflow: hidden;
+}.categoria-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}.categoria-content {
+    padding: 2rem;
+    text-align: center;
+}.categoria-content h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}.categoria-content p {
+    color: #666;
+    font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+.hero-content h1 {
+    font-size: 2rem;
+}
+}

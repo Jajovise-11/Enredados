@@ -1,3 +1,5 @@
+<app-navbar></app-navbar>
+
 <div class="servicios-container">
   <!-- Header -->
   <header class="servicios-header">
@@ -85,7 +87,7 @@
             <span class="precio-valor">{{ servicio.precio }}€</span>
           </div>
           
-          <button class="btn-detalle" [routerLink]="['/servicio', servicio.id]">
+          <button class="btn-detalle" [routerLink]="['/servicio-detalle', servicio.id]">
             Ver Detalles
           </button>
         </div>

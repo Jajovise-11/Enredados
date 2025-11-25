@@ -27,4 +27,24 @@ export const routes: Routes = [
     path: 'novios',
     loadComponent: () => import('./components/novios/novios.component').then(m => m.NoviosComponent)
   },
+  {
+    path: 'servicios',
+    loadComponent: () => import('./components/servicios/servicios').then(m => m.ServiciosComponent)
+  },
+  {
+    path: 'servicio-detalle',
+    loadComponent: () => import('./components/servicio-detalle/servicio-detalle').then(m => m.ServicioDetalleComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/auth/login//login').then(m => m.LoginComponent)
+  },
+  {
+    path: 'resgistro',
+    loadComponent: () => import('./components/auth/registro/registro').then(m => m.RegistroComponent)
+  },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./components/perfil/perfil').then(m => m.PerfilComponent)
+  },
 ];

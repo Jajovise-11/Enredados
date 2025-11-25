@@ -1,73 +1,80 @@
 <app-navbar></app-navbar>
 
 <div class="mi-boda-container">
-  <!-- ... tu contenido existente ... -->
-</div>
-
-<!-- Aquí comienza el contenido principal de "Disfruta organizando tu boda" -->
-<div class="mi-boda-container">
-
-  <!-- SECCIÓN 1: Encabezado promocional -->
+  <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-content">
       <h1>Disfruta organizando tu boda</h1>
-      <p>Herramientas gratuitas para que la planificación sea fácil, rápida y divertida.</p>
-      <form class="formulario">
-        <input type="text" placeholder="Nombre y apellidos" />
-        <input type="email" placeholder="Email" />
-        <button type="submit">Empieza a organizar</button>
-      </form>
-      <p>¿Ya tienes cuenta? <a href="#">Accede</a></p>
-    </div>
-  </section>
-
-  <!-- SECCIÓN 2: Organizar es fácil -->
-  <section class="seccion-blanca">
-    <h2>Organizar tu boda será muy fácil y divertido</h2>
-
-    <!-- Bloques de herramientas -->
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Agenda de Tareas</h3>
-        <p>Organiza tu boda paso a paso con tareas personalizadas según tu fecha y estilo.</p>
-        <a href="#" class="boton-secundario">Ver lista de tareas</a>
-      </div>
-      <div class="imagen">
-        <img src="assets/agenda.png" alt="Agenda de Tareas" />
-      </div>
-    </div>
-
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Mis Proveedores</h3>
-        <p>Guarda tus favoritos y contacta con los mejores profesionales para tu boda.</p>
-        <a href="#" class="boton-secundario">Buscar proveedores</a>
-      </div>
-      <div class="imagen">
-        <img src="assets/proveedores.png" alt="Mis Proveedores" />
-      </div>
-    </div>
-
-    <div class="herramienta">
-      <div class="texto">
-        <h3>Web de Boda</h3>
-        <p>Crea tu página personalizada para compartir toda la información con tus invitados.</p>
-        <a href="#" class="boton-secundario">Elige un diseño</a>
-      </div>
-      <div class="imagen">
-        <img src="assets/web-de-boda.png" alt="Web de Boda" />
+      <p>Herramientas gratuitas para que la planificación sea fácil, rápida y divertida</p>
+      <div class="hero-cta">
+        <a routerLink="/registro" class="btn-primary">Comenzar Gratis</a>
+        <a routerLink="/servicios" class="btn-secondary">Ver Servicios</a>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN 3: Llamada a la acción final -->
-  <section class="registro-section">
-    <h3>Regístrate gratuitamente en Enredados y empieza ya a organizar tu boda</h3>
-    <div class="iconos">
-      <div><img src="assets/icono1.png" alt="Presupuesto" /><p>Presupuesto</p></div>
-      <div><img src="assets/icono2.png" alt="Mesas" /><p>Organizador de mesas</p></div>
-      <div><img src="assets/icono3.png" alt="Invitados" /><p>Gestor de invitados</p></div>
-      <div><img src="assets/icono4.png" alt="Vestidos" /><p>Catálogo vestidos</p></div>
+  <!-- Herramientas -->
+  <section class="herramientas-section">
+    <h2 class="section-title">Organizar tu boda será muy fácil</h2>
+
+    <div class="herramienta">
+      <div class="herramienta-text">
+        <h3>📅 Agenda de Tareas</h3>
+        <p>Organiza tu boda paso a paso con tareas personalizadas según tu fecha y estilo de celebración.</p>
+        <a routerLink="/mi-agenda" class="btn-secondary">Ver Agenda</a>
+      </div>
+      <div class="herramienta-image">
+        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&auto=format&fit=crop" alt="Agenda">
+      </div>
+    </div>
+
+    <div class="herramienta reverse">
+      <div class="herramienta-text">
+        <h3>🏢 Mis Proveedores</h3>
+        <p>Guarda tus favoritos y contacta con los mejores profesionales para hacer realidad tu boda ideal.</p>
+        <a routerLink="/servicios" class="btn-secondary">Buscar Proveedores</a>
+      </div>
+      <div class="herramienta-image">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop" alt="Proveedores">
+      </div>
+    </div>
+
+    <div class="herramienta">
+      <div class="herramienta-text">
+        <h3>💰 Presupuestador</h3>
+        <p>Controla todos tus gastos y mantén el presupuesto bajo control durante toda la organización.</p>
+        <a routerLink="/presupuestador" class="btn-secondary">Gestionar Presupuesto</a>
+      </div>
+      <div class="herramienta-image">
+        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&auto=format&fit=crop" alt="Presupuesto">
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="cta-section">
+    <h2>Todas las herramientas que necesitas</h2>
+    <div class="herramientas-grid">
+      <div class="herramienta-card">
+        <div class="herramienta-icon">📋</div>
+        <h4>Tareas</h4>
+        <p>Checklist completo</p>
+      </div>
+      <div class="herramienta-card">
+        <div class="herramienta-icon">💰</div>
+        <h4>Presupuesto</h4>
+        <p>Control de gastos</p>
+      </div>
+      <div class="herramienta-card">
+        <div class="herramienta-icon">👥</div>
+        <h4>Invitados</h4>
+        <p>Gestión completa</p>
+      </div>
+      <div class="herramienta-card">
+        <div class="herramienta-icon">🪑</div>
+        <h4>Mesas</h4>
+        <p>Distribución visual</p>
+      </div>
     </div>
   </section>
 </div>

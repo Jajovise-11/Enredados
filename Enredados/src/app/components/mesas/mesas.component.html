@@ -1,107 +1,77 @@
 <app-navbar></app-navbar>
 
-<section class="mesas-section">
-  <!-- ... tu contenido existente ... -->
-</section>
-<section class="mesas-section">
-  <div class="header-mesas">
-    <div class="texto">
-      <h2>Organizador de Mesas</h2>
-      <p>Sienta a tus invitados en las mesas según por grupos de amigos, trabajo, familia y aficiones.</p>
-      <form class="formulario">
-        <input type="text" placeholder="Nombre y apellidos" />
-        <input type="email" placeholder="Email" />
-        <button>Empieza a organizar</button>
-      </form>
-      <div class="cuenta">
-        <p>¿Ya tienes cuenta? <a href="#">Accede</a></p>
+<div class="mesas-container">
+  <!-- Hero Section -->
+  <section class="mesas-hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Organizador de Mesas</h1>
+        <p>Sienta a tus invitados en las mesas perfectas según grupos de amigos, trabajo, familia y aficiones.</p>
+        <a routerLink="/registro" class="btn-primary">Organizar Mesas</a>
       </div>
-    </div>
-    <div class="imagen">
-      <img src="assets/organizador-mesas.jpg" alt="Organizador de Mesas" />
-    </div>
-  </div>
-
-  <section class="bloque funcionalidades">
-    <h3>Ubicar a cada invitado de la lista en su mesa será como un juego</h3>
-    <div class="iconos">
-      <div><img src="assets/icono1.svg" alt=""><p>Añade invitados</p></div>
-      <div><img src="assets/icono2.svg" alt=""><p>Imprime y comparte el resultado</p></div>
-      <div><img src="assets/icono3.svg" alt=""><p>Visualiza el plano al instante</p></div>
-    </div>
-  </section>
-
-  <section class="bloque contenido">
-    <h3>Encuentra el lugar adecuado para cada invitado en el banquete</h3>
-
-    <div class="fila">
-      <div class="texto">
-        <h4>Crea tu plano de mesas</h4>
-        <p>Añade mesas redondas, cuadradas o largas. Ordena por prioridad cada una de ellas según el número de invitados.</p>
-        <a href="#">CREA TU PLANO DE MESAS</a>
-      </div>
-      <img src="assets/mesas-1.png" alt="">
-    </div>
-
-    <div class="fila reversa">
-      <img src="assets/mesas-2.png" alt="">
-      <div class="texto">
-        <h4>Sienta a los invitados</h4>
-        <p>La lista de invitados está sincronizada con el plano de mesas. Solo tendrás que arrastrar y soltar cada uno a su lugar.</p>
-        <a href="#">ABRE TU LISTA DE INVITADOS</a>
-      </div>
-    </div>
-
-    <div class="fila">
-      <div class="texto">
-        <h4>Comparte tu plano de mesas</h4>
-        <p>Envía imágenes de tus planos a tus padres, pareja o wedding planner para confirmar que todo está correcto.</p>
-        <a href="#">ORGANIZA LAS MESAS DEL BANQUETE</a>
-      </div>
-      <img src="assets/mesas-3.png" alt="">
-    </div>
-  </section>
-
-  <section class="bloque herramientas">
-    <h3>La organización de tu boda, fácil y sencilla</h3>
-    <div class="grid-herramientas">
-      <div>
-        <img src="assets/icono-tareas.svg" alt="">
-        <h4>Tareas</h4>
-        <p>Las tareas más útiles para que no se te olvide nada.</p>
-        <a href="#">CONSULTA TU LISTA DE TAREAS</a>
-      </div>
-      <div>
-        <img src="assets/icono-proveedores.svg" alt="">
-        <h4>Mis Proveedores</h4>
-        <p>Guarda tus proveedores favoritos y contacta con ellos fácilmente.</p>
-        <a href="#">GESTIONA TUS PROVEEDORES</a>
-      </div>
-      <div>
-        <img src="assets/icono-web.svg" alt="">
-        <h4>Web de Boda</h4>
-        <p>Crea tu web de boda con estilo y compártela con tus invitados.</p>
-        <a href="#">ELIGE UN DISEÑO</a>
-      </div>
-      <div>
-        <img src="assets/icono-presupuesto.svg" alt="">
-        <h4>Presupuesto</h4>
-        <p>Planifica tus pagos, añade gastos y ajusta tu presupuesto.</p>
-        <a href="#">REVISA TU PRESUPUESTO</a>
-      </div>
-      <div>
-        <img src="assets/icono-invitados.svg" alt="">
-        <h4>Gestor de Invitados</h4>
-        <p>Gestiona confirmaciones, grupos y menús personalizados.</p>
-        <a href="#">GESTIONA TUS INVITADOS</a>
-      </div>
-      <div>
-        <img src="assets/icono-mesas.svg" alt="">
-        <h4>Organizador de Mesas</h4>
-        <p>Asocia a cada invitado a su lugar de la forma más fácil.</p>
-        <a href="#">ORGANIZA TUS MESAS</a>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?w=600&auto=format&fit=crop" alt="Organización de mesas">
       </div>
     </div>
   </section>
-</section>
 
+  <!-- Funcionalidades -->
+  <section class="funcionalidades-section">
+    <h2 class="section-title">Ubicar a cada invitado será como un juego</h2>
+    <div class="funcionalidades-grid">
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">🪑</div>
+        <h3>Diseña tu Plano</h3>
+        <p>Crea el plano con mesas redondas, cuadradas o largas</p>
+      </div>
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">👥</div>
+        <h3>Arrastra y Coloca</h3>
+        <p>Mueve a los invitados con drag & drop</p>
+      </div>
+      <div class="funcionalidad-card">
+        <div class="funcionalidad-icon">📤</div>
+        <h3>Comparte el Resultado</h3>
+        <p>Exporta e imprime tu distribución</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Características -->
+  <section class="caracteristicas-section">
+    <h2 class="section-title">El lugar perfecto para cada invitado</h2>
+
+    <div class="caracteristica">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&auto=format&fit=crop" alt="Plano de mesas">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Crea tu Plano de Mesas</h3>
+        <p>Añade mesas de diferentes formas y tamaños. Ordena por prioridad según el número de invitados.</p>
+        <a routerLink="/registro" class="btn-secondary">Crear Plano</a>
+      </div>
+    </div>
+
+    <div class="caracteristica reverse">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1529634597300-cf859a5499b0?w=600&auto=format&fit=crop" alt="Distribución">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Distribuye a los Invitados</h3>
+        <p>La lista de invitados está sincronizada. Solo arrastra y suelta cada persona a su mesa ideal.</p>
+        <a routerLink="/registro" class="btn-secondary">Ver Lista</a>
+      </div>
+    </div>
+
+    <div class="caracteristica">
+      <div class="caracteristica-image">
+        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop" alt="Compartir">
+      </div>
+      <div class="caracteristica-text">
+        <h3>Comparte y Confirma</h3>
+        <p>Envía tu plano a familiares y wedding planners para confirmar que todo está perfecto.</p>
+        <a routerLink="/registro" class="btn-secondary">Compartir</a>
+      </div>
+    </div>
+  </section>
+</div>
