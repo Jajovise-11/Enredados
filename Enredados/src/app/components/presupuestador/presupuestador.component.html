@@ -1,0 +1,99 @@
+<app-navbar></app-navbar>
+
+<div class="presupuesto-container">
+  <div class="presupuesto-header">
+    <h1>💰 Presupuestador de Boda</h1>
+    <p>Controla todos tus gastos en un solo lugar</p>
+  </div>
+
+  <!-- Resumen -->
+  <div class="resumen">
+    <div class="resumen-card total">
+      <h3>Presupuesto Total</h3>
+      <div class="cantidad">{{ presupuestoTotal }}€</div>
+    </div>
+    <div class="resumen-card gastado">
+      <h3>Total Gastado</h3>
+      <div class="cantidad">{{ totalGastado }}€</div>
+      <div class="porcentaje">{{ porcentajeGastado.toFixed(1) }}%</div>
+    </div>
+    <div class="resumen-card restante">
+      <h3>Restante</h3>
+      <div class="cantidad" [class.negativo]="restante < 0">{{ restante }}€</div>
+    </div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progreso-bar">
+    <div class="progreso-fill" [style.width.%]="porcentajeGastado"></div>
+  </div>
+
+  <!-- Botón nuevo gasto -->
+  <div class="controles">
+    <button class="btn-nuevo-gasto" (click)="toggleFormulario()">
+      {{ mostrarFormulario ? '❌ Cancelar' : '➕ Nuevo Gasto' }}
+    </button>
+  </div>
+
+  <!-- Formulario -->
+  <div class="formulario-gasto" *ngIf="mostrarFormulario">
+    <h3>Nuevo Gasto</h3>
+    <form (ngSubmit)="agregarGasto()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Concepto *</label>
+          <input type="text" [(ngModel)]="nuevoGasto.concepto" name="concepto" required>
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="nuevoGasto.categoria" name="categoria">
+            <option value="Lugar">Lugar</option>
+            <option value="Comida">Comida</option>
+            <option value="Fotografía">Fotografía</option>
+            <option value="Vestuario">Vestuario</option>
+            <option value="Decoración">Decoración</option>
+            <option value="Entretenimiento">Entretenimiento</option>
+            <option value="Papelería">Papelería</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Presupuestado *</label>
+          <input type="number" [(ngModel)]="nuevoGasto.presupuestado" name="presupuestado" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Gastado</label>
+          <input type="number" [(ngModel)]="nuevoGasto.gastado" name="gastado" min="0">
+        </div>
+      </div>
+      <button type="submit" class="btn-guardar">Guardar</button>
+    </form>
+  </div>
+
+  <!-- Tabla de gastos -->
+  <div class="gastos-tabla">
+    <table>
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Categoría</th>
+          <th>Presupuestado</th>
+          <th>Gastado</th>
+          <th>Diferencia</th>
+          <th>Pagado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let gasto of gastos">
+          <td>{{ gasto.concepto }}</td>
+          <td><span class="categoria-badge">{{ gasto.categoria }}</span></td>
+          <td>{{ gasto.presupuestado }}€</td>
+          <td>{{ gasto.gastado }}€</td>
+          <td [class.positivo]="gasto.presupuestado >= gasto.gastado" [class.negativo]="gasto.presupuestado < gasto.gastado">
+            {{ gasto.presupuestado - gasto.gastado }}€
+          </td>
+          <td>
+            <input type="checkbox" [checked]="gasto.pagado" (change)="togglePagado(gasto)">
+          </td>
+          <td>
+            <button class="btn-eliminar-pequeno" (click)="eliminarGasto(gasto.id)">🗑️</button>

@@ -1,0 +1,135 @@
+<app-navbar></app-navbar>
+
+<div class="agenda-container">
+  <!-- Header -->
+  <div class="agenda-header">
+    <h1>📅 Mi Agenda de Boda</h1>
+    <p>Organiza todas las tareas para tu día especial</p>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="estadisticas">
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <div class="stat-numero">{{ tareasCompletadas }}</div>
+        <div class="stat-label">Completadas</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-info">
+        <div class="stat-numero">{{ tareasPendientes }}</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-info">
+        <div class="stat-numero">{{ tareas.length }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros y Botón -->
+  <div class="controles">
+    <div class="filtros">
+      <select [(ngModel)]="filtroCategoria">
+        <option value="">Todas las categorías</option>
+        <option value="Lugar">Lugar</option>
+        <option value="Catering">Catering</option>
+        <option value="Invitaciones">Invitaciones</option>
+        <option value="Vestuario">Vestuario</option>
+        <option value="Fotografía">Fotografía</option>
+        <option value="Decoración">Decoración</option>
+      </select>
+
+      <select [(ngModel)]="filtroPrioridad">
+        <option value="">Todas las prioridades</option>
+        <option value="alta">Alta</option>
+        <option value="media">Media</option>
+        <option value="baja">Baja</option>
+      </select>
+    </div>
+
+    <button class="btn-nueva-tarea" (click)="toggleFormulario()">
+      {{ mostrarFormulario ? '❌ Cancelar' : '➕ Nueva Tarea' }}
+    </button>
+  </div>
+
+  <!-- Formulario Nueva Tarea -->
+  <div class="formulario-tarea" *ngIf="mostrarFormulario">
+    <h3>Nueva Tarea</h3>
+    <form (ngSubmit)="agregarTarea()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Título *</label>
+          <input type="text" [(ngModel)]="nuevaTarea.titulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha *</label>
+          <input type="date" [(ngModel)]="nuevaTarea.fecha" name="fecha" required>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="nuevaTarea.categoria" name="categoria">
+            <option value="Lugar">Lugar</option>
+            <option value="Catering">Catering</option>
+            <option value="Invitaciones">Invitaciones</option>
+            <option value="Vestuario">Vestuario</option>
+            <option value="Fotografía">Fotografía</option>
+            <option value="Decoración">Decoración</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Prioridad</label>
+          <select [(ngModel)]="nuevaTarea.prioridad" name="prioridad">
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="nuevaTarea.descripcion" name="descripcion" rows="3"></textarea>
+      </div>
+
+      <button type="submit" class="btn-guardar">Guardar Tarea</button>
+    </form>
+  </div>
+
+  <!-- Lista de Tareas -->
+  <div class="tareas-lista">
+    <div *ngFor="let tarea of tareasFiltradas" class="tarea-card" [class.completada]="tarea.completada">
+      <div class="tarea-checkbox">
+        <input type="checkbox" [checked]="tarea.completada" (change)="toggleCompletada(tarea)">
+      </div>
+
+      <div class="tarea-contenido">
+        <div class="tarea-header">
+          <h3>{{ tarea.titulo }}</h3>
+          <span class="prioridad-badge" [class]="'prioridad-' + tarea.prioridad">
+            {{ tarea.prioridad }}
+          </span>
+        </div>
+        <p class="tarea-descripcion">{{ tarea.descripcion }}</p>
+        <div class="tarea-footer">
+          <span class="tarea-fecha">📅 {{ tarea.fecha }}</span>
+          <span class="tarea-categoria">{{ tarea.categoria }}</span>
+        </div>
+      </div>
+
+      <button class="btn-eliminar" (click)="eliminarTarea(tarea.id)">🗑️</button>
+    </div>
+
+    <div *ngIf="tareasFiltradas.length === 0" class="sin-tareas">
+      <p>No hay tareas que coincidan con los filtros</p>
+    </div>
+  </div>
+</div>
