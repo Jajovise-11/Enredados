@@ -45,4 +45,23 @@ export class ApiService {
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login/`, credentials);
   }
+  // Obtener reservas de un usuario
+  getReservasUsuario(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservas/?usuario=${usuarioId}`);
+  }
+
+// Obtener valoraciones de un usuario
+  getValoracionesUsuario(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/valoraciones/?usuario=${usuarioId}`);
+  }
+
+// Cancelar una reserva
+  cancelarReserva(reservaId: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { estado: 'cancelada' });
+  }
+
+// Eliminar una valoración
+  eliminarValoracion(valoracionId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/valoraciones/${valoracionId}/`);
+  }
 }

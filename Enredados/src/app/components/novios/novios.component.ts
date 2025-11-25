@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { NavbarComponent } from '../shared/navbar/navbar';
 
 @Component({
   selector: 'app-novios',
   standalone: true,
-  imports: [],
+  imports: [NavbarComponent],
   templateUrl: './novios.component.html',
   styleUrl: './novios.component.css'
 })

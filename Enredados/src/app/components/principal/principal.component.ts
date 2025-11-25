@@ -1,90 +1,140 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Component, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
-
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
+import { NavbarComponent } from '../shared/navbar/navbar';
 
 @Component({
   selector: 'app-principal',
   standalone: true,
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent],
   templateUrl: './principal.component.html',
   styleUrl: './principal.component.css'
 })
-export class PrincipalComponent {
-  users = [
-    { name: 'Carmen', text: 'BLABLABLA...', avatar: 'https://i.pravatar.cc/40?img=1' },
-    { name: 'Jose', text: 'BLBLBLBLBLA...', avatar: 'https://i.pravatar.cc/40?img=2' },
-    { name: 'Mónica', text: 'blablablabla...', avatar: 'https://i.pravatar.cc/40?img=3' },
-    { name: 'Adrián', text: 'BLBLABLABL', avatar: 'https://i.pravatar.cc/40?img=4' },
-    { name: 'Paula', text: 'BALABLLBLABLA', avatar: 'https://i.pravatar.cc/40?img=5' },
-    { name: 'María', text: 'BLABLABLABLABL', avatar: 'https://i.pravatar.cc/40?img=6' }
-  ];
-  bodas = [
-    {
-      pareja: 'Adriana & Sergio',
-      imagenPrincipal: 'https://via.placeholder.com/300x200?text=Adriana+Sergio',
-      miniaturas: [
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40'
-      ],
-      fotos: 97,
-      lugar: 'Oviedo, Asturias'
+export class PrincipalComponent implements OnInit {
+  // Búsqueda
+  terminoBusqueda: string = '';
+  categoriaSeleccionada: string = '';
+
+  // Datos desde la API
+  servicios: any[] = [];
+  serviciosDestacados: any[] = [];
+  categorias: any[] = [];
+  valoracionesRecientes: any[] = [];
+  
+  cargando: boolean = true;
+
+  // Categorías con iconos
+  categoriasDestacadas = [
+    { 
+      nombre: 'DJ y Música', 
+      icono: '🎵', 
+      descripcion: 'Los mejores DJs para tu fiesta',
+      color: '#667eea'
     },
-    {
-      pareja: 'Carla & Juan',
-      imagenPrincipal: 'https://via.placeholder.com/300x200?text=Carla+Juan',
-      miniaturas: [
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40'
-      ],
-      fotos: 90,
-      lugar: 'Malleza, Asturias'
+    { 
+      nombre: 'Fotografía', 
+      icono: '📸', 
+      descripcion: 'Captura cada momento especial',
+      color: '#f093fb'
     },
-    {
-      pareja: 'Sara & Adrián',
-      imagenPrincipal: 'https://via.placeholder.com/300x200?text=Sara+Adrian',
-      miniaturas: [
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40'
-      ],
-      fotos: 68,
-      lugar: 'Gijón, Asturias'
+    { 
+      nombre: 'Catering', 
+      icono: '🍽️', 
+      descripcion: 'Delicias para tus invitados',
+      color: '#4facfe'
     },
-    {
-      pareja: 'Sofía & Santi',
-      imagenPrincipal: 'https://via.placeholder.com/300x200?text=Sofia+Santi',
-      miniaturas: [
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40',
-        'https://via.placeholder.com/60x40'
-      ],
-      fotos: 48,
-      lugar: 'Onon (Cangas De Narcea), Asturias'
+    { 
+      nombre: 'Decoración', 
+      icono: '💐', 
+      descripcion: 'Ambientes únicos y memorables',
+      color: '#43e97b'
     }
   ];
-  ideas = [
-    { titulo: 'Antes de la boda', imagen: 'https://via.placeholder.com/100?text=Antes' },
-    { titulo: 'La ceremonia de la boda', imagen: 'https://via.placeholder.com/100?text=Ceremonia' },
-    { titulo: 'El banquete', imagen: 'https://via.placeholder.com/100?text=Banquete' },
-    { titulo: 'Los servicios para tu boda', imagen: 'https://via.placeholder.com/100?text=Servicios' },
-    { titulo: 'Moda nupcial', imagen: 'https://via.placeholder.com/100?text=Moda' },
-    { titulo: 'Belleza y salud', imagen: 'https://via.placeholder.com/100?text=Belleza' }
-  ];
 
-  currentSlide = 0;
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public authService: AuthService,
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  ngOnInit(): void {
+    this.cargarDatos();
+  }
 
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      setInterval(() => {
-        this.currentSlide = (this.currentSlide + 1) % 3;
-      }, 4000);
+  cargarDatos(): void {
+    this.cargando = true;
+
+    // Cargar servicios
+    this.apiService.getServicios().subscribe({
+      next: (data: any) => {
+        this.servicios = data;
+        // Obtener los 6 servicios más recientes como destacados
+        this.serviciosDestacados = data
+          .sort((a: any, b: any) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+          .slice(0, 6);
+      },
+      error: (error: any) => {
+        console.error('Error al cargar servicios:', error);
+      }
+    });
+
+    // Cargar categorías
+    this.apiService.getCategorias().subscribe({
+      next: (data: any) => {
+        this.categorias = data;
+      },
+      error: (error: any) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    });
+
+    // Cargar valoraciones recientes
+    this.apiService.getValoraciones().subscribe({
+      next: (data: any) => {
+        this.valoracionesRecientes = data
+          .sort((a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+          .slice(0, 3);
+        this.cargando = false;
+      },
+      error: (error: any) => {
+        console.error('Error al cargar valoraciones:', error);
+        this.cargando = false;
+      }
+    });
+  }
+
+  buscarServicios(): void {
+    // Navegar a la página de servicios con parámetros de búsqueda
+    const params: any = {};
+    
+    if (this.terminoBusqueda) {
+      params.busqueda = this.terminoBusqueda;
+    }
+    
+    if (this.categoriaSeleccionada) {
+      params.categoria = this.categoriaSeleccionada;
+    }
+
+    this.router.navigate(['/servicios'], { queryParams: params });
+  }
+
+  filtrarPorCategoria(categoriaNombre: string): void {
+    const categoria = this.categorias.find(c => c.nombre === categoriaNombre);
+    if (categoria) {
+      this.router.navigate(['/servicios'], { queryParams: { categoria: categoria.id } });
+    }
+  }
+
+  generarEstrellas(puntuacion: number): string[] {
+    return Array(5).fill('★').map((star, index) => index < puntuacion ? '★' : '☆');
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
 }
-}
-}
-
-

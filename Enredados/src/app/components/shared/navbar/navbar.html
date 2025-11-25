@@ -1,0 +1,90 @@
+<header class="navbar-header">
+  <nav class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <a routerLink="/">💍 Enredados</a>
+    </div>
+
+    <!-- Menú Principal -->
+    <ul class="navbar-menu">
+      <!-- Mi Boda -->
+      <li class="navbar-item dropdown">
+        <a routerLink="/mi-boda" class="navbar-link">Mi Boda</a>
+        <ul class="dropdown-menu">
+          <li><a routerLink="/mi-agenda">Agenda</a></li>
+          <li><a routerLink="/invitados">Invitados</a></li>
+          <li><a routerLink="/mesas">Mesas</a></li>
+          <li><a routerLink="/presupuestador">Presupuestador</a></li>
+        </ul>
+      </li>
+
+      <!-- Servicios -->
+      <li class="navbar-item">
+        <a routerLink="/servicios" class="navbar-link">Servicios</a>
+      </li>
+
+      <!-- Novias -->
+      <li class="navbar-item dropdown">
+        <a routerLink="/novias" class="navbar-link">Novias</a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Vestidos de Novia</a></li>
+          <li><a href="#">Complementos</a></li>
+          <li><a href="#">Joyería</a></li>
+          <li><a href="#">Belleza</a></li>
+        </ul>
+      </li>
+
+      <!-- Novios -->
+      <li class="navbar-item dropdown">
+        <a routerLink="/novios" class="navbar-link">Novios</a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Trajes de Novio</a></li>
+          <li><a href="#">Complementos</a></li>
+          <li><a href="#">Cuidado Masculino</a></li>
+        </ul>
+      </li>
+
+      <!-- Vestidos -->
+      <li class="navbar-item">
+        <a routerLink="/vestidos" class="navbar-link">Vestidos</a>
+      </li>
+
+      <!-- Ideas Boda -->
+      <li class="navbar-item dropdown">
+        <a routerLink="/ideas-boda" class="navbar-link">Ideas Boda</a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Antes de la boda</a></li>
+          <li><a href="#">La ceremonia</a></li>
+          <li><a href="#">El banquete</a></li>
+          <li><a href="#">Hazlo tú mismo</a></li>
+        </ul>
+      </li>
+
+      <!-- Comunidad -->
+      <li class="navbar-item">
+        <a routerLink="/comunidad" class="navbar-link">Comunidad</a>
+      </li>
+    </ul>
+
+    <!-- Botones de Usuario -->
+    <div class="navbar-actions">
+      <!-- Usuario autenticado -->
+      <div class="user-menu" *ngIf="authService.isLoggedIn()">
+        <button class="user-button">
+          👤 {{ authService.getUsername() }}
+        </button>
+        <div class="user-dropdown">
+          <a routerLink="/perfil">Mi Perfil</a>
+          <a routerLink="/mi-boda">Mi Boda</a>
+          <a href="#" (click)="logout()">Cerrar Sesión</a>
+        </div>
+      </div>
+
+      <!-- Botones login/registro -->
+      <div class="auth-buttons" *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
+        <a routerLink="/registro" class="btn-register">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+</header>

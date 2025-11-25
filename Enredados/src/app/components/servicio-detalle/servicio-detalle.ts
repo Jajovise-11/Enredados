@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-servicio-detalle',
@@ -15,7 +16,7 @@ export class ServicioDetalleComponent implements OnInit {
   servicio: any = null;
   valoraciones: any[] = [];
   cargando: boolean = true;
-  
+  fechaMinima: string = new Date().toISOString().split('T')[0];
   // Datos para reserva
   mostrarFormularioReserva: boolean = false;
   fechaEvento: string = '';
@@ -31,11 +32,12 @@ export class ServicioDetalleComponent implements OnInit {
   };
   valoracionEnviando: boolean = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private apiService: ApiService
-  ) {}
+ constructor(
+  private route: ActivatedRoute,
+  private router: Router,
+  private apiService: ApiService,
+  private authService: AuthService  // ← AÑADIR
+) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -78,82 +80,94 @@ export class ServicioDetalleComponent implements OnInit {
   }
 
   realizarReserva(): void {
-    if (!this.fechaEvento) {
-      alert('Por favor, selecciona una fecha para el evento');
-      return;
-    }
-
-    // Nota: En producción necesitarías el ID del usuario autenticado
-    // Por ahora usamos un usuario de ejemplo (ID: 1)
-    const reservaData = {
-      usuario: 1, // TODO: Obtener del usuario autenticado
-      servicio: this.servicio.id,
-      fecha_evento: this.fechaEvento,
-      estado: 'pendiente',
-      comentarios: this.comentarios
-    };
-
-    this.reservaEnviando = true;
-
-    this.apiService.crearReserva(reservaData).subscribe({
-      next: (response: any) => {
-        console.log('Reserva creada:', response);
-        this.reservaExitosa = true;
-        this.reservaEnviando = false;
-        
-        setTimeout(() => {
-          this.mostrarFormularioReserva = false;
-          this.reservaExitosa = false;
-          this.fechaEvento = '';
-          this.comentarios = '';
-        }, 3000);
-      },
-      error: (error: any) => {
-        console.error('Error al crear reserva:', error);
-        this.reservaEnviando = false;
-        alert('Error al crear la reserva. Por favor, intenta de nuevo.');
-      }
-    });
+  // Verificar que el usuario está autenticado
+  if (!this.authService.isLoggedIn()) {
+    alert('Debes iniciar sesión para hacer una reserva');
+    this.router.navigate(['/login']);
+    return;
   }
+
+  if (!this.fechaEvento) {
+    alert('Por favor, selecciona una fecha para el evento');
+    return;
+  }
+
+  const reservaData = {
+    usuario: this.authService.getUserId(), // ← Ahora usa el ID real
+    servicio: this.servicio.id,
+    fecha_evento: this.fechaEvento,
+    estado: 'pendiente',
+    comentarios: this.comentarios
+  };
+
+  this.reservaEnviando = true;
+
+  this.apiService.crearReserva(reservaData).subscribe({
+    next: (response: any) => {
+      console.log('Reserva creada:', response);
+      this.reservaExitosa = true;
+      this.reservaEnviando = false;
+      
+      setTimeout(() => {
+        this.mostrarFormularioReserva = false;
+        this.reservaExitosa = false;
+        this.fechaEvento = '';
+        this.comentarios = '';
+      }, 3000);
+    },
+    error: (error: any) => {
+      console.error('Error al crear reserva:', error);
+      this.reservaEnviando = false;
+      alert('Error al crear la reserva. Por favor, intenta de nuevo.');
+    }
+  });
+}
 
   toggleFormularioValoracion(): void {
     this.mostrarFormularioValoracion = !this.mostrarFormularioValoracion;
   }
 
   enviarValoracion(): void {
-    if (!this.nuevaValoracion.comentario.trim()) {
-      alert('Por favor, escribe un comentario');
-      return;
-    }
-
-    const valoracionData = {
-      usuario: 1, // TODO: Obtener del usuario autenticado
-      servicio: this.servicio.id,
-      puntuacion: this.nuevaValoracion.puntuacion,
-      comentario: this.nuevaValoracion.comentario
-    };
-
-    this.valoracionEnviando = true;
-
-    this.apiService.crearValoracion(valoracionData).subscribe({
-      next: (response: any) => {
-        console.log('Valoración creada:', response);
-        this.valoracionEnviando = false;
-        this.mostrarFormularioValoracion = false;
-        this.nuevaValoracion = { puntuacion: 5, comentario: '' };
-        
-        // Recargar valoraciones
-        this.cargarValoraciones(this.servicio.id);
-        
-        alert('¡Gracias por tu valoración!');
-      },
-      error: (error: any) => {
-        console.error('Error al crear valoración:', error);
-        this.valoracionEnviando = false;
-        alert('Error al enviar la valoración. Por favor, intenta de nuevo.');
-      }
-    });
+  // Verificar que el usuario está autenticado
+  if (!this.authService.isLoggedIn()) {
+    alert('Debes iniciar sesión para dejar una valoración');
+    this.router.navigate(['/login']);
+    return;
   }
+
+  if (!this.nuevaValoracion.comentario.trim()) {
+    alert('Por favor, escribe un comentario');
+    return;
+  }
+
+  const valoracionData = {
+    usuario: this.authService.getUserId(), // ← Ahora usa el ID real
+    servicio: this.servicio.id,
+    puntuacion: this.nuevaValoracion.puntuacion,
+    comentario: this.nuevaValoracion.comentario
+  };
+
+  this.valoracionEnviando = true;
+
+  this.apiService.crearValoracion(valoracionData).subscribe({
+    next: (response: any) => {
+      console.log('Valoración creada:', response);
+      this.valoracionEnviando = false;
+      this.mostrarFormularioValoracion = false;
+      this.nuevaValoracion = { puntuacion: 5, comentario: '' };
+      
+      // Recargar valoraciones
+      this.cargarValoraciones(this.servicio.id);
+      
+      alert('¡Gracias por tu valoración!');
+    },
+    error: (error: any) => {
+      console.error('Error al crear valoración:', error);
+      this.valoracionEnviando = false;
+      alert('Error al enviar la valoración. Por favor, intenta de nuevo.');
+    }
+  });
+}
 
   calcularPromedioValoraciones(): number {
     if (this.valoraciones.length === 0) return 0;

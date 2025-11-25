@@ -68,7 +68,7 @@
           [(ngModel)]="fechaEvento" 
           name="fechaEvento"
           required
-          [min]="new Date().toISOString().split('T')[0]"
+          [min]="fechaMinima"
         />
       </div>
 

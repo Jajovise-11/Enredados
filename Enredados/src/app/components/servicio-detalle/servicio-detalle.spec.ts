@@ -1,18 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ServicioDetalleComponent } from './servicio-detalle';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
-import { ServicioDetalle } from './servicio-detalle';
-
-describe('ServicioDetalle', () => {
-  let component: ServicioDetalle;
-  let fixture: ComponentFixture<ServicioDetalle>;
+describe('ServicioDetalleComponent', () => {
+  let component: ServicioDetalleComponent;
+  let fixture: ComponentFixture<ServicioDetalleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ServicioDetalle]
+      imports: [ServicioDetalleComponent, HttpClientTestingModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => '1'
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ServicioDetalle);
+    fixture = TestBed.createComponent(ServicioDetalleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
