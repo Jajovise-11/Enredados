@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../shared/navbar/navbar';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Tarea {
-  id: number;
+  id?: number;
   titulo: string;
   descripcion: string;
   fecha: string;
   categoria: string;
   completada: boolean;
   prioridad: 'alta' | 'media' | 'baja';
+  usuario?: number;
 }
 
 @Component({
@@ -20,70 +24,15 @@ interface Tarea {
   templateUrl: './mi-agenda.component.html',
   styleUrl: './mi-agenda.component.css'
 })
-export class MiAgendaComponent {
-  tareas: Tarea[] = [
-    {
-      id: 1,
-      titulo: 'Reservar lugar de la ceremonia',
-      descripcion: 'Visitar y confirmar el lugar para la ceremonia',
-      fecha: '2025-12-15',
-      categoria: 'Lugar',
-      completada: false,
-      prioridad: 'alta'
-    },
-    {
-      id: 2,
-      titulo: 'Elegir menú de boda',
-      descripcion: 'Reunión con el catering para decidir el menú',
-      fecha: '2025-12-20',
-      categoria: 'Catering',
-      completada: false,
-      prioridad: 'alta'
-    },
-    {
-      id: 3,
-      titulo: 'Enviar invitaciones',
-      descripcion: 'Diseñar y enviar las invitaciones a los invitados',
-      fecha: '2026-01-10',
-      categoria: 'Invitaciones',
-      completada: false,
-      prioridad: 'media'
-    },
-    {
-      id: 4,
-      titulo: 'Prueba del vestido',
-      descripcion: 'Segunda prueba del vestido de novia',
-      fecha: '2026-02-15',
-      categoria: 'Vestuario',
-      completada: true,
-      prioridad: 'alta'
-    },
-    {
-      id: 5,
-      titulo: 'Reservar fotógrafo',
-      descripcion: 'Confirmar fotógrafo y videógrafo',
-      fecha: '2025-12-10',
-      categoria: 'Fotografía',
-      completada: true,
-      prioridad: 'alta'
-    },
-    {
-      id: 6,
-      titulo: 'Elegir flores',
-      descripcion: 'Seleccionar arreglos florales para la decoración',
-      fecha: '2026-03-01',
-      categoria: 'Decoración',
-      completada: false,
-      prioridad: 'media'
-    }
-  ];
-
+export class MiAgendaComponent implements OnInit {
+  tareas: Tarea[] = [];
+  cargando: boolean = true;
+  
   nuevaTarea: Tarea = {
-    id: 0,
     titulo: '',
     descripcion: '',
     fecha: '',
-    categoria: '',
+    categoria: 'lugar',
     completada: false,
     prioridad: 'media'
   };
@@ -91,6 +40,43 @@ export class MiAgendaComponent {
   mostrarFormulario: boolean = false;
   filtroCategoria: string = '';
   filtroPrioridad: string = '';
+
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    if (!this.authService.isLoggedIn()) {
+      alert('Debes iniciar sesión para acceder a tu agenda');
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.cargarTareas();
+  }
+
+  cargarTareas(): void {
+    this.cargando = true;
+    const usuarioId = this.authService.getUserId();
+    
+    if (!usuarioId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.apiService.getTareasAgenda(usuarioId).subscribe({
+      next: (data: any) => {
+        this.tareas = data;
+        this.cargando = false;
+      },
+      error: (error: any) => {
+        console.error('Error al cargar tareas:', error);
+        this.cargando = false;
+        alert('Error al cargar las tareas');
+      }
+    });
+  }
 
   get tareasFiltradas(): Tarea[] {
     return this.tareas.filter(tarea => {
@@ -111,33 +97,89 @@ export class MiAgendaComponent {
   toggleFormulario(): void {
     this.mostrarFormulario = !this.mostrarFormulario;
     if (!this.mostrarFormulario) {
-      this.nuevaTarea = {
-        id: 0,
-        titulo: '',
-        descripcion: '',
-        fecha: '',
-        categoria: '',
-        completada: false,
-        prioridad: 'media'
-      };
+      this.limpiarFormulario();
     }
   }
 
   agregarTarea(): void {
-    if (this.nuevaTarea.titulo && this.nuevaTarea.fecha) {
-      this.nuevaTarea.id = Math.max(...this.tareas.map(t => t.id), 0) + 1;
-      this.tareas.push({ ...this.nuevaTarea });
-      this.toggleFormulario();
+    if (!this.nuevaTarea.titulo || !this.nuevaTarea.fecha) {
+      alert('Por favor completa el título y la fecha');
+      return;
     }
+
+    const usuarioId = this.authService.getUserId();
+    if (!usuarioId) {
+      alert('Error: Usuario no autenticado');
+      return;
+    }
+
+    const tareaData = {
+      ...this.nuevaTarea,
+      usuario: usuarioId
+    };
+
+    this.apiService.crearTareaAgenda(tareaData).subscribe({
+      next: (response: any) => {
+        console.log('Tarea creada:', response);
+        this.cargarTareas(); // Recargar tareas
+        this.toggleFormulario();
+        alert('Tarea añadida exitosamente');
+      },
+      error: (error: any) => {
+        console.error('Error al crear tarea:', error);
+        alert('Error al crear la tarea');
+      }
+    });
   }
 
   toggleCompletada(tarea: Tarea): void {
-    tarea.completada = !tarea.completada;
+    if (!tarea.id) return;
+
+    const tareaActualizada = {
+      ...tarea,
+      completada: !tarea.completada
+    };
+
+    this.apiService.actualizarTareaAgenda(tarea.id, tareaActualizada).subscribe({
+      next: (response: any) => {
+        console.log('Tarea actualizada:', response);
+        this.cargarTareas();
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar tarea:', error);
+        alert('Error al actualizar la tarea');
+      }
+    });
   }
 
-  eliminarTarea(id: number): void {
-    if (confirm('¿Estás seguro de eliminar esta tarea?')) {
-      this.tareas = this.tareas.filter(t => t.id !== id);
+  eliminarTarea(id: number | undefined): void {
+    if (!id) return;
+
+    if (!confirm('¿Estás seguro de eliminar esta tarea?')) {
+      return;
     }
+
+    this.apiService.eliminarTareaAgenda(id).subscribe({
+      next: () => {
+        console.log('Tarea eliminada');
+        this.cargarTareas();
+        alert('Tarea eliminada exitosamente');
+      },
+      error: (error: any) => {
+        console.error('Error al eliminar tarea:', error);
+        alert('Error al eliminar la tarea');
+      }
+    });
+  }
+
+  limpiarFormulario(): void {
+    this.nuevaTarea = {
+      titulo: '',
+      descripcion: '',
+      fecha: '',
+      categoria: 'lugar',
+      completada: false,
+      prioridad: 'media'
+    };
   }
 }

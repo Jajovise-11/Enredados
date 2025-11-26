@@ -6,13 +6,17 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from .models import Proveedor, CategoriaServicio, Servicio, Reserva, Valoracion
+from .models import (
+    Proveedor, CategoriaServicio, Servicio, Reserva, Valoracion,
+    VestidoNovia, TrajeNovio, ComplementoNovia, ComplementoNovio,
+    TareaAgenda, ItemPresupuesto
+)
 from .serializers import (
-    ProveedorSerializer, 
-    CategoriaServicioSerializer, 
-    ServicioSerializer, 
-    ReservaSerializer, 
-    ValoracionSerializer
+    ProveedorSerializer, CategoriaServicioSerializer, ServicioSerializer,
+    ReservaSerializer, ValoracionSerializer,
+    VestidoNoviaSerializer, TrajeNovioSerializer,
+    ComplementoNoviaSerializer, ComplementoNovioSerializer,
+    TareaAgendaSerializer, ItemPresupuestoSerializer
 )
 
 
@@ -53,7 +57,110 @@ class ValoracionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 
-# NUEVAS FUNCIONES DE AUTENTICACIÓN
+# NUEVOS VIEWSETS PARA PRODUCTOS
+class VestidoNoviaViewSet(viewsets.ModelViewSet):
+    queryset = VestidoNovia.objects.all()
+    serializer_class = VestidoNoviaSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = VestidoNovia.objects.all()
+        estilo = self.request.query_params.get('estilo', None)
+        precio_max = self.request.query_params.get('precio_max', None)
+        
+        if estilo:
+            queryset = queryset.filter(estilo=estilo)
+        if precio_max:
+            queryset = queryset.filter(precio__lte=precio_max)
+        
+        return queryset
+
+
+class TrajeNovioViewSet(viewsets.ModelViewSet):
+    queryset = TrajeNovio.objects.all()
+    serializer_class = TrajeNovioSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = TrajeNovio.objects.all()
+        tipo = self.request.query_params.get('tipo', None)
+        precio_max = self.request.query_params.get('precio_max', None)
+        
+        if tipo:
+            queryset = queryset.filter(tipo=tipo)
+        if precio_max:
+            queryset = queryset.filter(precio__lte=precio_max)
+        
+        return queryset
+
+
+class ComplementoNoviaViewSet(viewsets.ModelViewSet):
+    queryset = ComplementoNovia.objects.all()
+    serializer_class = ComplementoNoviaSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = ComplementoNovia.objects.all()
+        categoria = self.request.query_params.get('categoria', None)
+        
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
+        
+        return queryset
+
+
+class ComplementoNovioViewSet(viewsets.ModelViewSet):
+    queryset = ComplementoNovio.objects.all()
+    serializer_class = ComplementoNovioSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = ComplementoNovio.objects.all()
+        categoria = self.request.query_params.get('categoria', None)
+        
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
+        
+        return queryset
+
+
+class TareaAgendaViewSet(viewsets.ModelViewSet):
+    queryset = TareaAgenda.objects.all()
+    serializer_class = TareaAgendaSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = TareaAgenda.objects.all()
+        usuario = self.request.query_params.get('usuario', None)
+        categoria = self.request.query_params.get('categoria', None)
+        prioridad = self.request.query_params.get('prioridad', None)
+        
+        if usuario:
+            queryset = queryset.filter(usuario__id=usuario)
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
+        if prioridad:
+            queryset = queryset.filter(prioridad=prioridad)
+        
+        return queryset
+
+
+class ItemPresupuestoViewSet(viewsets.ModelViewSet):
+    queryset = ItemPresupuesto.objects.all()
+    serializer_class = ItemPresupuestoSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = ItemPresupuesto.objects.all()
+        usuario = self.request.query_params.get('usuario', None)
+        
+        if usuario:
+            queryset = queryset.filter(usuario__id=usuario)
+        
+        return queryset
+
+
+# FUNCIONES DE AUTENTICACIÓN
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):

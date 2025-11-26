@@ -1,15 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../shared/navbar/navbar';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
-interface Gasto {
-  id: number;
+interface ItemGasto {
+  id?: number;
   concepto: string;
   categoria: string;
+  tipo_item: string;
   presupuestado: number;
   gastado: number;
   pagado: boolean;
+  servicio?: number;
+  vestido?: number;
+  traje?: number;
+  complemento_novia?: number;
+  complemento_novio?: number;
+  usuario?: number;
 }
 
 @Component({
@@ -19,25 +29,15 @@ interface Gasto {
   templateUrl: './presupuestador.component.html',
   styleUrl: './presupuestador.component.css'
 })
-export class PresupuestadorComponent {
+export class PresupuestadorComponent implements OnInit {
   presupuestoTotal: number = 25000;
+  gastos: ItemGasto[] = [];
+  cargando: boolean = true;
 
-  gastos: Gasto[] = [
-    { id: 1, concepto: 'Lugar de la ceremonia', categoria: 'Lugar', presupuestado: 3000, gastado: 3000, pagado: true },
-    { id: 2, concepto: 'Catering', categoria: 'Comida', presupuestado: 8000, gastado: 7500, pagado: false },
-    { id: 3, concepto: 'Fotografía y vídeo', categoria: 'Fotografía', presupuestado: 2500, gastado: 2500, pagado: true },
-    { id: 4, concepto: 'Vestido de novia', categoria: 'Vestuario', presupuestado: 2000, gastado: 1800, pagado: true },
-    { id: 5, concepto: 'Traje de novio', categoria: 'Vestuario', presupuestado: 800, gastado: 750, pagado: true },
-    { id: 6, concepto: 'Flores y decoración', categoria: 'Decoración', presupuestado: 1500, gastado: 0, pagado: false },
-    { id: 7, concepto: 'Música y DJ', categoria: 'Entretenimiento', presupuestado: 1200, gastado: 0, pagado: false },
-    { id: 8, concepto: 'Invitaciones', categoria: 'Papelería', presupuestado: 400, gastado: 380, pagado: true },
-    { id: 9, concepto: 'Pastel de bodas', categoria: 'Comida', presupuestado: 600, gastado: 0, pagado: false }
-  ];
-
-  nuevoGasto: Gasto = {
-    id: 0,
+  nuevoGasto: ItemGasto = {
     concepto: '',
-    categoria: '',
+    categoria: 'lugar',
+    tipo_item: 'personalizado',
     presupuestado: 0,
     gastado: 0,
     pagado: false
@@ -45,12 +45,48 @@ export class PresupuestadorComponent {
 
   mostrarFormulario: boolean = false;
 
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    if (!this.authService.isLoggedIn()) {
+      alert('Debes iniciar sesión para acceder al presupuestador');
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.cargarPresupuesto();
+  }
+
+  cargarPresupuesto(): void {
+    this.cargando = true;
+    const usuarioId = this.authService.getUserId();
+    
+    if (!usuarioId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.apiService.getPresupuesto(usuarioId).subscribe({
+      next: (data: any) => {
+        this.gastos = data;
+        this.cargando = false;
+      },
+      error: (error: any) => {
+        console.error('Error al cargar presupuesto:', error);
+        this.cargando = false;
+      }
+    });
+  }
+
   get totalPresupuestado(): number {
-    return this.gastos.reduce((sum, g) => sum + g.presupuestado, 0);
+    return this.gastos.reduce((sum, g) => sum + Number(g.presupuestado), 0);
   }
 
   get totalGastado(): number {
-    return this.gastos.reduce((sum, g) => sum + g.gastado, 0);
+    return this.gastos.reduce((sum, g) => sum + Number(g.gastado), 0);
   }
 
   get restante(): number {
@@ -58,29 +94,95 @@ export class PresupuestadorComponent {
   }
 
   get porcentajeGastado(): number {
+    if (this.presupuestoTotal === 0) return 0;
     return (this.totalGastado / this.presupuestoTotal) * 100;
   }
 
   toggleFormulario(): void {
     this.mostrarFormulario = !this.mostrarFormulario;
+    if (!this.mostrarFormulario) {
+      this.limpiarFormulario();
+    }
   }
 
   agregarGasto(): void {
-    if (this.nuevoGasto.concepto && this.nuevoGasto.presupuestado > 0) {
-      this.nuevoGasto.id = Math.max(...this.gastos.map(g => g.id), 0) + 1;
-      this.gastos.push({ ...this.nuevoGasto });
-      this.nuevoGasto = { id: 0, concepto: '', categoria: '', presupuestado: 0, gastado: 0, pagado: false };
-      this.toggleFormulario();
+    if (!this.nuevoGasto.concepto || this.nuevoGasto.presupuestado <= 0) {
+      alert('Por favor completa el concepto y el presupuesto');
+      return;
     }
+
+    const usuarioId = this.authService.getUserId();
+    if (!usuarioId) {
+      alert('Error: Usuario no autenticado');
+      return;
+    }
+
+    const gastoData = {
+      ...this.nuevoGasto,
+      usuario: usuarioId
+    };
+
+    this.apiService.crearItemPresupuesto(gastoData).subscribe({
+      next: (response: any) => {
+        console.log('Gasto creado:', response);
+        this.cargarPresupuesto();
+        this.toggleFormulario();
+        alert('Gasto añadido exitosamente');
+      },
+      error: (error: any) => {
+        console.error('Error al crear gasto:', error);
+        alert('Error al crear el gasto');
+      }
+    });
   }
 
-  eliminarGasto(id: number): void {
-    if (confirm('¿Eliminar este gasto?')) {
-      this.gastos = this.gastos.filter(g => g.id !== id);
+  eliminarGasto(id: number | undefined): void {
+    if (!id) return;
+
+    if (!confirm('¿Eliminar este gasto?')) {
+      return;
     }
+
+    this.apiService.eliminarItemPresupuesto(id).subscribe({
+      next: () => {
+        console.log('Gasto eliminado');
+        this.cargarPresupuesto();
+      },
+      error: (error: any) => {
+        console.error('Error al eliminar gasto:', error);
+        alert('Error al eliminar el gasto');
+      }
+    });
   }
 
-  togglePagado(gasto: Gasto): void {
-    gasto.pagado = !gasto.pagado;
+  togglePagado(gasto: ItemGasto): void {
+    if (!gasto.id) return;
+
+    const gastoActualizado = {
+      ...gasto,
+      pagado: !gasto.pagado
+    };
+
+    this.apiService.actualizarItemPresupuesto(gasto.id, gastoActualizado).subscribe({
+      next: (response: any) => {
+        console.log('Gasto actualizado:', response);
+        this.cargarPresupuesto();
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar gasto:', error);
+        alert('Error al actualizar el gasto');
+      }
+    });
+  }
+
+  limpiarFormulario(): void {
+    this.nuevoGasto = {
+      concepto: '',
+      categoria: 'lugar',
+      tipo_item: 'personalizado',
+      presupuestado: 0,
+      gastado: 0,
+      pagado: false
+    };
   }
 }

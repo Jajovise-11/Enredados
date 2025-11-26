@@ -45,6 +45,215 @@ class Servicio(models.Model):
         return f"{self.nombre} - {self.proveedor.nombre}"
 
 
+# NUEVOS MODELOS PARA PRODUCTOS
+class VestidoNovia(models.Model):
+    """Vestidos de novia"""
+    ESTILO_CHOICES = [
+        ('princesa', 'Princesa'),
+        ('sirena', 'Sirena'),
+        ('bohemio', 'Bohemio'),
+        ('linea_a', 'Línea A'),
+        ('minimalista', 'Minimalista'),
+        ('vintage', 'Vintage'),
+    ]
+    
+    nombre = models.CharField(max_length=200)
+    marca = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    descripcion = models.TextField()
+    descripcion_larga = models.TextField()
+    estilo = models.CharField(max_length=20, choices=ESTILO_CHOICES)
+    color = models.CharField(max_length=50)
+    tallas_disponibles = models.CharField(max_length=200)  # Ej: "36,38,40,42"
+    imagen_principal = models.URLField()
+    imagenes_adicionales = models.TextField(blank=True)  # URLs separadas por comas
+    caracteristicas = models.TextField(blank=True)  # JSON o texto con características
+    disponible = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Vestidos de Novia"
+    
+    def __str__(self):
+        return f"{self.nombre} - {self.marca}"
+
+
+class TrajeNovio(models.Model):
+    """Trajes de novio"""
+    TIPO_CHOICES = [
+        ('esmoquin', 'Esmoquin'),
+        ('traje', 'Traje'),
+        ('chaque', 'Chaqué'),
+        ('smoking', 'Smoking'),
+    ]
+    
+    nombre = models.CharField(max_length=200)
+    marca = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    descripcion = models.TextField()
+    descripcion_larga = models.TextField()
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    color = models.CharField(max_length=50)
+    tallas_disponibles = models.CharField(max_length=200)
+    imagen_principal = models.URLField()
+    imagenes_adicionales = models.TextField(blank=True)
+    caracteristicas = models.TextField(blank=True)
+    disponible = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Trajes de Novio"
+    
+    def __str__(self):
+        return f"{self.nombre} - {self.marca}"
+
+
+class ComplementoNovia(models.Model):
+    """Complementos para novias"""
+    CATEGORIA_CHOICES = [
+        ('velos', 'Velos'),
+        ('tocados', 'Tocados'),
+        ('zapatos', 'Zapatos'),
+        ('bolsos', 'Bolsos'),
+        ('joyeria', 'Joyería'),
+        ('accesorios', 'Accesorios'),
+        ('lenceria', 'Lencería'),
+    ]
+    
+    nombre = models.CharField(max_length=200)
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    descripcion = models.TextField()
+    descripcion_larga = models.TextField()
+    imagen_principal = models.URLField()
+    imagenes_adicionales = models.TextField(blank=True)
+    caracteristicas = models.TextField(blank=True)
+    disponible = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Complementos de Novia"
+    
+    def __str__(self):
+        return f"{self.nombre} ({self.categoria})"
+
+
+class ComplementoNovio(models.Model):
+    """Complementos para novios"""
+    CATEGORIA_CHOICES = [
+        ('corbatas', 'Corbatas'),
+        ('pajaritas', 'Pajaritas'),
+        ('gemelos', 'Gemelos'),
+        ('zapatos', 'Zapatos'),
+        ('relojes', 'Relojes'),
+        ('panuelos', 'Pañuelos'),
+        ('cinturones', 'Cinturones'),
+        ('tirantes', 'Tirantes'),
+        ('alfileres', 'Alfileres'),
+    ]
+    
+    nombre = models.CharField(max_length=200)
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    descripcion = models.TextField()
+    descripcion_larga = models.TextField()
+    imagen_principal = models.URLField()
+    imagenes_adicionales = models.TextField(blank=True)
+    caracteristicas = models.TextField(blank=True)
+    disponible = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Complementos de Novio"
+    
+    def __str__(self):
+        return f"{self.nombre} ({self.categoria})"
+
+
+# MODELO PARA TAREAS PERSONALIZABLES
+class TareaAgenda(models.Model):
+    """Tareas personalizables en la agenda"""
+    PRIORIDAD_CHOICES = [
+        ('alta', 'Alta'),
+        ('media', 'Media'),
+        ('baja', 'Baja'),
+    ]
+    
+    CATEGORIA_CHOICES = [
+        ('lugar', 'Lugar'),
+        ('catering', 'Catering'),
+        ('invitaciones', 'Invitaciones'),
+        ('vestuario', 'Vestuario'),
+        ('fotografia', 'Fotografía'),
+        ('decoracion', 'Decoración'),
+        ('otros', 'Otros'),
+    ]
+    
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tareas_agenda')
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True)
+    fecha = models.DateField()
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES, default='otros')
+    prioridad = models.CharField(max_length=10, choices=PRIORIDAD_CHOICES, default='media')
+    completada = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name_plural = "Tareas de Agenda"
+        ordering = ['fecha', '-prioridad']
+    
+    def __str__(self):
+        return f"{self.titulo} - {self.usuario.username}"
+
+
+# MODELO PARA PRESUPUESTO
+class ItemPresupuesto(models.Model):
+    """Items del presupuesto personalizado"""
+    CATEGORIA_CHOICES = [
+        ('lugar', 'Lugar'),
+        ('comida', 'Comida'),
+        ('fotografia', 'Fotografía'),
+        ('vestuario', 'Vestuario'),
+        ('decoracion', 'Decoración'),
+        ('entretenimiento', 'Entretenimiento'),
+        ('papeleria', 'Papelería'),
+        ('otros', 'Otros'),
+    ]
+    
+    TIPO_ITEM_CHOICES = [
+        ('servicio', 'Servicio'),
+        ('vestido', 'Vestido de Novia'),
+        ('traje', 'Traje de Novio'),
+        ('complemento_novia', 'Complemento Novia'),
+        ('complemento_novio', 'Complemento Novio'),
+        ('personalizado', 'Personalizado'),
+    ]
+    
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presupuesto')
+    concepto = models.CharField(max_length=200)
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES)
+    tipo_item = models.CharField(max_length=20, choices=TIPO_ITEM_CHOICES, default='personalizado')
+    
+    # Referencias opcionales a productos/servicios
+    servicio = models.ForeignKey(Servicio, on_delete=models.SET_NULL, null=True, blank=True)
+    vestido = models.ForeignKey(VestidoNovia, on_delete=models.SET_NULL, null=True, blank=True)
+    traje = models.ForeignKey(TrajeNovio, on_delete=models.SET_NULL, null=True, blank=True)
+    complemento_novia = models.ForeignKey(ComplementoNovia, on_delete=models.SET_NULL, null=True, blank=True)
+    complemento_novio = models.ForeignKey(ComplementoNovio, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    presupuestado = models.DecimalField(max_digits=10, decimal_places=2)
+    gastado = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    pagado = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Items de Presupuesto"
+    
+    def __str__(self):
+        return f"{self.concepto} - {self.usuario.username}"
+
+
 class Reserva(models.Model):
     """Reservas de servicios por usuarios"""
     ESTADO_CHOICES = [
@@ -69,7 +278,7 @@ class Valoracion(models.Model):
     """Valoraciones y comentarios sobre servicios"""
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='valoraciones')
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name='valoraciones')
-    puntuacion = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # 1 a 5 estrellas
+    puntuacion = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     comentario = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
     
