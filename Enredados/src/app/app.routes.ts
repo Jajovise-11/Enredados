@@ -50,23 +50,39 @@ export const routes: Routes = [
     loadComponent: () => import('./components/novias/novias.component').then(m => m.NoviasComponent)
   },
   {
-  path: 'vestidos-novia/:id',
-  loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+    path: 'vestidos-novia',
+    loadComponent: () => import('./components/vestidos-novia/vestidos-novia.component').then(m => m.VestidosNoviaComponent)
   },
   {
-  path: 'complementos-novia/:id',
-  loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+    path: 'vestidos-novia/:id',
+    loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+  },
+  {
+    path: 'complementos-novia',
+    loadComponent: () => import('./components/complementos-novia/complementos-novia.component').then(m => m.ComplementosNoviaComponent)
+  },
+  {
+    path: 'complementos-novia/:id',
+    loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
   },
   {
     path: 'novios',
     loadComponent: () => import('./components/novios/novios.component').then(m => m.NoviosComponent)
   },
   {
-  path: 'trajes-novio/:id',
-  loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+    path: 'trajes-novio',
+    loadComponent: () => import('./components/trajes-novio/trajes-novio.component').then(m => m.TrajesNovioComponent)
   },
   {
-  path: 'complementos-novio/:id',
-  loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+    path: 'trajes-novio/:id',
+    loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+  },
+  {
+    path: 'complementos-novio',
+    loadComponent: () => import('./components/complementos-novio/complementos-novio.component').then(m => m.ComplementosNovioComponent)
+  },
+  {
+    path: 'complementos-novio/:id',
+    loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
   }
 ];
