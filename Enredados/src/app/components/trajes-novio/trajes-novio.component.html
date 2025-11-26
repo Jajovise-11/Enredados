@@ -1,1 +1,56 @@
-<p>trajes-novio works!</p>
+<app-navbar></app-navbar>
+
+<div class="trajes-container">
+  <div class="trajes-header">
+    <h1>🤵 Trajes de Novio</h1>
+    <p>Elegancia y estilo para tu gran día</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <div class="filtro-grupo">
+      <label>Tipo:</label>
+      <select [(ngModel)]="tipoFiltro" (change)="aplicarFiltros()">
+        <option value="">Todos los tipos</option>
+        <option value="Esmoquin">Esmoquin</option>
+        <option value="Traje">Traje</option>
+        <option value="Chaqué">Chaqué</option>
+        <option value="Smoking">Smoking</option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Precio máximo: {{ precioMaximo }}€</label>
+      <input type="range" [(ngModel)]="precioMaximo" (input)="aplicarFiltros()" min="500" max="2000" step="50">
+    </div>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar Filtros</button>
+  </div>
+
+  <!-- Grid de trajes -->
+  <div class="trajes-grid">
+    <div class="traje-card" *ngFor="let traje of trajesFiltrados" [routerLink]="['/trajes-novio', traje.id]" style="cursor: pointer;">
+      <div class="traje-imagen">
+        <img [src]="traje.imagen" [alt]="traje.nombre">
+        <span class="tipo-badge">{{ traje.tipo }}</span>
+      </div>
+      <div class="traje-info">
+        <h3>{{ traje.nombre }}</h3>
+        <p class="marca">{{ traje.marca }}</p>
+        <p class="descripcion">{{ traje.descripcion }}</p>
+        <div class="traje-detalles">
+          <span class="color">🎨 {{ traje.color }}</span>
+          <span class="tallas">📏 Tallas: {{ traje.tallas.join(', ') }}</span>
+        </div>
+        <div class="traje-footer">
+          <span class="precio">{{ traje.precio }}€</span>
+          <button class="btn-consultar" routerLink="/servicios">Consultar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="trajesFiltrados.length === 0" class="sin-resultados">
+    <p>No se encontraron trajes con estos filtros</p>
+  </div>
+</div>

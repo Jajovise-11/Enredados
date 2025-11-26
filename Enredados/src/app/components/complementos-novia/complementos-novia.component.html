@@ -1,1 +1,53 @@
-<p>complementos-novia works!</p>
+<app-navbar></app-navbar>
+
+<div class="complementos-container">
+  <div class="complementos-header">
+    <h1>💍 Complementos para Novias</h1>
+    <p>Los detalles que harán brillar tu look nupcial</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <div class="filtro-grupo">
+      <label>Categoría:</label>
+      <select [(ngModel)]="categoriaFiltro" (change)="aplicarFiltros()">
+        <option value="">Todas las categorías</option>
+        <option value="Velos">Velos</option>
+        <option value="Tocados">Tocados</option>
+        <option value="Zapatos">Zapatos</option>
+        <option value="Bolsos">Bolsos</option>
+        <option value="Joyería">Joyería</option>
+        <option value="Accesorios">Accesorios</option>
+        <option value="Lencería">Lencería</option>
+      </select>
+    </div>
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar</button>
+  </div>
+
+  <!-- Grid de complementos -->
+  <div class="complementos-grid">
+    <div class="complemento-card" *ngFor="let complemento of complementosFiltrados" [routerLink]="['/complementos-novia', complemento.id]" style="cursor: pointer;">
+      <div class="complemento-imagen">
+        <img [src]="complemento.imagen" [alt]="complemento.nombre">
+        <span class="disponibilidad" [class.no-disponible]="!complemento.disponible">
+          {{ complemento.disponible ? 'Disponible' : 'Agotado' }}
+        </span>
+      </div>
+      <div class="complemento-info">
+        <span class="categoria-badge">{{ complemento.categoria }}</span>
+        <h3>{{ complemento.nombre }}</h3>
+        <p class="descripcion">{{ complemento.descripcion }}</p>
+        <div class="complemento-footer">
+          <span class="precio">{{ complemento.precio }}€</span>
+          <button class="btn-consultar" routerLink="/servicios" [disabled]="!complemento.disponible">
+            {{ complemento.disponible ? 'Consultar' : 'Agotado' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="complementosFiltrados.length === 0" class="sin-resultados">
+    <p>No hay complementos en esta categoría</p>
+  </div>
+</div>

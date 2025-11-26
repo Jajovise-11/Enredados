@@ -1,0 +1,168 @@
+.complementos-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.complementos-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.complementos-header h1 {
+  font-size: 2.5rem;
+  color: #d82a7a;
+  margin-bottom: 0.5rem;
+}
+
+.complementos-header p {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.filtros {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.filtro-grupo label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.filtro-grupo select {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-limpiar {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.complementos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.complemento-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.complemento-card:hover {
+  transform: translateY(-5px);
+}
+
+.complemento-imagen {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.complemento-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.disponibilidad {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #4caf50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.disponibilidad.no-disponible {
+  background: #f44336;
+}
+
+.complemento-info {
+  padding: 1.5rem;
+}
+
+.categoria-badge {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #666;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.complemento-info h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.descripcion {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.complemento-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.precio {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d82a7a;
+}
+
+.btn-consultar {
+  background: #d82a7a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-consultar:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.sin-resultados {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}

@@ -27,10 +27,8 @@
       <li class="navbar-item dropdown">
         <a routerLink="/novias" class="navbar-link">Novias</a>
         <ul class="dropdown-menu">
-          <li><a href="#">Vestidos de Novia</a></li>
-          <li><a href="#">Complementos</a></li>
-          <li><a href="#">Joyería</a></li>
-          <li><a href="#">Belleza</a></li>
+          <li><a routerLink="/vestidos-novia">Vestidos de Novia</a></li>
+          <li><a routerLink="/complementos-novia">Complementos</a></li>
         </ul>
       </li>
 
@@ -38,9 +36,8 @@
       <li class="navbar-item dropdown">
         <a routerLink="/novios" class="navbar-link">Novios</a>
         <ul class="dropdown-menu">
-          <li><a href="#">Trajes de Novio</a></li>
-          <li><a href="#">Complementos</a></li>
-          <li><a href="#">Cuidado Masculino</a></li>
+          <li><a routerLink="/trajes-novio">Trajes de Novio</a></li>
+          <li><a routerLink="/complementos-novio">Complementos</a></li>
         </ul>
       </li>
     </ul>
@@ -54,6 +51,7 @@
         </button>
         <div class="user-dropdown">
           <a routerLink="/perfil">Mi Perfil</a>
+          <a routerLink="/mi-boda">Mi Boda</a>
           <a href="#" (click)="logout()">Cerrar Sesión</a>
         </div>
       </div>

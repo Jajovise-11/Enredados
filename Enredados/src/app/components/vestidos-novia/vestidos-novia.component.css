@@ -1,0 +1,172 @@
+.vestidos-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.vestidos-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.vestidos-header h1 {
+  font-size: 2.5rem;
+  color: #d82a7a;
+  margin-bottom: 0.5rem;
+}
+
+.vestidos-header p {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.filtros {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtro-grupo label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.filtro-grupo select,
+.filtro-grupo input[type="range"] {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-limpiar {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.vestidos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.vestido-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.vestido-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.vestido-imagen {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.vestido-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.estilo-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(216, 42, 122, 0.9);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.vestido-info {
+  padding: 1.5rem;
+}
+
+.vestido-info h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.marca {
+  color: #d82a7a;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.descripcion {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.vestido-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.vestido-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.precio {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #d82a7a;
+}
+
+.btn-consultar {
+  background: #d82a7a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-consultar:hover {
+  background: #bd2368;
+}
+
+.sin-resultados {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}

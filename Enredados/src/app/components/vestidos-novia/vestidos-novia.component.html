@@ -1,1 +1,58 @@
-<p>vestidos-novia works!</p>
+<app-navbar></app-navbar>
+
+<div class="vestidos-container">
+  <div class="vestidos-header">
+    <h1>👗 Vestidos de Novia</h1>
+    <p>Encuentra el vestido perfecto para tu día especial</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <div class="filtro-grupo">
+      <label>Estilo:</label>
+      <select [(ngModel)]="estiloFiltro" (change)="aplicarFiltros()">
+        <option value="">Todos los estilos</option>
+        <option value="Princesa">Princesa</option>
+        <option value="Sirena">Sirena</option>
+        <option value="Bohemio">Bohemio</option>
+        <option value="Línea A">Línea A</option>
+        <option value="Minimalista">Minimalista</option>
+        <option value="Vintage">Vintage</option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Precio máximo: {{ precioMaximo }}€</label>
+      <input type="range" [(ngModel)]="precioMaximo" (input)="aplicarFiltros()" min="1000" max="5000" step="100">
+    </div>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar Filtros</button>
+  </div>
+
+  <!-- Grid de vestidos -->
+  <div class="vestidos-grid">
+    <div class="vestido-card" *ngFor="let vestido of vestidosFiltrados" [routerLink]="['/vestidos-novia', vestido.id]" style="cursor: pointer;">
+      <div class="vestido-imagen">
+        <img [src]="vestido.imagen" [alt]="vestido.nombre">
+        <span class="estilo-badge">{{ vestido.estilo }}</span>
+      </div>
+      <div class="vestido-info">
+        <h3>{{ vestido.nombre }}</h3>
+        <p class="marca">{{ vestido.marca }}</p>
+        <p class="descripcion">{{ vestido.descripcion }}</p>
+        <div class="vestido-detalles">
+          <span class="color">🎨 {{ vestido.color }}</span>
+          <span class="tallas">📏 Tallas: {{ vestido.tallas.join(', ') }}</span>
+        </div>
+        <div class="vestido-footer">
+          <span class="precio">{{ vestido.precio }}€</span>
+          <button class="btn-consultar" routerLink="/servicios">Consultar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="vestidosFiltrados.length === 0" class="sin-resultados">
+    <p>No se encontraron vestidos con estos filtros</p>
+  </div>
+</div>

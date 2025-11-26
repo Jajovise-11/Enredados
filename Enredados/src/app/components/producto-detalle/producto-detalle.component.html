@@ -1,0 +1,105 @@
+<app-navbar></app-navbar>
+
+<div class="producto-detalle-container" *ngIf="!cargando && producto">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a routerLink="/">Inicio</a> > 
+    <a (click)="volverAtras()" style="cursor: pointer;">{{ tipo }}</a> > 
+    <span>{{ producto.nombre }}</span>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="producto-contenido">
+    <!-- Galería de Imágenes -->
+    <div class="producto-galeria">
+      <div class="imagen-principal">
+        <img [src]="producto.imagenes[imagenActual]" [alt]="producto.nombre">
+      </div>
+      <div class="imagenes-miniaturas" *ngIf="producto.imagenes.length > 1">
+        <div *ngFor="let img of producto.imagenes; let i = index" 
+             class="miniatura"
+             [class.activa]="i === imagenActual"
+             (click)="cambiarImagen(i)">
+          <img [src]="img" [alt]="producto.nombre">
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Producto -->
+    <div class="producto-info">
+      <h1>{{ producto.nombre }}</h1>
+      
+      <p class="marca" *ngIf="producto.marca">
+        <strong>Marca:</strong> {{ producto.marca }}
+      </p>
+
+      <p class="categoria" *ngIf="producto.categoria">
+        <strong>Categoría:</strong> {{ producto.categoria }}
+      </p>
+
+      <div class="precio-seccion">
+        <span class="precio">{{ producto.precio }}€</span>
+      </div>
+
+      <div class="descripcion-corta">
+        <p>{{ producto.descripcion }}</p>
+      </div>
+
+      <!-- Información Adicional -->
+      <div class="info-adicional" *ngIf="producto.tallas || producto.color || producto.estilo || producto.tipo">
+        <div class="info-item" *ngIf="producto.tallas">
+          <strong>📏 Tallas disponibles:</strong>
+          <span>{{ producto.tallas.join(', ') }}</span>
+        </div>
+        <div class="info-item" *ngIf="producto.color">
+          <strong>🎨 Color:</strong>
+          <span>{{ producto.color }}</span>
+        </div>
+        <div class="info-item" *ngIf="producto.estilo">
+          <strong>✨ Estilo:</strong>
+          <span>{{ producto.estilo }}</span>
+        </div>
+        <div class="info-item" *ngIf="producto.tipo">
+          <strong>👔 Tipo:</strong>
+          <span>{{ producto.tipo }}</span>
+        </div>
+        <div class="info-item" *ngIf="producto.disponible !== undefined">
+          <strong>📦 Disponibilidad:</strong>
+          <span [class.disponible]="producto.disponible" [class.no-disponible]="!producto.disponible">
+            {{ producto.disponible ? '✅ Disponible' : '❌ Agotado' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="acciones">
+        <button class="btn-principal" (click)="consultarDisponibilidad()">
+          📞 Consultar Disponibilidad
+        </button>
+        <button class="btn-secundario" (click)="volverAtras()">
+          ← Volver al Catálogo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Descripción Detallada -->
+  <div class="descripcion-detallada">
+    <h2>Descripción Completa</h2>
+    <p>{{ producto.descripcionLarga }}</p>
+  </div>
+
+  <!-- Características -->
+  <div class="caracteristicas-seccion" *ngIf="producto.caracteristicas">
+    <h2>Características</h2>
+    <ul class="caracteristicas-lista">
+      <li *ngFor="let caracteristica of producto.caracteristicas">
+        ✓ {{ caracteristica }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="loading" *ngIf="cargando">
+  <p>Cargando producto...</p>
+</div>
