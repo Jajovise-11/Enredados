@@ -73,14 +73,58 @@
 
       <!-- Botones de Acción -->
       <div class="acciones">
-        <button class="btn-principal" (click)="consultarDisponibilidad()">
-          📞 Consultar Disponibilidad
+        <button 
+          class="btn-principal" 
+          (click)="toggleFormularioReserva()"
+          [disabled]="producto.disponible === false"
+        >
+          {{ mostrarFormularioReserva ? '❌ Cancelar' : '📞 Reservar Producto' }}
         </button>
         <button class="btn-secundario" (click)="volverAtras()">
           ← Volver al Catálogo
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- Formulario de Reserva -->
+  <div class="formulario-reserva" *ngIf="mostrarFormularioReserva">
+    <h3>Solicitar Reserva de Producto</h3>
+    
+    <div *ngIf="reservaExitosa" class="mensaje-exito">
+      ✅ ¡Reserva realizada con éxito! Te contactaremos pronto.
+    </div>
+
+    <form *ngIf="!reservaExitosa" (ngSubmit)="realizarReserva()">
+      <div class="form-group">
+        <label>Fecha del evento:</label>
+        <input 
+          type="date" 
+          [(ngModel)]="fechaEvento" 
+          name="fechaEvento"
+          required
+          [min]="fechaMinima"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Comentarios adicionales (talla, preferencias, etc.):</label>
+        <textarea 
+          [(ngModel)]="comentarios" 
+          name="comentarios"
+          rows="4"
+          placeholder="Cuéntanos tus preferencias, talla deseada, fecha de prueba..."
+        ></textarea>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-enviar"
+        [disabled]="reservaEnviando"
+      >
+        {{ reservaEnviando ? 'Enviando...' : 'Confirmar Reserva' }}
+      </button>
+    </form>
   </div>
 
   <!-- Descripción Detallada -->

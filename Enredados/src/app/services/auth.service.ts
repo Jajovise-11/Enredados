@@ -56,4 +56,16 @@ export class AuthService {
   getUsername(): string | null {
     return this.currentUserValue ? this.currentUserValue.username : null;
   }
+  
+  crearReserva(reservaData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reservas/`, reservaData);
+  }
+
+  getReservasUsuario(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservas/?usuario=${usuarioId}`);
+  }
+
+  cancelarReserva(reservaId: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { estado: 'cancelada' });
+  }
 }
