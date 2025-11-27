@@ -23,7 +23,7 @@
 
     <div class="filtro-grupo">
       <label>Precio máximo: {{ precioMaximo }}€</label>
-      <input type="range" [(ngModel)]="precioMaximo" (input)="aplicarFiltros()" min="1000" max="5000" step="100">
+      <input type="range" [(ngModel)]="precioMaximo" (input)="aplicarFiltros()" min="1000" max="5000" step="50">
     </div>
 
     <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar Filtros</button>
