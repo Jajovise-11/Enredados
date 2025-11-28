@@ -27,9 +27,14 @@ class ServicioAdmin(admin.ModelAdmin):
 
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ['usuario', 'servicio', 'fecha_evento', 'estado', 'fecha_reserva']
-    search_fields = ['usuario__username', 'servicio__nombre']
+    list_display = ['id', 'usuario', 'get_producto', 'fecha_evento', 'estado', 'fecha_reserva']
+    search_fields = ['usuario__username', 'servicio__nombre', 'vestido__nombre', 'traje__nombre']
     list_filter = ['estado', 'fecha_evento']
+    
+    def get_producto(self, obj):
+        """Mostrar qué producto está reservado"""
+        return obj.get_producto_nombre()
+    get_producto.short_description = 'Producto'
 
 
 @admin.register(Valoracion)

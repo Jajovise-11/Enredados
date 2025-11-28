@@ -255,7 +255,7 @@ class ItemPresupuesto(models.Model):
 
 
 class Reserva(models.Model):
-    """Reservas de servicios por usuarios"""
+    """Reservas de servicios y productos por usuarios"""
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
         ('confirmada', 'Confirmada'),
@@ -264,14 +264,45 @@ class Reserva(models.Model):
     ]
     
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservas')
-    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name='reservas')
+    
+    # ⭐ TODOS LOS CAMPOS SON OPCIONALES - Solo uno debe estar lleno
+    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
+    vestido = models.ForeignKey(VestidoNovia, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
+    traje = models.ForeignKey(TrajeNovio, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
+    complemento_novia = models.ForeignKey(ComplementoNovia, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
+    complemento_novio = models.ForeignKey(ComplementoNovio, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
+    
     fecha_evento = models.DateField()
     fecha_reserva = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     comentarios = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.usuario.username} - {self.servicio.nombre} ({self.estado})"
+        if self.servicio:
+            return f"{self.usuario.username} - Servicio: {self.servicio.nombre} ({self.estado})"
+        elif self.vestido:
+            return f"{self.usuario.username} - Vestido: {self.vestido.nombre} ({self.estado})"
+        elif self.traje:
+            return f"{self.usuario.username} - Traje: {self.traje.nombre} ({self.estado})"
+        elif self.complemento_novia:
+            return f"{self.usuario.username} - Complemento Novia ({self.estado})"
+        elif self.complemento_novio:
+            return f"{self.usuario.username} - Complemento Novio ({self.estado})"
+        return f"Reserva #{self.id} ({self.estado})"
+    
+    def get_producto_nombre(self):
+        """Devuelve el nombre del producto reservado"""
+        if self.servicio:
+            return self.servicio.nombre
+        elif self.vestido:
+            return self.vestido.nombre
+        elif self.traje:
+            return self.traje.nombre
+        elif self.complemento_novia:
+            return self.complemento_novia.nombre
+        elif self.complemento_novio:
+            return self.complemento_novio.nombre
+        return "Sin producto"
 
 
 class Valoracion(models.Model):

@@ -37,10 +37,35 @@ class ServicioSerializer(serializers.ModelSerializer):
 class ReservaSerializer(serializers.ModelSerializer):
     usuario_nombre = serializers.CharField(source='usuario.username', read_only=True)
     servicio_nombre = serializers.CharField(source='servicio.nombre', read_only=True)
+    vestido_nombre = serializers.CharField(source='vestido.nombre', read_only=True)
+    traje_nombre = serializers.CharField(source='traje.nombre', read_only=True)
+    complemento_novia_nombre = serializers.CharField(source='complemento_novia.nombre', read_only=True)
+    complemento_novio_nombre = serializers.CharField(source='complemento_novio.nombre', read_only=True)
     
     class Meta:
         model = Reserva
-        fields = '__all__'
+        fields = [
+            'id', 'usuario', 'servicio', 'vestido', 'traje',
+            'complemento_novia', 'complemento_novio',
+            'fecha_evento', 'fecha_reserva', 'estado', 'comentarios',
+            'usuario_nombre', 'servicio_nombre', 'vestido_nombre',
+            'traje_nombre', 'complemento_novia_nombre', 'complemento_novio_nombre'
+        ]
+        read_only_fields = ['fecha_reserva']
+    
+    def validate(self, data):
+        """Validar que al menos un producto esté presente"""
+        if not any([
+            data.get('servicio'),
+            data.get('vestido'),
+            data.get('traje'),
+            data.get('complemento_novia'),
+            data.get('complemento_novio')
+        ]):
+            raise serializers.ValidationError(
+                "Debes reservar al menos un producto (servicio, vestido, traje o complemento)"
+            )
+        return data
 
 
 class ValoracionSerializer(serializers.ModelSerializer):

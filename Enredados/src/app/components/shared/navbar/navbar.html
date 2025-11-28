@@ -8,13 +8,15 @@
     <!-- Menú Principal -->
     <ul class="navbar-menu">
       <!-- Mi Boda -->
-      <li class="navbar-item dropdown">
+      <li class="navbar-item dropdown" [class.open]="menuAbierto['miboda']" 
+          (mouseenter)="abrirMenu('miboda')" 
+          (mouseleave)="cerrarMenu('miboda')">
         <a routerLink="/mi-boda" class="navbar-link">Mi Boda</a>
         <ul class="dropdown-menu">
-          <li><a routerLink="/mi-agenda">Agenda</a></li>
-          <li><a routerLink="/invitados">Invitados</a></li>
-          <li><a routerLink="/mesas">Mesas</a></li>
-          <li><a routerLink="/presupuestador">Presupuestador</a></li>
+          <li><a routerLink="/mi-agenda">📅 Agenda</a></li>
+          <li><a routerLink="/invitados">👥 Invitados</a></li>
+          <li><a routerLink="/mesas">🪑 Mesas</a></li>
+          <li><a routerLink="/presupuestador">💰 Presupuestador</a></li>
         </ul>
       </li>
 
@@ -24,20 +26,24 @@
       </li>
 
       <!-- Novias -->
-      <li class="navbar-item dropdown">
+      <li class="navbar-item dropdown" [class.open]="menuAbierto['novias']"
+          (mouseenter)="abrirMenu('novias')" 
+          (mouseleave)="cerrarMenu('novias')">
         <a routerLink="/novias" class="navbar-link">Novias</a>
         <ul class="dropdown-menu">
-          <li><a routerLink="/vestidos-novia">Vestidos de Novia</a></li>
-          <li><a routerLink="/complementos-novia">Complementos</a></li>
+          <li><a routerLink="/vestidos-novia">👗 Vestidos de Novia</a></li>
+          <li><a routerLink="/complementos-novia">💍 Complementos</a></li>
         </ul>
       </li>
 
       <!-- Novios -->
-      <li class="navbar-item dropdown">
+      <li class="navbar-item dropdown" [class.open]="menuAbierto['novios']"
+          (mouseenter)="abrirMenu('novios')" 
+          (mouseleave)="cerrarMenu('novios')">
         <a routerLink="/novios" class="navbar-link">Novios</a>
         <ul class="dropdown-menu">
-          <li><a routerLink="/trajes-novio">Trajes de Novio</a></li>
-          <li><a routerLink="/complementos-novio">Complementos</a></li>
+          <li><a routerLink="/trajes-novio">🤵 Trajes de Novio</a></li>
+          <li><a routerLink="/complementos-novio">👔 Complementos</a></li>
         </ul>
       </li>
     </ul>
@@ -45,14 +51,17 @@
     <!-- Botones de Usuario -->
     <div class="navbar-actions">
       <!-- Usuario autenticado -->
-      <div class="user-menu" *ngIf="authService.isLoggedIn()">
+      <div class="user-menu dropdown" *ngIf="authService.isLoggedIn()" 
+           [class.open]="menuAbierto['usuario']"
+           (mouseenter)="abrirMenu('usuario')" 
+           (mouseleave)="cerrarMenu('usuario')">
         <button class="user-button">
           👤 {{ authService.getUsername() }}
         </button>
         <div class="user-dropdown">
-          <a routerLink="/perfil">Mi Perfil</a>
-          <a routerLink="/mi-boda">Mi Boda</a>
-          <a href="#" (click)="logout()">Cerrar Sesión</a>
+          <a routerLink="/perfil">👤 Mi Perfil</a>
+          <a routerLink="/mi-boda">💒 Mi Boda</a>
+          <a href="#" (click)="logout(); $event.preventDefault()">🚪 Cerrar Sesión</a>
         </div>
       </div>
 

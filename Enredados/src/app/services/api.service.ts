@@ -172,48 +172,79 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/auth/login/`, credentials);
   }
 
-  // ========== MÉTODO HELPER: Agregar al presupuesto desde cualquier producto ==========
-  agregarAlPresupuesto(item: any, usuarioId: number, tipo: 'servicio' | 'vestido' | 'traje' | 'complemento_novia' | 'complemento_novio'): Observable<any> {
-    const itemData: any = {
-      usuario: usuarioId,
-      concepto: item.nombre,
-      categoria: this.mapearCategoria(tipo),
-      tipo_item: tipo,
-      presupuestado: item.precio,
-      gastado: 0,
-      pagado: false
-    };
+  // ========== NUEVO: RESERVA CON PRESUPUESTO AUTOMÁTICO ==========
+crearReservaConPresupuesto(reservaData: any, productoData: any, usuarioId: number): Observable<any> {
+  return new Observable(observer => {
+    this.crearReserva(reservaData).subscribe({
+      next: (reserva: any) => {
+        // Crear el item de presupuesto con tipo flexible
+        const itemPresupuesto: any = {
+          usuario: usuarioId,
+          concepto: productoData.nombre,
+          categoria: this.mapearCategoriaProducto(reservaData),
+          tipo_item: this.obtenerTipoItem(reservaData),
+          presupuestado: productoData.precio,
+          gastado: 0,
+          pagado: false
+        };
 
-    // Asignar la referencia correcta según el tipo
-    switch (tipo) {
-      case 'servicio':
-        itemData.servicio = item.id;
-        break;
-      case 'vestido':
-        itemData.vestido = item.id;
-        break;
-      case 'traje':
-        itemData.traje = item.id;
-        break;
-      case 'complemento_novia':
-        itemData.complemento_novia = item.id;
-        break;
-      case 'complemento_novio':
-        itemData.complemento_novio = item.id;
-        break;
-    }
+        // Asignar la referencia correcta según lo que tenga reservaData
+        if (reservaData.vestido) {
+          itemPresupuesto.vestido = reservaData.vestido;
+        }
+        if (reservaData.traje) {
+          itemPresupuesto.traje = reservaData.traje;
+        }
+        if (reservaData.complemento_novia) {
+          itemPresupuesto.complemento_novia = reservaData.complemento_novia;
+        }
+        if (reservaData.complemento_novio) {
+          itemPresupuesto.complemento_novio = reservaData.complemento_novio;
+        }
+        if (reservaData.servicio) {
+          itemPresupuesto.servicio = reservaData.servicio;
+        }
 
-    return this.crearItemPresupuesto(itemData);
+        console.log('Item presupuesto a crear:', itemPresupuesto);
+
+        this.crearItemPresupuesto(itemPresupuesto).subscribe({
+          next: (presupuesto: any) => {
+            console.log('Presupuesto creado:', presupuesto);
+            observer.next({ reserva, presupuesto });
+            observer.complete();
+          },
+          error: (error: any) => {
+            console.error('Error al crear presupuesto:', error);
+            // Aunque falle el presupuesto, la reserva ya se creó
+            observer.next({ reserva, presupuesto: null });
+            observer.complete();
+          }
+        });
+      },
+      error: (error: any) => {
+        console.error('Error al crear reserva:', error);
+        observer.error(error);
+      }
+    });
+  });
+}
+
+private obtenerTipoItem(reservaData: any): string {
+  if (reservaData.vestido) return 'vestido';
+  if (reservaData.traje) return 'traje';
+  if (reservaData.complemento_novia) return 'complemento_novia';
+  if (reservaData.complemento_novio) return 'complemento_novio';
+  if (reservaData.servicio) return 'servicio';
+  return 'personalizado';
+}
+
+private mapearCategoriaProducto(reservaData: any): string {
+  if (reservaData.vestido || reservaData.traje || reservaData.complemento_novia || reservaData.complemento_novio) {
+    return 'vestuario';
   }
-
-  private mapearCategoria(tipo: string): string {
-    const mapeo: any = {
-      'servicio': 'otros',
-      'vestido': 'vestuario',
-      'traje': 'vestuario',
-      'complemento_novia': 'vestuario',
-      'complemento_novio': 'vestuario'
-    };
-    return mapeo[tipo] || 'otros';
+  if (reservaData.servicio) {
+    return 'otros';
   }
+  return 'otros';
+}
 }

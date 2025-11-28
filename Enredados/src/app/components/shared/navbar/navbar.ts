@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -12,19 +11,42 @@ import { Router } from '@angular/router';
   styleUrl: './navbar.css'
 })
 export class NavbarComponent {
-  menuAbierto: { [key: string]: boolean } = {};
+  menuAbierto: { [key: string]: boolean } = {
+    'miboda': false,
+    'novias': false,
+    'novios': false,
+    'usuario': false
+  };
+
+  private timeouts: { [key: string]: any } = {};
 
   constructor(
     public authService: AuthService,
     private router: Router
   ) {}
 
-  toggleMenu(menu: string): void {
-    this.menuAbierto[menu] = !this.menuAbierto[menu];
+  abrirMenu(menu: string): void {
+    // Cancelar cualquier cierre pendiente
+    if (this.timeouts[menu]) {
+      clearTimeout(this.timeouts[menu]);
+      delete this.timeouts[menu];
+    }
+    // Abrir el menú inmediatamente
+    this.menuAbierto[menu] = true;
+  }
+
+  cerrarMenu(menu: string): void {
+    // Esperar 200ms antes de cerrar para dar tiempo a mover el cursor
+    this.timeouts[menu] = setTimeout(() => {
+      this.menuAbierto[menu] = false;
+      delete this.timeouts[menu];
+    }, 200);
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/']);
+    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      this.authService.logout();
+      this.router.navigate(['/']);
+    }
   }
 }

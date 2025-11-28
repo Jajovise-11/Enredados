@@ -49,18 +49,7 @@ describe('NavbarComponent', () => {
     expect(component.menuAbierto).toEqual({});
   });
 
-  // TEST 2: Verificar toggle de menú
-  it('debe abrir y cerrar menú', () => {
-    expect(component.menuAbierto['test']).toBeUndefined();
-    
-    component.toggleMenu('test');
-    expect(component.menuAbierto['test']).toBe(true);
-    
-    component.toggleMenu('test');
-    expect(component.menuAbierto['test']).toBe(false);
-  });
-
-  // TEST 3: Verificar logout
+  // TEST 2: Verificar logout
   it('debe llamar a logout y redirigir', () => {
     component.logout();
 
@@ -68,7 +57,7 @@ describe('NavbarComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 
-  // TEST 4: Mostrar menú cuando usuario está autenticado
+  // TEST 3: Mostrar menú cuando usuario está autenticado
   it('debe mostrar menú de usuario cuando está autenticado', () => {
     authService.isLoggedIn.and.returnValue(true);
     authService.getUsername.and.returnValue('testuser');
@@ -79,7 +68,7 @@ describe('NavbarComponent', () => {
     expect(compiled.querySelector('.user-menu')).toBeTruthy();
   });
 
-  // TEST 5: Mostrar botones de login cuando no está autenticado
+  // TEST 4: Mostrar botones de login cuando no está autenticado
   it('debe mostrar botones de login/registro cuando no está autenticado', () => {
     authService.isLoggedIn.and.returnValue(false);
     
@@ -89,7 +78,7 @@ describe('NavbarComponent', () => {
     expect(compiled.querySelector('.auth-buttons')).toBeTruthy();
   });
 
-  // TEST 6: Renderizar logo
+  // TEST 5: Renderizar logo
   it('debe renderizar el logo correctamente', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const logo = compiled.querySelector('.navbar-logo a');
@@ -97,7 +86,7 @@ describe('NavbarComponent', () => {
     expect(logo?.textContent).toContain('Enredados');
   });
 
-  // TEST 7: Verificar enlaces del menú principal
+  // TEST 6: Verificar enlaces del menú principal
   it('debe tener enlaces del menú principal', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const links = compiled.querySelectorAll('.navbar-link');
@@ -105,7 +94,7 @@ describe('NavbarComponent', () => {
     expect(links.length).toBeGreaterThan(0);
   });
 
-  // TEST 8: Verificar que se muestra el username
+  // TEST 7: Verificar que se muestra el username
   it('debe mostrar el nombre de usuario cuando está autenticado', () => {
     authService.isLoggedIn.and.returnValue(true);
     authService.getUsername.and.returnValue('JuanTest');
@@ -118,7 +107,7 @@ describe('NavbarComponent', () => {
     expect(userButton?.textContent).toContain('JuanTest');
   });
 
-  // TEST 9: Verificar dropdown de usuario
+  // TEST 8: Verificar dropdown de usuario
   it('debe tener dropdown con opciones de usuario', () => {
     authService.isLoggedIn.and.returnValue(true);
     fixture.detectChanges();
@@ -129,7 +118,7 @@ describe('NavbarComponent', () => {
     expect(dropdown).toBeTruthy();
   });
 
-  // TEST 10: Verificar que el logout limpia la sesión
+  // TEST 9: Verificar que el logout limpia la sesión
   it('debe limpiar sesión al hacer logout', () => {
     component.logout();
 
