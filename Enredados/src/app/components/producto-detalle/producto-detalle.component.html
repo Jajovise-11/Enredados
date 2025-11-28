@@ -73,13 +73,33 @@
 
       <!-- Botones de Acción -->
       <div class="acciones">
+        <!-- Producto no disponible -->
         <button 
+          *ngIf="producto.disponible === false"
+          class="btn-principal" 
+          disabled
+        >
+          ❌ Producto No Disponible
+        </button>
+
+        <!-- Ya tiene reserva -->
+        <button 
+          *ngIf="producto.disponible !== false && reservaExistente"
+          class="btn-principal btn-ya-reservado" 
+          disabled
+        >
+          ✅ Ya Reservado
+        </button>
+
+        <!-- Puede reservar -->
+        <button 
+          *ngIf="producto.disponible !== false && !reservaExistente"
           class="btn-principal" 
           (click)="toggleFormularioReserva()"
-          [disabled]="producto.disponible === false"
         >
           {{ mostrarFormularioReserva ? '❌ Cancelar' : '📞 Reservar Producto' }}
         </button>
+
         <button class="btn-secundario" (click)="volverAtras()">
           ← Volver al Catálogo
         </button>

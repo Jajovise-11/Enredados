@@ -28,13 +28,19 @@ export class ComplementosNoviaComponent implements OnInit {
     this.cargando = true;
     this.apiService.getComplementosNovia().subscribe({
       next: (data: any) => {
-        this.complementos = data;
-        this.complementosFiltrados = data;
+        console.log('Complementos novia cargados desde backend:', data);
+        if (data && data.length > 0) {
+          this.complementos = data;
+          this.complementosFiltrados = data;
+        } else {
+          console.log('No hay complementos en el backend, usando datos de ejemplo');
+          this.usarDatosEjemplo();
+        }
         this.cargando = false;
       },
       error: (error: any) => {
         console.error('Error al cargar complementos:', error);
-        // Si falla el backend, usar datos de ejemplo
+        console.log('Usando datos de ejemplo debido al error');
         this.usarDatosEjemplo();
         this.cargando = false;
       }
@@ -86,6 +92,51 @@ export class ComplementosNoviaComponent implements OnInit {
         precio: 450,
         imagen: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&auto=format&fit=crop',
         descripcion: 'Collar gargantilla con circonitas que simulan diamantes. Elegancia pura.',
+        disponible: true
+      },
+      {
+        id: 6,
+        nombre: 'Pendientes Perlas Cultivadas',
+        categoria: 'Joyería',
+        precio: 220,
+        imagen: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop',
+        descripcion: 'Pendientes con perlas cultivadas auténticas. Clásicos e intemporales.',
+        disponible: true
+      },
+      {
+        id: 7,
+        nombre: 'Conjunto Lencería Encaje',
+        categoria: 'Lencería',
+        precio: 95,
+        imagen: 'https://images.unsplash.com/photo-1505947038613-c8806fb0ea46?w=400&auto=format&fit=crop',
+        descripcion: 'Conjunto de lencería en encaje francés. Elegancia y sensualidad.',
+        disponible: true
+      },
+      {
+        id: 8,
+        nombre: 'Velo Corto con Peineta',
+        categoria: 'Velos',
+        precio: 95,
+        imagen: 'https://images.unsplash.com/photo-1522673607170-d2c8d29e5d7d?w=400&auto=format&fit=crop',
+        descripcion: 'Velo corto tipo birdcage con peineta decorativa. Estilo vintage.',
+        disponible: true
+      },
+      {
+        id: 9,
+        nombre: 'Liga Novia con Lazo',
+        categoria: 'Accesorios',
+        precio: 35,
+        imagen: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop',
+        descripcion: 'Liga tradicional en satén con lazo de encaje. Detalle especial.',
+        disponible: true
+      },
+      {
+        id: 10,
+        nombre: 'Corona Flores Preservadas',
+        categoria: 'Tocados',
+        precio: 180,
+        imagen: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop',
+        descripcion: 'Corona con flores preservadas para un look natural y bohemio.',
         disponible: true
       }
     ];

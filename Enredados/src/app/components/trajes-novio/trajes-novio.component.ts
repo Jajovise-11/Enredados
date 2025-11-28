@@ -29,13 +29,19 @@ export class TrajesNovioComponent implements OnInit {
     this.cargando = true;
     this.apiService.getTrajesNovio().subscribe({
       next: (data: any) => {
-        this.trajes = data;
-        this.trajesFiltrados = data;
+        console.log('Trajes cargados desde backend:', data);
+        if (data && data.length > 0) {
+          this.trajes = data;
+          this.trajesFiltrados = data;
+        } else {
+          console.log('No hay trajes en el backend, usando datos de ejemplo');
+          this.usarDatosEjemplo();
+        }
         this.cargando = false;
       },
       error: (error: any) => {
         console.error('Error al cargar trajes:', error);
-        // Si falla el backend, usar datos de ejemplo
+        console.log('Usando datos de ejemplo debido al error');
         this.usarDatosEjemplo();
         this.cargando = false;
       }
@@ -53,7 +59,8 @@ export class TrajesNovioComponent implements OnInit {
         descripcion: 'Esmoquin negro de corte clásico con solapas de satén. Elegancia atemporal.',
         tallas: ['48', '50', '52', '54', '56'],
         tipo: 'Esmoquin',
-        color: 'Negro'
+        color: 'Negro',
+        disponible: true
       },
       {
         id: 2,
@@ -64,7 +71,8 @@ export class TrajesNovioComponent implements OnInit {
         descripcion: 'Traje slim fit en azul marino. Moderno y sofisticado.',
         tallas: ['46', '48', '50', '52', '54'],
         tipo: 'Traje',
-        color: 'Azul Marino'
+        color: 'Azul Marino',
+        disponible: true
       },
       {
         id: 3,
@@ -75,7 +83,32 @@ export class TrajesNovioComponent implements OnInit {
         descripcion: 'Chaqué tradicional en gris perla con chaleco. Protocolo máximo.',
         tallas: ['48', '50', '52', '54'],
         tipo: 'Chaqué',
-        color: 'Gris'
+        color: 'Gris',
+        disponible: true
+      },
+      {
+        id: 4,
+        nombre: 'Smoking Blanco',
+        marca: 'Versace',
+        precio: 1450,
+        imagen: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&auto=format&fit=crop',
+        descripcion: 'Smoking blanco perfecto para bodas en la playa o ceremonias de verano.',
+        tallas: ['48', '50', '52', '54'],
+        tipo: 'Smoking',
+        color: 'Blanco',
+        disponible: true
+      },
+      {
+        id: 5,
+        nombre: 'Traje Gris Marengo',
+        marca: 'Hugo Boss',
+        precio: 780,
+        imagen: 'https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=400&auto=format&fit=crop',
+        descripcion: 'Traje en gris marengo, versátil y elegante para cualquier ocasión.',
+        tallas: ['46', '48', '50', '52', '54', '56'],
+        tipo: 'Traje',
+        color: 'Gris',
+        disponible: true
       }
     ];
     this.trajesFiltrados = [...this.trajes];

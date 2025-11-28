@@ -319,3 +319,101 @@
   font-size: 1.1rem;
   margin-bottom: 1rem;
 }
+
+/* Formulario de Reserva */
+.formulario-reserva {
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.formulario-reserva h3 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn-enviar {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.1rem;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.btn-enviar:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.btn-enviar:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-reservado {
+  background: #4caf50 !important;
+  cursor: not-allowed !important;
+}
+
+.btn-reservado:hover {
+  background: #4caf50 !important;
+}
+
+.mensaje-exito {
+  background: #4caf50;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+/* Botón deshabilitado mejorado */
+.btn-principal:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Botón ya reservado */
+.btn-ya-reservado {
+  background: #4caf50 !important;
+  cursor: default !important;
+  pointer-events: none;
+}
