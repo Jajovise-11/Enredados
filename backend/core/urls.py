@@ -6,7 +6,7 @@ from .views import (
     VestidoNoviaViewSet, TrajeNovioViewSet,
     ComplementoNoviaViewSet, ComplementoNovioViewSet,
     TareaAgendaViewSet, ItemPresupuestoViewSet,
-    register, login, profile
+    register, register_proveedor, login, profile
 )
 
 router = DefaultRouter()
@@ -15,20 +15,17 @@ router.register(r'categorias', CategoriaServicioViewSet)
 router.register(r'servicios', ServicioViewSet)
 router.register(r'reservas', ReservaViewSet)
 router.register(r'valoraciones', ValoracionViewSet)
-
-# Nuevas rutas para productos
 router.register(r'vestidos-novia', VestidoNoviaViewSet)
 router.register(r'trajes-novio', TrajeNovioViewSet)
 router.register(r'complementos-novia', ComplementoNoviaViewSet)
 router.register(r'complementos-novio', ComplementoNovioViewSet)
-
-# Rutas para agenda y presupuesto
 router.register(r'tareas-agenda', TareaAgendaViewSet)
 router.register(r'presupuesto', ItemPresupuestoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/register/', register, name='register'),
+    path('auth/register-proveedor/', register_proveedor, name='register_proveedor'),
     path('auth/login/', login, name='login'),
     path('auth/profile/', profile, name='profile'),
 ]

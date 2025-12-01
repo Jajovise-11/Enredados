@@ -6,19 +6,25 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = 'http://localhost:8000/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  // ========== SERVICIOS ==========
-  getCategorias(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/categorias/`);
-  }
-
+  // ========== PROVEEDORES ==========
   getProveedores(): Observable<any> {
     return this.http.get(`${this.apiUrl}/proveedores/`);
   }
 
+  getProveedor(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proveedores/${id}/`);
+  }
+
+  // ========== CATEGORÍAS ==========
+  getCategorias(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/categorias/`);
+  }
+
+  // ========== SERVICIOS ==========
   getServicios(): Observable<any> {
     return this.http.get(`${this.apiUrl}/servicios/`);
   }
@@ -27,110 +33,174 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/servicios/${id}/`);
   }
 
-  // ========== VESTIDOS DE NOVIA ==========
-  getVestidosNovia(params?: any): Observable<any> {
-    let url = `${this.apiUrl}/vestidos-novia/`;
-    if (params) {
-      const queryParams = new URLSearchParams(params).toString();
-      url += `?${queryParams}`;
-    }
-    return this.http.get(url);
+  crearServicio(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/servicios/`, data);
+  }
+
+  actualizarServicio(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/servicios/${id}/`, data);
+  }
+
+  eliminarServicio(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/servicios/${id}/`);
+  }
+
+  // ========== VESTIDOS NOVIA ==========
+  getVestidosNovia(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/vestidos-novia/`);
   }
 
   getVestidoNovia(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/vestidos-novia/${id}/`);
   }
 
-  // ========== TRAJES DE NOVIO ==========
-  getTrajesNovio(params?: any): Observable<any> {
-    let url = `${this.apiUrl}/trajes-novio/`;
-    if (params) {
-      const queryParams = new URLSearchParams(params).toString();
-      url += `?${queryParams}`;
-    }
-    return this.http.get(url);
+  crearVestidoNovia(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/vestidos-novia/`, data);
+  }
+
+  actualizarVestidoNovia(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/vestidos-novia/${id}/`, data);
+  }
+
+  eliminarVestidoNovia(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/vestidos-novia/${id}/`);
+  }
+
+  // ========== TRAJES NOVIO ==========
+  getTrajesNovio(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/trajes-novio/`);
   }
 
   getTrajeNovio(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/trajes-novio/${id}/`);
   }
 
+  crearTrajeNovio(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/trajes-novio/`, data);
+  }
+
+  actualizarTrajeNovio(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/trajes-novio/${id}/`, data);
+  }
+
+  eliminarTrajeNovio(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/trajes-novio/${id}/`);
+  }
+
   // ========== COMPLEMENTOS NOVIA ==========
-  getComplementosNovia(params?: any): Observable<any> {
-    let url = `${this.apiUrl}/complementos-novia/`;
-    if (params) {
-      const queryParams = new URLSearchParams(params).toString();
-      url += `?${queryParams}`;
-    }
-    return this.http.get(url);
+  getComplementosNovia(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/complementos-novia/`);
   }
 
   getComplementoNovia(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/complementos-novia/${id}/`);
   }
 
+  crearComplementoNovia(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/complementos-novia/`, data);
+  }
+
+  actualizarComplementoNovia(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/complementos-novia/${id}/`, data);
+  }
+
+  eliminarComplementoNovia(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/complementos-novia/${id}/`);
+  }
+
   // ========== COMPLEMENTOS NOVIO ==========
-  getComplementosNovio(params?: any): Observable<any> {
-    let url = `${this.apiUrl}/complementos-novio/`;
-    if (params) {
-      const queryParams = new URLSearchParams(params).toString();
-      url += `?${queryParams}`;
-    }
-    return this.http.get(url);
+  getComplementosNovio(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/complementos-novio/`);
   }
 
   getComplementoNovio(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/complementos-novio/${id}/`);
   }
 
-  // ========== TAREAS AGENDA ==========
-  getTareasAgenda(usuarioId?: number): Observable<any> {
-    let url = `${this.apiUrl}/tareas-agenda/`;
-    if (usuarioId) {
-      url += `?usuario=${usuarioId}`;
-    }
-    return this.http.get(url);
+  crearComplementoNovio(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/complementos-novio/`, data);
   }
 
-  getTareaAgenda(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/tareas-agenda/${id}/`);
+  actualizarComplementoNovio(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/complementos-novio/${id}/`, data);
   }
 
-  crearTareaAgenda(tareaData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/tareas-agenda/`, tareaData);
+  eliminarComplementoNovio(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/complementos-novio/${id}/`);
   }
 
-  actualizarTareaAgenda(id: number, tareaData: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/tareas-agenda/${id}/`, tareaData);
+  // ========== RESERVAS ==========
+  getReservas(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservas/`);
   }
 
-  eliminarTareaAgenda(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/tareas-agenda/${id}/`);
+  getReservasUsuario(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservas/?usuario=${usuarioId}`);
   }
 
-  // ========== PRESUPUESTO ==========
-  getPresupuesto(usuarioId?: number): Observable<any> {
-    let url = `${this.apiUrl}/presupuesto/`;
-    if (usuarioId) {
-      url += `?usuario=${usuarioId}`;
-    }
-    return this.http.get(url);
+  crearReserva(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reservas/`, data);
   }
 
-  getItemPresupuesto(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/presupuesto/${id}/`);
+  cancelarReserva(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reservas/${id}/`, { estado: 'cancelada' });
   }
 
-  crearItemPresupuesto(itemData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/presupuesto/`, itemData);
-  }
+  // Método especial para crear reserva + presupuesto
+  crearReservaConPresupuesto(reservaData: any, producto: any, usuarioId: number): Observable<any> {
+    // Primero crear la reserva
+    return new Observable(observer => {
+      this.crearReserva(reservaData).subscribe({
+        next: (reserva: any) => {
+          // Determinar tipo de item y concepto
+          let tipo_item = 'personalizado';
+          let categoria = 'otros';
+          let concepto = producto.nombre;
 
-  actualizarItemPresupuesto(id: number, itemData: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/presupuesto/${id}/`, itemData);
-  }
+          if (reservaData.servicio) {
+            tipo_item = 'servicio';
+            categoria = 'entretenimiento';
+          } else if (reservaData.vestido) {
+            tipo_item = 'vestido';
+            categoria = 'vestuario';
+          } else if (reservaData.traje) {
+            tipo_item = 'traje';
+            categoria = 'vestuario';
+          } else if (reservaData.complemento_novia || reservaData.complemento_novio) {
+            tipo_item = reservaData.complemento_novia ? 'complemento_novia' : 'complemento_novio';
+            categoria = 'vestuario';
+          }
 
-  eliminarItemPresupuesto(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/presupuesto/${id}/`);
+          // Crear item de presupuesto
+          const presupuestoData = {
+            usuario: usuarioId,
+            concepto: concepto,
+            categoria: categoria,
+            tipo_item: tipo_item,
+            presupuestado: producto.precio,
+            gastado: 0,
+            pagado: false,
+            ...reservaData // Incluir referencias a servicio/vestido/traje/complemento
+          };
+
+          this.crearItemPresupuesto(presupuestoData).subscribe({
+            next: (presupuesto: any) => {
+              observer.next({ reserva, presupuesto });
+              observer.complete();
+            },
+            error: (error: any) => {
+              // Si falla el presupuesto, informar pero devolver la reserva
+              console.error('Error al crear presupuesto:', error);
+              observer.next({ reserva, presupuesto: null });
+              observer.complete();
+            }
+          });
+        },
+        error: (error: any) => {
+          observer.error(error);
+        }
+      });
+    });
   }
 
   // ========== VALORACIONES ==========
@@ -138,113 +208,49 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/valoraciones/`);
   }
 
-  crearValoracion(valoracionData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/valoraciones/`, valoracionData);
-  }
-
   getValoracionesUsuario(usuarioId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/valoraciones/?usuario=${usuarioId}`);
   }
 
-  eliminarValoracion(valoracionId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/valoraciones/${valoracionId}/`);
+  crearValoracion(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/valoraciones/`, data);
   }
 
-  // ========== RESERVAS ==========
-  crearReserva(reservaData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reservas/`, reservaData);
+  eliminarValoracion(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/valoraciones/${id}/`);
   }
 
-  getReservasUsuario(usuarioId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reservas/?usuario=${usuarioId}`);
+  // ========== TAREAS AGENDA ==========
+  getTareasAgenda(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/tareas-agenda/?usuario=${usuarioId}`);
   }
 
-  cancelarReserva(reservaId: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { estado: 'cancelada' });
+  crearTareaAgenda(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/tareas-agenda/`, data);
   }
 
-  // ========== AUTENTICACIÓN ==========
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register/`, userData);
+  actualizarTareaAgenda(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/tareas-agenda/${id}/`, data);
   }
 
-  login(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/login/`, credentials);
+  eliminarTareaAgenda(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/tareas-agenda/${id}/`);
   }
 
-  // ========== NUEVO: RESERVA CON PRESUPUESTO AUTOMÁTICO ==========
-crearReservaConPresupuesto(reservaData: any, productoData: any, usuarioId: number): Observable<any> {
-  return new Observable(observer => {
-    this.crearReserva(reservaData).subscribe({
-      next: (reserva: any) => {
-        // Crear el item de presupuesto con tipo flexible
-        const itemPresupuesto: any = {
-          usuario: usuarioId,
-          concepto: productoData.nombre,
-          categoria: this.mapearCategoriaProducto(reservaData),
-          tipo_item: this.obtenerTipoItem(reservaData),
-          presupuestado: productoData.precio,
-          gastado: 0,
-          pagado: false
-        };
-
-        // Asignar la referencia correcta según lo que tenga reservaData
-        if (reservaData.vestido) {
-          itemPresupuesto.vestido = reservaData.vestido;
-        }
-        if (reservaData.traje) {
-          itemPresupuesto.traje = reservaData.traje;
-        }
-        if (reservaData.complemento_novia) {
-          itemPresupuesto.complemento_novia = reservaData.complemento_novia;
-        }
-        if (reservaData.complemento_novio) {
-          itemPresupuesto.complemento_novio = reservaData.complemento_novio;
-        }
-        if (reservaData.servicio) {
-          itemPresupuesto.servicio = reservaData.servicio;
-        }
-
-        console.log('Item presupuesto a crear:', itemPresupuesto);
-
-        this.crearItemPresupuesto(itemPresupuesto).subscribe({
-          next: (presupuesto: any) => {
-            console.log('Presupuesto creado:', presupuesto);
-            observer.next({ reserva, presupuesto });
-            observer.complete();
-          },
-          error: (error: any) => {
-            console.error('Error al crear presupuesto:', error);
-            // Aunque falle el presupuesto, la reserva ya se creó
-            observer.next({ reserva, presupuesto: null });
-            observer.complete();
-          }
-        });
-      },
-      error: (error: any) => {
-        console.error('Error al crear reserva:', error);
-        observer.error(error);
-      }
-    });
-  });
-}
-
-private obtenerTipoItem(reservaData: any): string {
-  if (reservaData.vestido) return 'vestido';
-  if (reservaData.traje) return 'traje';
-  if (reservaData.complemento_novia) return 'complemento_novia';
-  if (reservaData.complemento_novio) return 'complemento_novio';
-  if (reservaData.servicio) return 'servicio';
-  return 'personalizado';
-}
-
-private mapearCategoriaProducto(reservaData: any): string {
-  if (reservaData.vestido || reservaData.traje || reservaData.complemento_novia || reservaData.complemento_novio) {
-    return 'vestuario';
+  // ========== PRESUPUESTO ==========
+  getPresupuesto(usuarioId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/presupuesto/?usuario=${usuarioId}`);
   }
-  if (reservaData.servicio) {
-    return 'otros';
+
+  crearItemPresupuesto(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/presupuesto/`, data);
   }
-  return 'otros';
-}
+
+  actualizarItemPresupuesto(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/presupuesto/${id}/`, data);
+  }
+
+  eliminarItemPresupuesto(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/presupuesto/${id}/`);
+  }
 }

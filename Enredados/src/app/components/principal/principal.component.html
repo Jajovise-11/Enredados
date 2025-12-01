@@ -6,7 +6,6 @@
         💍 Enredados
       </a>
     </div>
-
     <div class="navbar-menu">
       <a routerLink="/servicios">Servicios</a>
       <a routerLink="/mi-boda" *ngIf="authService.isLoggedIn()">Mi Boda</a>
@@ -24,6 +23,10 @@
 
       <!-- Botones de login/registro -->
       <div class="auth-buttons" *ngIf="!authService.isLoggedIn()">
+        <!-- En principal.component.html o navbar -->
+        <a routerLink="/registro-proveedor" class="btn-proveedor">
+          🏢 Registrarse como Proveedor
+        </a>
         <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
         <a routerLink="/registro" class="btn-register">Registrarse</a>
       </div>

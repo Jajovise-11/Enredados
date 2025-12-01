@@ -1,6 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class PerfilProveedor(models.Model):
+    """Perfil extendido para usuarios proveedores"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_proveedor')
+    nombre_empresa = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    telefono = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=200)
+    ciudad = models.CharField(max_length=100)
+    cif_nif = models.CharField(max_length=20, blank=True)
+    logo = models.URLField(blank=True, null=True)
+    verificado = models.BooleanField(default=False)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Perfiles de Proveedores"
+    
+    def __str__(self):
+        return f"{self.nombre_empresa} - {self.user.username}"
+
 class Proveedor(models.Model):
     """Proveedores de servicios para bodas"""
     nombre = models.CharField(max_length=100)
@@ -10,6 +29,15 @@ class Proveedor(models.Model):
     direccion = models.CharField(max_length=200)
     ciudad = models.CharField(max_length=100)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    
+    # Nuevo campo para relacionar con usuario proveedor
+    usuario_proveedor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='proveedor_servicios'
+    )
     
     class Meta:
         verbose_name_plural = "Proveedores"
@@ -41,11 +69,20 @@ class Servicio(models.Model):
     imagen = models.URLField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
+    # Nuevo campo para relacionar con usuario proveedor
+    creado_por = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='servicios_creados'
+    )
+    
     def __str__(self):
         return f"{self.nombre} - {self.proveedor.nombre}"
 
 
-# NUEVOS MODELOS PARA PRODUCTOS
+# NUEVOS MODELOS PARA PRODUCTOS CON RELACIÓN A PROVEEDOR
 class VestidoNovia(models.Model):
     """Vestidos de novia"""
     ESTILO_CHOICES = [
@@ -64,12 +101,21 @@ class VestidoNovia(models.Model):
     descripcion_larga = models.TextField()
     estilo = models.CharField(max_length=20, choices=ESTILO_CHOICES)
     color = models.CharField(max_length=50)
-    tallas_disponibles = models.CharField(max_length=200)  # Ej: "36,38,40,42"
+    tallas_disponibles = models.CharField(max_length=200)
     imagen_principal = models.URLField()
-    imagenes_adicionales = models.TextField(blank=True)  # URLs separadas por comas
-    caracteristicas = models.TextField(blank=True)  # JSON o texto con características
+    imagenes_adicionales = models.TextField(blank=True)
+    caracteristicas = models.TextField(blank=True)
     disponible = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    # Nuevo campo para relacionar con usuario proveedor
+    proveedor = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='vestidos_novia',
+        null=True,
+        blank=True
+    )
     
     class Meta:
         verbose_name_plural = "Vestidos de Novia"
@@ -101,6 +147,15 @@ class TrajeNovio(models.Model):
     disponible = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
+    # Nuevo campo para relacionar con usuario proveedor
+    proveedor = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='trajes_novio',
+        null=True,
+        blank=True
+    )
+    
     class Meta:
         verbose_name_plural = "Trajes de Novio"
     
@@ -130,6 +185,15 @@ class ComplementoNovia(models.Model):
     caracteristicas = models.TextField(blank=True)
     disponible = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    # Nuevo campo para relacionar con usuario proveedor
+    proveedor = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='complementos_novia',
+        null=True,
+        blank=True
+    )
     
     class Meta:
         verbose_name_plural = "Complementos de Novia"
@@ -162,6 +226,15 @@ class ComplementoNovio(models.Model):
     caracteristicas = models.TextField(blank=True)
     disponible = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    # Nuevo campo para relacionar con usuario proveedor
+    proveedor = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='complementos_novio',
+        null=True,
+        blank=True
+    )
     
     class Meta:
         verbose_name_plural = "Complementos de Novio"
@@ -235,7 +308,6 @@ class ItemPresupuesto(models.Model):
     categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES)
     tipo_item = models.CharField(max_length=20, choices=TIPO_ITEM_CHOICES, default='personalizado')
     
-    # Referencias opcionales a productos/servicios
     servicio = models.ForeignKey(Servicio, on_delete=models.SET_NULL, null=True, blank=True)
     vestido = models.ForeignKey(VestidoNovia, on_delete=models.SET_NULL, null=True, blank=True)
     traje = models.ForeignKey(TrajeNovio, on_delete=models.SET_NULL, null=True, blank=True)
@@ -265,7 +337,6 @@ class Reserva(models.Model):
     
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservas')
     
-    # ⭐ TODOS LOS CAMPOS SON OPCIONALES - Solo uno debe estar lleno
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
     vestido = models.ForeignKey(VestidoNovia, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')
     traje = models.ForeignKey(TrajeNovio, on_delete=models.CASCADE, null=True, blank=True, related_name='reservas')

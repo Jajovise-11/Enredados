@@ -71,5 +71,12 @@
         <a routerLink="/registro" class="btn-register">Registrarse</a>
       </div>
     </div>
+
+    <!-- Menu para proveedores -->
+    <div class="user-dropdown" *ngIf="authService.isProveedor()">
+      <a routerLink="/panel-proveedor">🏢 Panel de Proveedor</a>
+      <a routerLink="/perfil">👤 Mi Perfil</a>
+      <a href="#" (click)="logout(); $event.preventDefault()">🚪 Cerrar Sesión</a>
+    </div>
   </nav>
 </header>

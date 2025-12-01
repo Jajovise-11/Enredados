@@ -1,0 +1,216 @@
+<app-navbar></app-navbar>
+
+<div class="registro-container">
+  <div class="registro-card">
+    <div class="registro-header">
+      <div class="icono-proveedor">🏢</div>
+      <h1>Registro de Proveedor</h1>
+      <p>Únete a Enredados y ofrece tus servicios a miles de parejas</p>
+    </div>
+
+    <!-- Alerta de Error -->
+    <div class="alert-error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <!-- Alerta de Éxito -->
+    <div class="alert-success" *ngIf="success">
+      ✅ ¡Cuenta de proveedor creada exitosamente! Redirigiendo al login...
+    </div>
+
+    <!-- Formulario -->
+    <form (ngSubmit)="onSubmit()" class="registro-form" *ngIf="!success">
+      
+      <!-- Sección: Datos de Acceso -->
+      <div class="seccion-titulo">
+        <h3>🔐 Datos de Acceso</h3>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="username">Usuario *</label>
+          <input
+            type="text"
+            id="username"
+            [(ngModel)]="formData.username"
+            name="username"
+            placeholder="Nombre de usuario"
+            required
+            [disabled]="loading"
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="formData.email"
+            name="email"
+            placeholder="correo@empresa.com"
+            [disabled]="loading"
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Contraseña *</label>
+          <div class="password-wrapper">
+            <input
+              [type]="mostrarPassword ? 'text' : 'password'"
+              id="password"
+              [(ngModel)]="formData.password"
+              name="password"
+              placeholder="Mínimo 6 caracteres"
+              required
+              [disabled]="loading"
+              autocomplete="new-password"
+            />
+            <button 
+              type="button" 
+              class="btn-toggle-password"
+              (click)="toggleMostrarPassword()"
+            >
+              {{ mostrarPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password2">Confirmar Contraseña *</label>
+          <div class="password-wrapper">
+            <input
+              [type]="mostrarPassword2 ? 'text' : 'password'"
+              id="password2"
+              [(ngModel)]="formData.password2"
+              name="password2"
+              placeholder="Repite tu contraseña"
+              required
+              [disabled]="loading"
+              autocomplete="new-password"
+            />
+            <button 
+              type="button" 
+              class="btn-toggle-password"
+              (click)="toggleMostrarPassword2()"
+            >
+              {{ mostrarPassword2 ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Datos de la Empresa -->
+      <div class="seccion-titulo">
+        <h3>🏢 Datos de la Empresa</h3>
+      </div>
+
+      <div class="form-group">
+        <label for="nombre_empresa">Nombre de la Empresa *</label>
+        <input
+          type="text"
+          id="nombre_empresa"
+          [(ngModel)]="formData.nombre_empresa"
+          name="nombre_empresa"
+          placeholder="Ej: Eventos Mágicos S.L."
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción de la Empresa</label>
+        <textarea
+          id="descripcion"
+          [(ngModel)]="formData.descripcion"
+          name="descripcion"
+          rows="4"
+          placeholder="Describe tu empresa, servicios y experiencia..."
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input
+            type="tel"
+            id="telefono"
+            [(ngModel)]="formData.telefono"
+            name="telefono"
+            placeholder="612345678"
+            [disabled]="loading"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="cif_nif">CIF / NIF</label>
+          <input
+            type="text"
+            id="cif_nif"
+            [(ngModel)]="formData.cif_nif"
+            name="cif_nif"
+            placeholder="B12345678"
+            [disabled]="loading"
+          />
+        </div>
+      </div>
+
+      <!-- Sección: Ubicación -->
+      <div class="seccion-titulo">
+        <h3>📍 Ubicación</h3>
+      </div>
+
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input
+          type="text"
+          id="direccion"
+          [(ngModel)]="formData.direccion"
+          name="direccion"
+          placeholder="Calle, número, portal..."
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="ciudad">Ciudad</label>
+        <input
+          type="text"
+          id="ciudad"
+          [(ngModel)]="formData.ciudad"
+          name="ciudad"
+          placeholder="Madrid"
+          [disabled]="loading"
+        />
+      </div>
+
+      <!-- Información Adicional -->
+      <div class="info-box">
+        <p>
+          <strong>ℹ️ Información:</strong> Los campos marcados con (*) son obligatorios. 
+          Una vez registrado, podrás añadir servicios, vestidos, trajes y complementos desde tu panel de proveedor.
+        </p>
+      </div>
+
+      <!-- Botón de Envío -->
+      <button 
+        type="submit" 
+        class="btn-submit"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Creando cuenta...' : 'Crear Cuenta de Proveedor' }}
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="registro-footer">
+      <p>¿Ya tienes una cuenta de proveedor? <a routerLink="/login">Inicia sesión aquí</a></p>
+      <p>¿Eres un usuario normal? <a routerLink="/registro">Regístrate como usuario</a></p>
+      <p><a routerLink="/">Volver al inicio</a></p>
+    </div>
+  </div>
+</div>

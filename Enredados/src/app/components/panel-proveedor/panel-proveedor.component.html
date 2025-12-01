@@ -1,0 +1,421 @@
+<app-navbar></app-navbar>
+
+<div class="panel-container">
+  <!-- Header del Panel -->
+  <div class="panel-header">
+    <div class="header-info">
+      <div class="empresa-logo">🏢</div>
+      <div class="empresa-detalles">
+        <h1>{{ perfilProveedor?.nombre_empresa }}</h1>
+        <p class="usuario-info">{{ usuario?.username }} • {{ perfilProveedor?.ciudad }}</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-numero">{{ totalProductos }}</span>
+        <span class="stat-label">Productos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pestañas de Navegación -->
+  <div class="panel-tabs">
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'resumen'"
+      (click)="cambiarPestana('resumen')"
+    >
+      📊 Resumen
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'servicios'"
+      (click)="cambiarPestana('servicios')"
+    >
+      🎵 Servicios ({{ servicios.length }})
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'vestidos'"
+      (click)="cambiarPestana('vestidos')"
+    >
+      👗 Vestidos ({{ vestidosNovia.length }})
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'trajes'"
+      (click)="cambiarPestana('trajes')"
+    >
+      🤵 Trajes ({{ trajesNovio.length }})
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'complementos-novia'"
+      (click)="cambiarPestana('complementos-novia')"
+    >
+      💍 Compl. Novia ({{ complementosNovia.length }})
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="pestanaActiva === 'complementos-novio'"
+      (click)="cambiarPestana('complementos-novio')"
+    >
+      👔 Compl. Novio ({{ complementosNovio.length }})
+    </button>
+  </div>
+
+  <!-- Contenido del Panel -->
+  <div class="panel-content">
+    
+    <!-- PESTAÑA: RESUMEN -->
+    <div *ngIf="pestanaActiva === 'resumen'" class="contenido-resumen">
+      <h2>📊 Resumen de tu Catálogo</h2>
+      
+      <div class="resumen-grid">
+        <div class="resumen-card" (click)="cambiarPestana('servicios')">
+          <div class="card-icon">🎵</div>
+          <h3>Servicios</h3>
+          <p class="card-numero">{{ servicios.length }}</p>
+          <button class="btn-gestionar">Gestionar</button>
+        </div>
+
+        <div class="resumen-card" (click)="cambiarPestana('vestidos')">
+          <div class="card-icon">👗</div>
+          <h3>Vestidos de Novia</h3>
+          <p class="card-numero">{{ vestidosNovia.length }}</p>
+          <button class="btn-gestionar">Gestionar</button>
+        </div>
+
+        <div class="resumen-card" (click)="cambiarPestana('trajes')">
+          <div class="card-icon">🤵</div>
+          <h3>Trajes de Novio</h3>
+          <p class="card-numero">{{ trajesNovio.length }}</p>
+          <button class="btn-gestionar">Gestionar</button>
+        </div>
+
+        <div class="resumen-card" (click)="cambiarPestana('complementos-novia')">
+          <div class="card-icon">💍</div>
+          <h3>Complementos Novia</h3>
+          <p class="card-numero">{{ complementosNovia.length }}</p>
+          <button class="btn-gestionar">Gestionar</button>
+        </div>
+
+        <div class="resumen-card" (click)="cambiarPestana('complementos-novio')">
+          <div class="card-icon">👔</div>
+          <h3>Complementos Novio</h3>
+          <p class="card-numero">{{ complementosNovio.length }}</p>
+          <button class="btn-gestionar">Gestionar</button>
+        </div>
+      </div>
+
+      <div class="info-proveedor">
+        <h3>ℹ️ Información de tu Empresa</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Teléfono:</strong> {{ perfilProveedor?.telefono || 'No especificado' }}
+          </div>
+          <div class="info-item">
+            <strong>Email:</strong> {{ usuario?.email || 'No especificado' }}
+          </div>
+          <div class="info-item">
+            <strong>Dirección:</strong> {{ perfilProveedor?.direccion || 'No especificado' }}
+          </div>
+          <div class="info-item">
+            <strong>CIF/NIF:</strong> {{ perfilProveedor?.cif_nif || 'No especificado' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: SERVICIOS -->
+    <div *ngIf="pestanaActiva === 'servicios'" class="contenido-seccion">
+      <div class="seccion-header">
+        <h2>🎵 Mis Servicios</h2>
+        <button class="btn-nuevo" (click)="abrirFormulario('servicio')">
+          ➕ Nuevo Servicio
+        </button>
+      </div>
+
+      <div class="productos-grid" *ngIf="servicios.length > 0">
+        <div class="producto-card" *ngFor="let servicio of servicios">
+          <div class="producto-imagen">
+            <img [src]="servicio.imagen || 'https://via.placeholder.com/300x200?text=Servicio'" [alt]="servicio.nombre">
+          </div>
+          <div class="producto-info">
+            <h3>{{ servicio.nombre }}</h3>
+            <p class="precio">{{ servicio.precio }}€</p>
+            <p class="categoria">{{ servicio.categoria_nombre }}</p>
+            <div class="producto-acciones">
+              <button class="btn-eliminar" (click)="eliminarProducto('servicio', servicio.id)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-productos" *ngIf="servicios.length === 0">
+        <p>📭 No tienes servicios publicados todavía</p>
+        <button class="btn-crear" (click)="abrirFormulario('servicio')">Crear mi primer servicio</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: VESTIDOS -->
+    <div *ngIf="pestanaActiva === 'vestidos'" class="contenido-seccion">
+      <div class="seccion-header">
+        <h2>👗 Mis Vestidos de Novia</h2>
+        <button class="btn-nuevo" (click)="abrirFormulario('vestido')">
+          ➕ Nuevo Vestido
+        </button>
+      </div>
+
+      <div class="productos-grid" *ngIf="vestidosNovia.length > 0">
+        <div class="producto-card" *ngFor="let vestido of vestidosNovia">
+          <div class="producto-imagen">
+            <img [src]="vestido.imagen_principal" [alt]="vestido.nombre">
+          </div>
+          <div class="producto-info">
+            <h3>{{ vestido.nombre }}</h3>
+            <p class="marca">{{ vestido.marca }}</p>
+            <p class="precio">{{ vestido.precio }}€</p>
+            <p class="estilo">{{ vestido.estilo }}</p>
+            <div class="producto-acciones">
+              <button class="btn-eliminar" (click)="eliminarProducto('vestido', vestido.id)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-productos" *ngIf="vestidosNovia.length === 0">
+        <p>📭 No tienes vestidos publicados todavía</p>
+        <button class="btn-crear" (click)="abrirFormulario('vestido')">Crear mi primer vestido</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: TRAJES -->
+    <div *ngIf="pestanaActiva === 'trajes'" class="contenido-seccion">
+      <div class="seccion-header">
+        <h2>🤵 Mis Trajes de Novio</h2>
+        <button class="btn-nuevo" (click)="abrirFormulario('traje')">
+          ➕ Nuevo Traje
+        </button>
+      </div>
+
+      <div class="productos-grid" *ngIf="trajesNovio.length > 0">
+        <div class="producto-card" *ngFor="let traje of trajesNovio">
+          <div class="producto-imagen">
+            <img [src]="traje.imagen_principal" [alt]="traje.nombre">
+          </div>
+          <div class="producto-info">
+            <h3>{{ traje.nombre }}</h3>
+            <p class="marca">{{ traje.marca }}</p>
+            <p class="precio">{{ traje.precio }}€</p>
+            <p class="tipo">{{ traje.tipo }}</p>
+            <div class="producto-acciones">
+              <button class="btn-eliminar" (click)="eliminarProducto('traje', traje.id)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-productos" *ngIf="trajesNovio.length === 0">
+        <p>📭 No tienes trajes publicados todavía</p>
+        <button class="btn-crear" (click)="abrirFormulario('traje')">Crear mi primer traje</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: COMPLEMENTOS NOVIA -->
+    <div *ngIf="pestanaActiva === 'complementos-novia'" class="contenido-seccion">
+      <div class="seccion-header">
+        <h2>💍 Mis Complementos de Novia</h2>
+        <button class="btn-nuevo" (click)="abrirFormulario('complemento-novia')">
+          ➕ Nuevo Complemento
+        </button>
+      </div>
+
+      <div class="productos-grid" *ngIf="complementosNovia.length > 0">
+        <div class="producto-card" *ngFor="let complemento of complementosNovia">
+          <div class="producto-imagen">
+            <img [src]="complemento.imagen_principal" [alt]="complemento.nombre">
+          </div>
+          <div class="producto-info">
+            <h3>{{ complemento.nombre }}</h3>
+            <p class="precio">{{ complemento.precio }}€</p>
+            <p class="categoria">{{ complemento.categoria }}</p>
+            <div class="producto-acciones">
+              <button class="btn-eliminar" (click)="eliminarProducto('complemento-novia', complemento.id)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-productos" *ngIf="complementosNovia.length === 0">
+        <p>📭 No tienes complementos publicados todavía</p>
+        <button class="btn-crear" (click)="abrirFormulario('complemento-novia')">Crear mi primer complemento</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: COMPLEMENTOS NOVIO -->
+    <div *ngIf="pestanaActiva === 'complementos-novio'" class="contenido-seccion">
+      <div class="seccion-header">
+        <h2>👔 Mis Complementos de Novio</h2>
+        <button class="btn-nuevo" (click)="abrirFormulario('complemento-novio')">
+          ➕ Nuevo Complemento
+        </button>
+      </div>
+
+      <div class="productos-grid" *ngIf="complementosNovio.length > 0">
+        <div class="producto-card" *ngFor="let complemento of complementosNovio">
+          <div class="producto-imagen">
+            <img [src]="complemento.imagen_principal" [alt]="complemento.nombre">
+          </div>
+          <div class="producto-info">
+            <h3>{{ complemento.nombre }}</h3>
+            <p class="precio">{{ complemento.precio }}€</p>
+            <p class="categoria">{{ complemento.categoria }}</p>
+            <div class="producto-acciones">
+              <button class="btn-eliminar" (click)="eliminarProducto('complemento-novio', complemento.id)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-productos" *ngIf="complementosNovio.length === 0">
+        <p>📭 No tienes complementos publicados todavía</p>
+        <button class="btn-crear" (click)="abrirFormulario('complemento-novio')">Crear mi primer complemento</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: FORMULARIO DE NUEVO PRODUCTO -->
+<div class="modal-overlay" *ngIf="mostrarFormulario" (click)="cerrarFormulario()">
+  <div class="modal-contenido" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ tipoFormulario === 'servicio' ? '🎵 Nuevo Servicio' :
+             tipoFormulario === 'vestido' ? '👗 Nuevo Vestido' :
+             tipoFormulario === 'traje' ? '🤵 Nuevo Traje' :
+             tipoFormulario === 'complemento-novia' ? '💍 Nuevo Complemento Novia' :
+             '👔 Nuevo Complemento Novio' }}</h2>
+      <button class="btn-cerrar" (click)="cerrarFormulario()">✕</button>
+    </div>
+
+    <form (ngSubmit)="guardarProducto()" class="formulario-producto">
+      <!-- Campos Comunes -->
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" required>
+      </div>
+
+      <div class="form-row" *ngIf="tipoFormulario === 'vestido' || tipoFormulario === 'traje'">
+        <div class="form-group">
+          <label>Marca *</label>
+          <input type="text" [(ngModel)]="nuevoProducto.marca" name="marca">
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <input type="text" [(ngModel)]="nuevoProducto.color" name="color">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Precio (€) *</label>
+        <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" min="0" step="0.01" required>
+      </div>
+
+      <!-- Categoría para Servicios -->
+      <div class="form-group" *ngIf="tipoFormulario === 'servicio'">
+        <label>Categoría *</label>
+        <select [(ngModel)]="nuevoProducto.categoria" name="categoria">
+          <option [value]="null">Selecciona una categoría</option>
+          <option *ngFor="let cat of categoriasServicio" [value]="cat.id">{{ cat.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Estilo para Vestidos -->
+      <div class="form-group" *ngIf="tipoFormulario === 'vestido'">
+        <label>Estilo</label>
+        <select [(ngModel)]="nuevoProducto.estilo" name="estilo">
+          <option *ngFor="let estilo of estilosVestido" [value]="estilo">{{ estilo }}</option>
+        </select>
+      </div>
+
+      <!-- Tipo para Trajes -->
+      <div class="form-group" *ngIf="tipoFormulario === 'traje'">
+        <label>Tipo</label>
+        <select [(ngModel)]="nuevoProducto.tipo" name="tipo">
+          <option *ngFor="let tipo of tiposTraje" [value]="tipo">{{ tipo }}</option>
+        </select>
+      </div>
+
+      <!-- Categoría para Complementos -->
+      <div class="form-group" *ngIf="tipoFormulario === 'complemento-novia'">
+        <label>Categoría *</label>
+        <select [(ngModel)]="nuevoProducto.categoria_complemento" name="categoria_complemento">
+          <option value="">Selecciona una categoría</option>
+          <option *ngFor="let cat of categoriasComplementoNovia" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="tipoFormulario === 'complemento-novio'">
+        <label>Categoría *</label>
+        <select [(ngModel)]="nuevoProducto.categoria_complemento" name="categoria_complemento">
+          <option value="">Selecciona una categoría</option>
+          <option *ngFor="let cat of categoriasComplementoNovio" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <!-- Tallas para Vestidos y Trajes -->
+      <div class="form-group" *ngIf="tipoFormulario === 'vestido' || tipoFormulario === 'traje'">
+        <label>Tallas Disponibles (separadas por coma) *</label>
+        <input type="text" [(ngModel)]="nuevoProducto.tallas_disponibles" name="tallas" placeholder="36,38,40,42">
+      </div>
+
+      <div class="form-group">
+        <label>Descripción Corta *</label>
+        <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" rows="3" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción Detallada</label>
+        <textarea [(ngModel)]="nuevoProducto.descripcion_larga" name="descripcion_larga" rows="5"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>URL Imagen Principal *</label>
+        <input type="url" [(ngModel)]="nuevoProducto.imagen_principal" name="imagen_principal" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>URLs Imágenes Adicionales (separadas por coma)</label>
+        <input type="text" [(ngModel)]="nuevoProducto.imagenes_adicionales" name="imagenes_adicionales" placeholder="https://...,https://...">
+      </div>
+
+      <div class="form-group">
+        <label>Características (separadas por coma)</label>
+        <textarea [(ngModel)]="nuevoProducto.caracteristicas" name="caracteristicas" rows="2" placeholder="Alta calidad,Diseño exclusivo"></textarea>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="nuevoProducto.disponible" name="disponible">
+          Producto disponible
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancelar" (click)="cerrarFormulario()">Cancelar</button>
+        <button type="submit" class="btn-guardar">Guardar Producto</button>
+      </div>
+    </form>
+  </div>
+</div>

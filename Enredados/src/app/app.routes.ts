@@ -84,5 +84,9 @@ export const routes: Routes = [
   {
     path: 'complementos-novio/:id',
     loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
+  },
+  {
+  path: 'panel-proveedor',
+  loadComponent: () => import('./components/panel-proveedor/panel-proveedor.component').then(m => m.PanelProveedorComponent)
   }
 ];

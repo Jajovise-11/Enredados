@@ -3,14 +3,29 @@ from django.contrib.auth.models import User
 from .models import (
     Proveedor, CategoriaServicio, Servicio, Reserva, Valoracion,
     VestidoNovia, TrajeNovio, ComplementoNovia, ComplementoNovio,
-    TareaAgenda, ItemPresupuesto
+    TareaAgenda, ItemPresupuesto, PerfilProveedor
 )
 
 
+class PerfilProveedorSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
+    
+    class Meta:
+        model = PerfilProveedor
+        fields = '__all__'
+
+
 class UserSerializer(serializers.ModelSerializer):
+    es_proveedor = serializers.SerializerMethodField()
+    perfil_proveedor = PerfilProveedorSerializer(read_only=True)
+    
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'es_proveedor', 'perfil_proveedor']
+    
+    def get_es_proveedor(self, obj):
+        return hasattr(obj, 'perfil_proveedor')
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
@@ -28,6 +43,7 @@ class CategoriaServicioSerializer(serializers.ModelSerializer):
 class ServicioSerializer(serializers.ModelSerializer):
     proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
+    creado_por_nombre = serializers.CharField(source='creado_por.username', read_only=True)
     
     class Meta:
         model = Servicio
@@ -54,7 +70,6 @@ class ReservaSerializer(serializers.ModelSerializer):
         read_only_fields = ['fecha_reserva']
     
     def validate(self, data):
-        """Validar que al menos un producto esté presente"""
         if not any([
             data.get('servicio'),
             data.get('vestido'),
@@ -63,7 +78,7 @@ class ReservaSerializer(serializers.ModelSerializer):
             data.get('complemento_novio')
         ]):
             raise serializers.ValidationError(
-                "Debes reservar al menos un producto (servicio, vestido, traje o complemento)"
+                "Debes reservar al menos un producto"
             )
         return data
 
@@ -77,23 +92,21 @@ class ValoracionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# NUEVOS SERIALIZERS PARA PRODUCTOS
 class VestidoNoviaSerializer(serializers.ModelSerializer):
     tallas = serializers.SerializerMethodField()
     imagenes = serializers.SerializerMethodField()
+    proveedor_nombre = serializers.CharField(source='proveedor.username', read_only=True)
     
     class Meta:
         model = VestidoNovia
         fields = '__all__'
     
     def get_tallas(self, obj):
-        """Convertir string de tallas en lista"""
         if obj.tallas_disponibles:
             return obj.tallas_disponibles.split(',')
         return []
     
     def get_imagenes(self, obj):
-        """Obtener todas las imágenes como lista"""
         imagenes = [obj.imagen_principal]
         if obj.imagenes_adicionales:
             imagenes.extend(obj.imagenes_adicionales.split(','))
@@ -103,6 +116,7 @@ class VestidoNoviaSerializer(serializers.ModelSerializer):
 class TrajeNovioSerializer(serializers.ModelSerializer):
     tallas = serializers.SerializerMethodField()
     imagenes = serializers.SerializerMethodField()
+    proveedor_nombre = serializers.CharField(source='proveedor.username', read_only=True)
     
     class Meta:
         model = TrajeNovio
@@ -122,6 +136,7 @@ class TrajeNovioSerializer(serializers.ModelSerializer):
 
 class ComplementoNoviaSerializer(serializers.ModelSerializer):
     imagenes = serializers.SerializerMethodField()
+    proveedor_nombre = serializers.CharField(source='proveedor.username', read_only=True)
     
     class Meta:
         model = ComplementoNovia
@@ -136,6 +151,7 @@ class ComplementoNoviaSerializer(serializers.ModelSerializer):
 
 class ComplementoNovioSerializer(serializers.ModelSerializer):
     imagenes = serializers.SerializerMethodField()
+    proveedor_nombre = serializers.CharField(source='proveedor.username', read_only=True)
     
     class Meta:
         model = ComplementoNovio
@@ -170,5 +186,4 @@ class ItemPresupuestoSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_diferencia(self, obj):
-        """Calcular diferencia entre presupuestado y gastado"""
         return float(obj.presupuestado - obj.gastado)
