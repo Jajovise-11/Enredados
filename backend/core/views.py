@@ -256,10 +256,19 @@ class ServicioViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+# En backend/core/views.py
+
 class VestidoNoviaViewSet(viewsets.ModelViewSet):
     queryset = VestidoNovia.objects.all()
     serializer_class = VestidoNoviaSerializer
-    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        """
+        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
     
     def get_queryset(self):
         queryset = VestidoNovia.objects.all()
@@ -290,7 +299,14 @@ class VestidoNoviaViewSet(viewsets.ModelViewSet):
 class TrajeNovioViewSet(viewsets.ModelViewSet):
     queryset = TrajeNovio.objects.all()
     serializer_class = TrajeNovioSerializer
-    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        """
+        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
     
     def get_queryset(self):
         queryset = TrajeNovio.objects.all()
@@ -321,7 +337,14 @@ class TrajeNovioViewSet(viewsets.ModelViewSet):
 class ComplementoNoviaViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovia.objects.all()
     serializer_class = ComplementoNoviaSerializer
-    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        """
+        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
     
     def get_queryset(self):
         queryset = ComplementoNovia.objects.all()
@@ -349,7 +372,14 @@ class ComplementoNoviaViewSet(viewsets.ModelViewSet):
 class ComplementoNovioViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovio.objects.all()
     serializer_class = ComplementoNovioSerializer
-    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        """
+        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
     
     def get_queryset(self):
         queryset = ComplementoNovio.objects.all()

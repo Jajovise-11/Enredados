@@ -797,3 +797,123 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Botón Proveedor */
+.btn-proveedor {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white !important;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-proveedor:hover {
+  background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+.btn-proveedor:active {
+  transform: translateY(0);
+}
+
+.btn-proveedor .btn-icon {
+  font-size: 1.1rem;
+}
+
+.btn-proveedor .btn-text {
+  font-size: 0.95rem;
+}
+
+.btn-login,
+.btn-register {
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.btn-login {
+  color: #667eea;
+  border-color: #667eea;
+  background: transparent;
+}
+
+.btn-login:hover {
+  background: #667eea;
+  color: white;
+}
+
+.btn-register {
+  background: #667eea;
+  color: white;
+}
+
+.btn-register:hover {
+  background: #5568d3;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .navbar-menu {
+    gap: 1rem;
+  }
+
+  .navbar-link {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .navbar-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .auth-buttons {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-proveedor,
+  .btn-login,
+  .btn-register {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .dropdown-menu,
+  .user-dropdown {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+  }
+
+  .dropdown.open .dropdown-menu,
+  .user-menu.open .user-dropdown {
+    transform: translateX(-50%) translateY(0);
+  }
+}

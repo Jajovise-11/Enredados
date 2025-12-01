@@ -1,3 +1,4 @@
+// Enredados/src/app/app.routes.ts
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
@@ -12,6 +13,10 @@ export const routes: Routes = [
   {
     path: 'registro',
     loadComponent: () => import('./components/auth/registro/registro').then(m => m.RegistroComponent)
+  },
+  {
+    path: 'registro-proveedor',
+    loadComponent: () => import('./components/auth/registro-proveedor/registro-proveedor.component').then(m => m.RegistroProveedorComponent)
   },
   {
     path: 'servicios',
@@ -86,7 +91,7 @@ export const routes: Routes = [
     loadComponent: () => import('./components/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent)
   },
   {
-  path: 'panel-proveedor',
-  loadComponent: () => import('./components/panel-proveedor/panel-proveedor.component').then(m => m.PanelProveedorComponent)
+    path: 'panel-proveedor',
+    loadComponent: () => import('./components/panel-proveedor/panel-proveedor.component').then(m => m.PanelProveedorComponent)
   }
 ];

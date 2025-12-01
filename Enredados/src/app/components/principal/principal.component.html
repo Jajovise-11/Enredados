@@ -22,11 +22,11 @@
       </div>
 
       <!-- Botones de login/registro -->
+      <!-- En Enredados/src/app/components/shared/navbar/navbar.html -->
+
+      <!-- Botones login/registro -->
       <div class="auth-buttons" *ngIf="!authService.isLoggedIn()">
-        <!-- En principal.component.html o navbar -->
-        <a routerLink="/registro-proveedor" class="btn-proveedor">
-          🏢 Registrarse como Proveedor
-        </a>
+        <a routerLink="/registro-proveedor" class="btn-proveedor">🏢 Soy Proveedor</a>
         <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
         <a routerLink="/registro" class="btn-register">Registrarse</a>
       </div>

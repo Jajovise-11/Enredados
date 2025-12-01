@@ -1,3 +1,4 @@
+<!-- Enredados/src/app/components/shared/navbar/navbar.html -->
 <header class="navbar-header">
   <nav class="navbar-container">
     <!-- Logo -->
@@ -82,7 +83,10 @@
 
       <!-- Botones login/registro -->
       <div class="auth-buttons" *ngIf="!authService.isLoggedIn()">
-        <a routerLink="/registro-proveedor" class="btn-proveedor">🏢 Soy Proveedor</a>
+        <a routerLink="/registro-proveedor" class="btn-proveedor">
+          <span class="btn-icon">🏢</span>
+          <span class="btn-text">Soy Proveedor</span>
+        </a>
         <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
         <a routerLink="/registro" class="btn-register">Registrarse</a>
       </div>

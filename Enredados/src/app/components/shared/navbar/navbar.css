@@ -1,3 +1,5 @@
+/* Enredados/src/app/components/shared/navbar/navbar.css */
+
 .navbar-header {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -57,7 +59,7 @@
   color: #667eea;
 }
 
-/* Dropdown - MEJORADO */
+/* Dropdown */
 .dropdown {
   position: relative;
 }
@@ -80,7 +82,6 @@
   transition: opacity 0.2s, transform 0.2s;
 }
 
-/* ⭐ CLAVE: Mostrar el menú cuando tiene la clase 'open' */
 .dropdown.open .dropdown-menu {
   display: block;
   opacity: 1;
@@ -147,7 +148,6 @@
   transition: opacity 0.2s, transform 0.2s;
 }
 
-/* ⭐ CLAVE: Mostrar dropdown de usuario cuando tiene la clase 'open' */
 .user-menu.open .user-dropdown {
   display: block;
   opacity: 1;
@@ -171,6 +171,45 @@
 .auth-buttons {
   display: flex;
   gap: 1rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* BOTÓN PROVEEDOR - ESTILO DISTINTIVO */
+.btn-proveedor {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white !important;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-proveedor:hover {
+  background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+.btn-proveedor:active {
+  transform: translateY(0);
+}
+
+.btn-proveedor .btn-icon {
+  font-size: 1.1rem;
+}
+
+.btn-proveedor .btn-text {
+  font-size: 0.95rem;
 }
 
 .btn-login,
@@ -180,11 +219,14 @@
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s;
+  border: 2px solid transparent;
+  white-space: nowrap;
 }
 
 .btn-login {
   color: #667eea;
-  border: 2px solid #667eea;
+  border-color: #667eea;
+  background: transparent;
 }
 
 .btn-login:hover {
@@ -224,6 +266,19 @@
   .navbar-menu {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .auth-buttons {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-proveedor,
+  .btn-login,
+  .btn-register {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.2rem;
   }
 
   .dropdown-menu,
