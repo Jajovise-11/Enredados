@@ -65,12 +65,9 @@ def register(request):
 @permission_classes([AllowAny])
 def register_proveedor(request):
     """Registro de usuarios proveedores"""
-    # Datos de usuario
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email', '')
-    
-    # Datos de proveedor
     nombre_empresa = request.data.get('nombre_empresa')
     descripcion = request.data.get('descripcion', '')
     telefono = request.data.get('telefono', '')
@@ -92,14 +89,12 @@ def register_proveedor(request):
     
     try:
         with transaction.atomic():
-            # Crear usuario
             user = User.objects.create_user(
                 username=username,
                 password=password,
                 email=email
             )
             
-            # Crear perfil de proveedor
             perfil = PerfilProveedor.objects.create(
                 user=user,
                 nombre_empresa=nombre_empresa,
@@ -110,7 +105,6 @@ def register_proveedor(request):
                 cif_nif=cif_nif
             )
             
-            # Crear también un registro en Proveedor para compatibilidad con Servicios
             proveedor = Proveedor.objects.create(
                 nombre=nombre_empresa,
                 descripcion=descripcion,
@@ -126,7 +120,7 @@ def register_proveedor(request):
                 'username': user.username,
                 'email': user.email,
                 'es_proveedor': True,
-                'proveedor_id': proveedor.id,  # ← NUEVO: Devolver el ID del proveedor
+                'proveedor_id': proveedor.id,
                 'perfil_proveedor': PerfilProveedorSerializer(perfil).data,
                 'message': 'Proveedor registrado exitosamente'
             }, status=status.HTTP_201_CREATED)
@@ -136,6 +130,7 @@ def register_proveedor(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -158,7 +153,6 @@ def login(request):
             status=status.HTTP_401_UNAUTHORIZED
         )
     
-    # Verificar si es proveedor
     es_proveedor = hasattr(user, 'perfil_proveedor')
     
     response_data = {
@@ -174,12 +168,10 @@ def login(request):
     if es_proveedor:
         response_data['perfil_proveedor'] = PerfilProveedorSerializer(user.perfil_proveedor).data
         
-        # NUEVO: Obtener el proveedor_id asociado
         try:
             proveedor = Proveedor.objects.get(usuario_proveedor=user)
             response_data['proveedor_id'] = proveedor.id
         except Proveedor.DoesNotExist:
-            # Si no existe, crearlo automáticamente
             proveedor = Proveedor.objects.create(
                 nombre=user.perfil_proveedor.nombre_empresa,
                 descripcion=user.perfil_proveedor.descripcion,
@@ -208,7 +200,7 @@ def profile(request):
     return Response(UserSerializer(user).data)
 
 
-# ========== VIEWSETS ==========
+# ========== VIEWSETS - TODOS CON AllowAny TEMPORAL ==========
 class ProveedorViewSet(viewsets.ModelViewSet):
     queryset = Proveedor.objects.all()
     serializer_class = ProveedorSerializer
@@ -224,184 +216,31 @@ class CategoriaServicioViewSet(viewsets.ModelViewSet):
 class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
-    
-    def get_permissions(self):
-        """
-        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
-    
-    def get_queryset(self):
-        queryset = Servicio.objects.all()
-        categoria = self.request.query_params.get('categoria', None)
-        proveedor = self.request.query_params.get('proveedor', None)
-        
-        if categoria:
-            queryset = queryset.filter(categoria__id=categoria)
-        if proveedor:
-            queryset = queryset.filter(creado_por__id=proveedor)
-            
-        return queryset
-    
-    @action(detail=False, methods=['get'])
-    def mis_servicios(self, request):
-        """Obtener servicios del proveedor autenticado"""
-        if not request.user.is_authenticated:
-            return Response({'error': 'No autenticado'}, status=401)
-        
-        servicios = Servicio.objects.filter(creado_por=request.user)
-        serializer = self.get_serializer(servicios, many=True)
-        return Response(serializer.data)
+    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
 
-
-# En backend/core/views.py
 
 class VestidoNoviaViewSet(viewsets.ModelViewSet):
     queryset = VestidoNovia.objects.all()
     serializer_class = VestidoNoviaSerializer
-    
-    def get_permissions(self):
-        """
-        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
-    
-    def get_queryset(self):
-        queryset = VestidoNovia.objects.all()
-        estilo = self.request.query_params.get('estilo', None)
-        precio_max = self.request.query_params.get('precio_max', None)
-        proveedor = self.request.query_params.get('proveedor', None)
-        
-        if estilo:
-            queryset = queryset.filter(estilo=estilo)
-        if precio_max:
-            queryset = queryset.filter(precio__lte=precio_max)
-        if proveedor:
-            queryset = queryset.filter(proveedor__id=proveedor)
-        
-        return queryset
-    
-    @action(detail=False, methods=['get'])
-    def mis_vestidos(self, request):
-        """Obtener vestidos del proveedor autenticado"""
-        if not request.user.is_authenticated:
-            return Response({'error': 'No autenticado'}, status=401)
-        
-        vestidos = VestidoNovia.objects.filter(proveedor=request.user)
-        serializer = self.get_serializer(vestidos, many=True)
-        return Response(serializer.data)
+    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
 
 
 class TrajeNovioViewSet(viewsets.ModelViewSet):
     queryset = TrajeNovio.objects.all()
     serializer_class = TrajeNovioSerializer
-    
-    def get_permissions(self):
-        """
-        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
-    
-    def get_queryset(self):
-        queryset = TrajeNovio.objects.all()
-        tipo = self.request.query_params.get('tipo', None)
-        precio_max = self.request.query_params.get('precio_max', None)
-        proveedor = self.request.query_params.get('proveedor', None)
-        
-        if tipo:
-            queryset = queryset.filter(tipo=tipo)
-        if precio_max:
-            queryset = queryset.filter(precio__lte=precio_max)
-        if proveedor:
-            queryset = queryset.filter(proveedor__id=proveedor)
-        
-        return queryset
-    
-    @action(detail=False, methods=['get'])
-    def mis_trajes(self, request):
-        """Obtener trajes del proveedor autenticado"""
-        if not request.user.is_authenticated:
-            return Response({'error': 'No autenticado'}, status=401)
-        
-        trajes = TrajeNovio.objects.filter(proveedor=request.user)
-        serializer = self.get_serializer(trajes, many=True)
-        return Response(serializer.data)
+    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
 
 
 class ComplementoNoviaViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovia.objects.all()
     serializer_class = ComplementoNoviaSerializer
-    
-    def get_permissions(self):
-        """
-        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
-    
-    def get_queryset(self):
-        queryset = ComplementoNovia.objects.all()
-        categoria = self.request.query_params.get('categoria', None)
-        proveedor = self.request.query_params.get('proveedor', None)
-        
-        if categoria:
-            queryset = queryset.filter(categoria=categoria)
-        if proveedor:
-            queryset = queryset.filter(proveedor__id=proveedor)
-        
-        return queryset
-    
-    @action(detail=False, methods=['get'])
-    def mis_complementos(self, request):
-        """Obtener complementos del proveedor autenticado"""
-        if not request.user.is_authenticated:
-            return Response({'error': 'No autenticado'}, status=401)
-        
-        complementos = ComplementoNovia.objects.filter(proveedor=request.user)
-        serializer = self.get_serializer(complementos, many=True)
-        return Response(serializer.data)
+    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
 
 
 class ComplementoNovioViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovio.objects.all()
     serializer_class = ComplementoNovioSerializer
-    
-    def get_permissions(self):
-        """
-        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
-    
-    def get_queryset(self):
-        queryset = ComplementoNovio.objects.all()
-        categoria = self.request.query_params.get('categoria', None)
-        proveedor = self.request.query_params.get('proveedor', None)
-        
-        if categoria:
-            queryset = queryset.filter(categoria=categoria)
-        if proveedor:
-            queryset = queryset.filter(proveedor__id=proveedor)
-        
-        return queryset
-    
-    @action(detail=False, methods=['get'])
-    def mis_complementos(self, request):
-        """Obtener complementos del proveedor autenticado"""
-        if not request.user.is_authenticated:
-            return Response({'error': 'No autenticado'}, status=401)
-        
-        complementos = ComplementoNovio.objects.filter(proveedor=request.user)
-        serializer = self.get_serializer(complementos, many=True)
-        return Response(serializer.data)
+    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
 
 
 class ReservaViewSet(viewsets.ModelViewSet):
