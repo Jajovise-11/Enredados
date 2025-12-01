@@ -183,90 +183,174 @@ export class PanelProveedorComponent implements OnInit {
   }
 
   guardarProducto(): void {
-  const usuarioId = this.authService.getUserId();
-  
-  if (!this.nuevoProducto.nombre || !this.nuevoProducto.precio) {
-    alert('Por favor completa nombre y precio');
-    return;
-  }
-
-  let observable;
-  let data: any = {
-    ...this.nuevoProducto,
-    proveedor: usuarioId
-  };
-
-  switch(this.tipoFormulario) {
-    case 'servicio':
-      if (!this.nuevoProducto.categoria) {
-        alert('Por favor selecciona una categoría');
-        return;
-      }
-      data.creado_por = usuarioId;
-      
-      // ✅ CORREGIDO: Obtener el proveedor_id correcto
-      const proveedorId = this.authService.getProveedorId();
-      if (!proveedorId) {
-        alert('Error: No se encontró el ID del proveedor. Por favor, cierra sesión y vuelve a iniciar.');
-        return;
-      }
-      data.proveedor_id = proveedorId;
-      
-      observable = this.apiService.crearServicio(data);
-      break;
-      
-    case 'vestido':
-      if (!this.nuevoProducto.marca || !this.nuevoProducto.tallas_disponibles) {
-        alert('Por favor completa marca y tallas');
-        return;
-      }
-      observable = this.apiService.crearVestidoNovia(data);
-      break;
-      
-    case 'traje':
-      if (!this.nuevoProducto.marca || !this.nuevoProducto.tallas_disponibles) {
-        alert('Por favor completa marca y tallas');
-        return;
-      }
-      observable = this.apiService.crearTrajeNovio(data);
-      break;
-      
-    case 'complemento-novia':
-      if (!this.nuevoProducto.categoria_complemento) {
-        alert('Por favor selecciona una categoría');
-        return;
-      }
-      data.categoria = this.nuevoProducto.categoria_complemento;
-      observable = this.apiService.crearComplementoNovia(data);
-      break;
-      
-    case 'complemento-novio':
-      if (!this.nuevoProducto.categoria_complemento) {
-        alert('Por favor selecciona una categoría');
-        return;
-      }
-      data.categoria = this.nuevoProducto.categoria_complemento;
-      observable = this.apiService.crearComplementoNovio(data);
-      break;
-      
-    default:
-      alert('Tipo de producto no válido');
+    const usuarioId = this.authService.getUserId();
+    
+    if (!this.nuevoProducto.nombre || !this.nuevoProducto.precio) {
+      alert('Por favor completa nombre y precio');
       return;
-  }
-
-  observable.subscribe({
-    next: (response: any) => {
-      console.log('Producto creado:', response);
-      alert('¡Producto creado exitosamente!');
-      this.cerrarFormulario();
-      this.cargarDatos();
-    },
-    error: (error: any) => {
-      console.error('Error al crear producto:', error);
-      alert('Error al crear el producto: ' + (error.error?.error || 'Intenta de nuevo'));
     }
-  });
-}
+
+    let observable;
+
+    switch(this.tipoFormulario) {
+      case 'servicio':
+        if (!this.nuevoProducto.categoria) {
+          alert('Por favor selecciona una categoría');
+          return;
+        }
+        const servicioData = {
+          nombre: this.nuevoProducto.nombre,
+          descripcion: this.nuevoProducto.descripcion,
+          precio: Number(this.nuevoProducto.precio),
+          categoria: Number(this.nuevoProducto.categoria),
+          creado_por: usuarioId,
+          proveedor_id: this.perfilProveedor?.id || 1,
+          imagen: this.nuevoProducto.imagen_principal || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800',
+          disponible: this.nuevoProducto.disponible !== false
+        };
+        console.log('Datos servicio a enviar:', servicioData);
+        observable = this.apiService.crearServicio(servicioData);
+        break;
+        
+      case 'vestido':
+        if (!this.nuevoProducto.marca || !this.nuevoProducto.tallas_disponibles) {
+          alert('Por favor completa marca y tallas');
+          return;
+        }
+        
+        const vestidoData = {
+          nombre: this.nuevoProducto.nombre,
+          marca: this.nuevoProducto.marca,
+          precio: Number(this.nuevoProducto.precio),
+          estilo: this.nuevoProducto.estilo || 'princesa',
+          color: this.nuevoProducto.color || 'Blanco',
+          tallas_disponibles: this.nuevoProducto.tallas_disponibles,
+          descripcion: this.nuevoProducto.descripcion,
+          descripcion_larga: this.nuevoProducto.descripcion_larga || this.nuevoProducto.descripcion,
+          imagen_principal: this.nuevoProducto.imagen_principal || 'https://images.unsplash.com/photo-1594552072238-52e479f9ebf0?w=800',
+          imagenes_adicionales: this.nuevoProducto.imagenes_adicionales || '',
+          caracteristicas: this.nuevoProducto.caracteristicas || '',
+          disponible: this.nuevoProducto.disponible !== false,
+          proveedor: usuarioId
+        };
+        
+        console.log('Datos vestido a enviar:', vestidoData);
+        observable = this.apiService.crearVestidoNovia(vestidoData);
+        break;
+        
+      case 'traje':
+        if (!this.nuevoProducto.marca || !this.nuevoProducto.tallas_disponibles) {
+          alert('Por favor completa marca y tallas');
+          return;
+        }
+        
+        const trajeData = {
+          nombre: this.nuevoProducto.nombre,
+          marca: this.nuevoProducto.marca,
+          precio: Number(this.nuevoProducto.precio),
+          tipo: this.nuevoProducto.tipo || 'esmoquin',
+          color: this.nuevoProducto.color || 'Negro',
+          tallas_disponibles: this.nuevoProducto.tallas_disponibles,
+          descripcion: this.nuevoProducto.descripcion,
+          descripcion_larga: this.nuevoProducto.descripcion_larga || this.nuevoProducto.descripcion,
+          imagen_principal: this.nuevoProducto.imagen_principal || 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800',
+          imagenes_adicionales: this.nuevoProducto.imagenes_adicionales || '',
+          caracteristicas: this.nuevoProducto.caracteristicas || '',
+          disponible: this.nuevoProducto.disponible !== false,
+          proveedor: usuarioId
+        };
+        
+        console.log('Datos traje a enviar:', trajeData);
+        observable = this.apiService.crearTrajeNovio(trajeData);
+        break;
+        
+      case 'complemento-novia':
+        if (!this.nuevoProducto.categoria_complemento) {
+          alert('Por favor selecciona una categoría');
+          return;
+        }
+        
+        const compNoviaData = {
+          nombre: this.nuevoProducto.nombre,
+          categoria: this.nuevoProducto.categoria_complemento,
+          precio: Number(this.nuevoProducto.precio),
+          descripcion: this.nuevoProducto.descripcion,
+          descripcion_larga: this.nuevoProducto.descripcion_larga || this.nuevoProducto.descripcion,
+          imagen_principal: this.nuevoProducto.imagen_principal || 'https://images.unsplash.com/photo-1522673607170-d2c8d29e5d7d?w=800',
+          imagenes_adicionales: this.nuevoProducto.imagenes_adicionales || '',
+          caracteristicas: this.nuevoProducto.caracteristicas || '',
+          disponible: this.nuevoProducto.disponible !== false,
+          proveedor: usuarioId
+        };
+        
+        console.log('Datos complemento novia a enviar:', compNoviaData);
+        observable = this.apiService.crearComplementoNovia(compNoviaData);
+        break;
+        
+      case 'complemento-novio':
+        if (!this.nuevoProducto.categoria_complemento) {
+          alert('Por favor selecciona una categoría');
+          return;
+        }
+        
+        const compNovioData = {
+          nombre: this.nuevoProducto.nombre,
+          categoria: this.nuevoProducto.categoria_complemento,
+          precio: Number(this.nuevoProducto.precio),
+          descripcion: this.nuevoProducto.descripcion,
+          descripcion_larga: this.nuevoProducto.descripcion_larga || this.nuevoProducto.descripcion,
+          imagen_principal: this.nuevoProducto.imagen_principal || 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=800',
+          imagenes_adicionales: this.nuevoProducto.imagenes_adicionales || '',
+          caracteristicas: this.nuevoProducto.caracteristicas || '',
+          disponible: this.nuevoProducto.disponible !== false,
+          proveedor: usuarioId
+        };
+        
+        console.log('Datos complemento novio a enviar:', compNovioData);
+        observable = this.apiService.crearComplementoNovio(compNovioData);
+        break;
+        
+      default:
+        alert('Tipo de producto no válido');
+        return;
+    }
+
+    observable.subscribe({
+      next: (response: any) => {
+        console.log('Producto creado exitosamente:', response);
+        alert('¡Producto creado exitosamente!');
+        this.cerrarFormulario();
+        this.cargarDatos();
+      },
+      error: (error: any) => {
+        console.error('Error completo:', error);
+        console.error('Error status:', error.status);
+        console.error('Error body:', error.error);
+        
+        let mensajeError = 'Error al crear el producto: ';
+        
+        if (error.error) {
+          if (typeof error.error === 'string') {
+            mensajeError += error.error;
+          } else if (error.error.detail) {
+            mensajeError += error.error.detail;
+          } else if (error.error.error) {
+            mensajeError += error.error.error;
+          } else {
+            // Mostrar todos los errores de validación
+            const errores = Object.entries(error.error)
+              .map(([campo, mensajes]) => `${campo}: ${mensajes}`)
+              .join('\n');
+            mensajeError += '\n' + errores;
+          }
+        } else {
+          mensajeError += 'Intenta de nuevo';
+        }
+        
+        alert(mensajeError);
+      }
+    });
+  }
   
   
 
