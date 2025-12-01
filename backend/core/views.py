@@ -126,6 +126,7 @@ def register_proveedor(request):
                 'username': user.username,
                 'email': user.email,
                 'es_proveedor': True,
+                'proveedor_id': proveedor.id,  # ← NUEVO: Devolver el ID del proveedor
                 'perfil_proveedor': PerfilProveedorSerializer(perfil).data,
                 'message': 'Proveedor registrado exitosamente'
             }, status=status.HTTP_201_CREATED)
@@ -135,7 +136,6 @@ def register_proveedor(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -173,6 +173,23 @@ def login(request):
     
     if es_proveedor:
         response_data['perfil_proveedor'] = PerfilProveedorSerializer(user.perfil_proveedor).data
+        
+        # NUEVO: Obtener el proveedor_id asociado
+        try:
+            proveedor = Proveedor.objects.get(usuario_proveedor=user)
+            response_data['proveedor_id'] = proveedor.id
+        except Proveedor.DoesNotExist:
+            # Si no existe, crearlo automáticamente
+            proveedor = Proveedor.objects.create(
+                nombre=user.perfil_proveedor.nombre_empresa,
+                descripcion=user.perfil_proveedor.descripcion,
+                telefono=user.perfil_proveedor.telefono,
+                email=user.email,
+                direccion=user.perfil_proveedor.direccion,
+                ciudad=user.perfil_proveedor.ciudad,
+                usuario_proveedor=user
+            )
+            response_data['proveedor_id'] = proveedor.id
     
     return Response(response_data)
 
@@ -207,7 +224,14 @@ class CategoriaServicioViewSet(viewsets.ModelViewSet):
 class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
-    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        """
+        Permitir GET a todos, pero POST/PUT/DELETE solo a autenticados
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
     
     def get_queryset(self):
         queryset = Servicio.objects.all()

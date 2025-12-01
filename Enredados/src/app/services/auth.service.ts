@@ -30,9 +30,19 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/auth/register/`, userData);
   }
 
-  // Registro de proveedor
+  // Registro de proveedor - ACTUALIZADO
   registerProveedor(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register-proveedor/`, data);
+    return this.http.post(`${this.apiUrl}/auth/register-proveedor/`, data)
+      .pipe(
+        map(user => {
+          // Guardar usuario en localStorage
+          if (user && (user as any).id) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.currentUserSubject.next(user);
+          }
+          return user;
+        })
+      );
   }
 
   // ========== LOGIN ==========
@@ -62,9 +72,13 @@ export class AuthService {
     return this.currentUserValue !== null;
   }
 
+  // CORREGIDO: Verificar si es proveedor
   isProveedor(): boolean {
     const user = this.currentUserValue;
-    return user ? user.es_proveedor === true : false;
+    if (!user) return false;
+    
+    // Verificar si tiene perfil_proveedor O si es_proveedor es true
+    return user.perfil_proveedor !== null || user.es_proveedor === true;
   }
 
   getUserId(): number | null {
@@ -85,5 +99,11 @@ export class AuthService {
   getPerfilProveedor(): any {
     const user = this.currentUserValue;
     return user?.perfil_proveedor || null;
+  }
+
+  // NUEVO: Obtener ID del Proveedor para crear servicios
+  getProveedorId(): number | null {
+    const user = this.currentUserValue;
+    return user?.proveedor_id || null;
   }
 }

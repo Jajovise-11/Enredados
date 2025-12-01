@@ -7,8 +7,9 @@
 
     <!-- Menú Principal -->
     <ul class="navbar-menu">
-      <!-- Mi Boda -->
-      <li class="navbar-item dropdown" [class.open]="menuAbierto['miboda']" 
+      <!-- Mi Boda - SOLO para usuarios normales -->
+      <li class="navbar-item dropdown" *ngIf="authService.isLoggedIn() && !authService.isProveedor()"
+          [class.open]="menuAbierto['miboda']" 
           (mouseenter)="abrirMenu('miboda')" 
           (mouseleave)="cerrarMenu('miboda')">
         <a routerLink="/mi-boda" class="navbar-link">Mi Boda</a>
@@ -56,27 +57,35 @@
            (mouseenter)="abrirMenu('usuario')" 
            (mouseleave)="cerrarMenu('usuario')">
         <button class="user-button">
-          👤 {{ authService.getUsername() }}
+          {{ authService.isProveedor() ? '🏢' : '👤' }} {{ authService.getUsername() }}
         </button>
         <div class="user-dropdown">
-          <a routerLink="/perfil">👤 Mi Perfil</a>
-          <a routerLink="/mi-boda">💒 Mi Boda</a>
-          <a href="#" (click)="logout(); $event.preventDefault()">🚪 Cerrar Sesión</a>
+          <!-- SOLO PARA PROVEEDORES -->
+          <a routerLink="/panel-proveedor" *ngIf="authService.isProveedor()">
+            🏢 Panel de Proveedor
+          </a>
+          
+          <!-- SOLO PARA USUARIOS NORMALES -->
+          <a routerLink="/perfil" *ngIf="!authService.isProveedor()">
+            👤 Mi Perfil
+          </a>
+          <a routerLink="/mi-boda" *ngIf="!authService.isProveedor()">
+            💒 Mi Boda
+          </a>
+          
+          <!-- COMÚN PARA TODOS -->
+          <a href="#" (click)="logout(); $event.preventDefault()">
+            🚪 Cerrar Sesión
+          </a>
         </div>
       </div>
 
       <!-- Botones login/registro -->
       <div class="auth-buttons" *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/registro-proveedor" class="btn-proveedor">🏢 Soy Proveedor</a>
         <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
         <a routerLink="/registro" class="btn-register">Registrarse</a>
       </div>
-    </div>
-
-    <!-- Menu para proveedores -->
-    <div class="user-dropdown" *ngIf="authService.isProveedor()">
-      <a routerLink="/panel-proveedor">🏢 Panel de Proveedor</a>
-      <a routerLink="/perfil">👤 Mi Perfil</a>
-      <a href="#" (click)="logout(); $event.preventDefault()">🚪 Cerrar Sesión</a>
     </div>
   </nav>
 </header>
