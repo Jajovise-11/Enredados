@@ -21,6 +21,33 @@ from .serializers import (
 )
 
 
+# ========== PERMISOS PERSONALIZADOS ==========
+class NoEsProveedorPermission(permissions.BasePermission):
+    """Permiso que solo permite a usuarios NO proveedores"""
+    def has_permission(self, request, view):
+        # Permitir GET a todos
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        
+        # Para POST, PUT, PATCH, DELETE verificar que NO es proveedor
+        if request.user.is_authenticated:
+            return not hasattr(request.user, 'perfil_proveedor')
+        
+        return False
+
+
+class EsProveedorPermission(permissions.BasePermission):
+    """Permiso que solo permite a proveedores"""
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        
+        if request.user.is_authenticated:
+            return hasattr(request.user, 'perfil_proveedor')
+        
+        return False
+
+
 # ========== REGISTRO Y AUTENTICACIÓN ==========
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -200,7 +227,7 @@ def profile(request):
     return Response(UserSerializer(user).data)
 
 
-# ========== VIEWSETS - TODOS CON AllowAny TEMPORAL ==========
+# ========== VIEWSETS ==========
 class ProveedorViewSet(viewsets.ModelViewSet):
     queryset = Proveedor.objects.all()
     serializer_class = ProveedorSerializer
@@ -216,37 +243,113 @@ class CategoriaServicioViewSet(viewsets.ModelViewSet):
 class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
-    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
+    permission_classes = [permissions.AllowAny]
 
 
 class VestidoNoviaViewSet(viewsets.ModelViewSet):
     queryset = VestidoNovia.objects.all()
     serializer_class = VestidoNoviaSerializer
-    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
+    permission_classes = [permissions.AllowAny]
 
 
 class TrajeNovioViewSet(viewsets.ModelViewSet):
     queryset = TrajeNovio.objects.all()
     serializer_class = TrajeNovioSerializer
-    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
+    permission_classes = [permissions.AllowAny]
 
 
 class ComplementoNoviaViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovia.objects.all()
     serializer_class = ComplementoNoviaSerializer
-    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
+    permission_classes = [permissions.AllowAny]
 
 
 class ComplementoNovioViewSet(viewsets.ModelViewSet):
     queryset = ComplementoNovio.objects.all()
     serializer_class = ComplementoNovioSerializer
-    permission_classes = [permissions.AllowAny]  # ← CAMBIADO A AllowAny
+    permission_classes = [permissions.AllowAny]
 
 
+# ========== RESERVAS - CON LÓGICA MEJORADA ==========
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.all()
     serializer_class = ReservaSerializer
     permission_classes = [permissions.AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        """Crear reserva y marcar producto como no disponible"""
+        
+        # VERIFICAR QUE NO ES PROVEEDOR
+        if request.user.is_authenticated and hasattr(request.user, 'perfil_proveedor'):
+            return Response(
+                {'error': 'Los proveedores no pueden hacer reservas'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            with transaction.atomic():
+                # Crear la reserva
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                reserva = serializer.save()
+                
+                # Marcar el producto como NO DISPONIBLE
+                if reserva.servicio:
+                    reserva.servicio.disponible = False
+                    reserva.servicio.save()
+                elif reserva.vestido:
+                    reserva.vestido.disponible = False
+                    reserva.vestido.save()
+                elif reserva.traje:
+                    reserva.traje.disponible = False
+                    reserva.traje.save()
+                elif reserva.complemento_novia:
+                    reserva.complemento_novia.disponible = False
+                    reserva.complemento_novia.save()
+                elif reserva.complemento_novio:
+                    reserva.complemento_novio.disponible = False
+                    reserva.complemento_novio.save()
+                
+                headers = self.get_success_headers(serializer.data)
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED,
+                    headers=headers
+                )
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    def update(self, request, *args, **kwargs):
+        """Actualizar reserva y manejar disponibilidad"""
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        
+        # Si se cancela la reserva, volver a marcar como disponible
+        if request.data.get('estado') == 'cancelada':
+            with transaction.atomic():
+                if instance.servicio:
+                    instance.servicio.disponible = True
+                    instance.servicio.save()
+                elif instance.vestido:
+                    instance.vestido.disponible = True
+                    instance.vestido.save()
+                elif instance.traje:
+                    instance.traje.disponible = True
+                    instance.traje.save()
+                elif instance.complemento_novia:
+                    instance.complemento_novia.disponible = True
+                    instance.complemento_novia.save()
+                elif instance.complemento_novio:
+                    instance.complemento_novio.disponible = True
+                    instance.complemento_novio.save()
+        
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 
 class ValoracionViewSet(viewsets.ModelViewSet):
@@ -270,6 +373,7 @@ class TareaAgendaViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+# ========== PRESUPUESTO - CON LÓGICA DE DESCUENTO ==========
 class ItemPresupuestoViewSet(viewsets.ModelViewSet):
     queryset = ItemPresupuesto.objects.all()
     serializer_class = ItemPresupuestoSerializer
@@ -283,3 +387,40 @@ class ItemPresupuestoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(usuario__id=usuario)
         
         return queryset
+    
+    @action(detail=True, methods=['patch'])
+    def marcar_pagado(self, request, pk=None):
+        """Marcar como pagado y actualizar el gasto"""
+        item = self.get_object()
+        
+        with transaction.atomic():
+            # Marcar como pagado
+            item.pagado = True
+            
+            # Si no se ha registrado el gasto, usar el presupuestado
+            if item.gastado == 0:
+                item.gastado = item.presupuestado
+            
+            item.save()
+        
+        serializer = self.get_serializer(item)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['patch'])
+    def registrar_gasto(self, request, pk=None):
+        """Registrar el gasto real de un item"""
+        item = self.get_object()
+        gasto_real = request.data.get('gastado')
+        
+        if gasto_real is None:
+            return Response(
+                {'error': 'Debe proporcionar el gasto real'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with transaction.atomic():
+            item.gastado = gasto_real
+            item.save()
+        
+        serializer = self.get_serializer(item)
+        return Response(serializer.data)
