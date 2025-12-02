@@ -1,4 +1,3 @@
-// Enredados/src/app/components/presupuestador/presupuestador.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -44,10 +43,6 @@ export class PresupuestadorComponent implements OnInit {
     pagado: false
   };
 
-  // Para editar gasto real
-  editandoGastoId: number | null = null;
-  gastoRealTemp: number = 0;
-
   mostrarFormulario: boolean = false;
 
   constructor(
@@ -57,19 +52,11 @@ export class PresupuestadorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Verificar que es usuario normal (no proveedor)
     if (!this.authService.isLoggedIn()) {
       alert('Debes iniciar sesión para acceder al presupuestador');
       this.router.navigate(['/login']);
       return;
     }
-
-    if (this.authService.isProveedor()) {
-      alert('Los proveedores no pueden acceder al presupuestador');
-      this.router.navigate(['/panel-proveedor']);
-      return;
-    }
-
     this.cargarPresupuesto();
   }
 
@@ -168,59 +155,18 @@ export class PresupuestadorComponent implements OnInit {
     });
   }
 
-  // NUEVO: Marcar como pagado (descuenta del presupuesto)
-  marcarComoPagado(gasto: ItemGasto): void {
+  togglePagado(gasto: ItemGasto): void {
     if (!gasto.id) return;
 
-    if (gasto.pagado) {
-      alert('Este gasto ya está marcado como pagado');
-      return;
-    }
+    const gastoActualizado = {
+      ...gasto,
+      pagado: !gasto.pagado
+    };
 
-    if (!confirm(`¿Marcar "${gasto.concepto}" como pagado? Esto descontará ${gasto.presupuestado}€ de tu presupuesto.`)) {
-      return;
-    }
-
-    this.apiService.marcarItemPagado(gasto.id).subscribe({
-      next: (response: any) => {
-        console.log('Gasto marcado como pagado:', response);
-        alert(`✅ Gasto pagado. Se han descontado ${gasto.presupuestado}€`);
-        this.cargarPresupuesto();
-      },
-      error: (error: any) => {
-        console.error('Error al marcar como pagado:', error);
-        alert('Error al actualizar el gasto');
-      }
-    });
-  }
-
-  // NUEVO: Editar gasto real
-  iniciarEdicionGasto(gasto: ItemGasto): void {
-    if (!gasto.id) return;
-    this.editandoGastoId = gasto.id;
-    this.gastoRealTemp = gasto.gastado;
-  }
-
-  cancelarEdicionGasto(): void {
-    this.editandoGastoId = null;
-    this.gastoRealTemp = 0;
-  }
-
-  guardarGastoReal(gasto: ItemGasto): void {
-    if (!gasto.id) return;
-
-    if (this.gastoRealTemp < 0) {
-      alert('El gasto no puede ser negativo');
-      return;
-    }
-
-    this.apiService.registrarGastoItem(gasto.id, this.gastoRealTemp).subscribe({
+    this.apiService.actualizarItemPresupuesto(gasto.id, gastoActualizado).subscribe({
       next: (response: any) => {
         console.log('Gasto actualizado:', response);
-        this.editandoGastoId = null;
-        this.gastoRealTemp = 0;
         this.cargarPresupuesto();
-        alert('Gasto actualizado correctamente');
       },
       error: (error: any) => {
         console.error('Error al actualizar gasto:', error);
