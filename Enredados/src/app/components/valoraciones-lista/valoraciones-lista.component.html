@@ -1,0 +1,124 @@
+<!-- Enredados/src/app/components/shared/valoraciones-lista/valoraciones-lista.component.html -->
+<div class="valoraciones-seccion">
+  <!-- Header con promedio -->
+  <div class="valoraciones-header">
+    <div class="header-info">
+      <h2>{{ titulo }}</h2>
+      <div class="promedio-container" *ngIf="valoraciones.length > 0">
+        <div class="estrellas-grande">
+          <span *ngFor="let star of generarEstrellas(calcularPromedio())">
+            {{ star }}
+          </span>
+        </div>
+        <span class="promedio-numero">{{ calcularPromedio() }}</span>
+        <span class="total-valoraciones">({{ valoraciones.length }} valoraciones)</span>
+      </div>
+    </div>
+    
+    <!-- Botón para nueva valoración -->
+    <button 
+      *ngIf="mostrarFormulario && servicioId"
+      class="btn-nueva-valoracion" 
+      (click)="toggleFormulario()"
+    >
+      {{ mostrandoForm ? '❌ Cancelar' : '⭐ Dejar Valoración' }}
+    </button>
+  </div>
+
+  <!-- Formulario nueva valoración -->
+  <div class="formulario-valoracion" *ngIf="mostrandoForm && servicioId">
+    <h3>Comparte tu experiencia</h3>
+    <form (ngSubmit)="enviarValoracion()">
+      <div class="form-group">
+        <label>Puntuación:</label>
+        <div class="selector-estrellas">
+          <button 
+            type="button"
+            *ngFor="let num of [1,2,3,4,5]"
+            class="estrella-btn"
+            [class.activa]="num <= nuevaValoracion.puntuacion"
+            (click)="nuevaValoracion.puntuacion = num"
+          >
+            {{ num <= nuevaValoracion.puntuacion ? '★' : '☆' }}
+          </button>
+        </div>
+        <span class="puntuacion-texto">
+          {{ nuevaValoracion.puntuacion }} de 5 estrellas
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Tu comentario:</label>
+        <textarea 
+          [(ngModel)]="nuevaValoracion.comentario" 
+          name="comentario"
+          rows="4"
+          placeholder="Cuéntanos sobre tu experiencia con este servicio..."
+          required
+        ></textarea>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-enviar"
+        [disabled]="enviando"
+      >
+        {{ enviando ? 'Enviando...' : 'Publicar Valoración' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading">
+    <p>Cargando valoraciones...</p>
+  </div>
+
+  <!-- Lista de valoraciones -->
+  <div class="valoraciones-lista" *ngIf="!cargando">
+    <div class="valoracion-card" *ngFor="let val of valoraciones">
+      <div class="valoracion-header">
+        <div class="usuario-info">
+          <div class="avatar">{{ val.usuario_nombre?.charAt(0).toUpperCase() }}</div>
+          <div class="usuario-detalles">
+            <strong>{{ val.usuario_nombre }}</strong>
+            <span class="fecha">{{ val.fecha | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+        
+        <div class="valoracion-puntuacion">
+          <span class="estrellas">
+            <ng-container *ngFor="let star of generarEstrellas(val.puntuacion)">
+              {{ star }}
+            </ng-container>
+          </span>
+          <span class="numero">{{ val.puntuacion }}/5</span>
+        </div>
+      </div>
+
+      <p class="valoracion-comentario">{{ val.comentario }}</p>
+
+      <!-- Servicio asociado (si se muestra en perfil de usuario) -->
+      <div class="servicio-info" *ngIf="!servicioId && val.servicio_nombre">
+        <span class="servicio-badge" [routerLink]="['/servicio', val.servicio]">
+          🎵 {{ val.servicio_nombre }}
+        </span>
+      </div>
+
+      <!-- Botón eliminar (solo si es del usuario) -->
+      <button 
+        *ngIf="esDelUsuario(val)"
+        class="btn-eliminar-valoracion" 
+        (click)="eliminarValoracion(val.id)"
+      >
+        🗑️ Eliminar
+      </button>
+    </div>
+
+    <!-- Sin valoraciones -->
+    <div *ngIf="valoraciones.length === 0" class="sin-valoraciones">
+      <div class="icono-vacio">⭐</div>
+      <p>Aún no hay valoraciones</p>
+      <p class="subtexto">¡Sé el primero en compartir tu experiencia!</p>
+    </div>
+  </div>
+</div>
