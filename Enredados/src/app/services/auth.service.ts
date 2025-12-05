@@ -1,3 +1,4 @@
+// Enredados/src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -30,7 +31,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/auth/register/`, userData);
   }
 
-  // Registro de proveedor - ACTUALIZADO
+  // Registro de proveedor
   registerProveedor(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/register-proveedor/`, data)
       .pipe(
@@ -72,13 +73,21 @@ export class AuthService {
     return this.currentUserValue !== null;
   }
 
-  // CORREGIDO: Verificar si es proveedor
+  // CORREGIDO: Verificación más estricta de si es proveedor
   isProveedor(): boolean {
     const user = this.currentUserValue;
-    if (!user) return false;
+    if (!user) {
+      return false;
+    }
     
-    // Verificar si tiene perfil_proveedor O si es_proveedor es true
-    return user.perfil_proveedor !== null || user.es_proveedor === true;
+    // Verificar que es_proveedor sea explícitamente true
+    // Y que tenga un perfil_proveedor válido (no null, no undefined)
+    const tieneFlag = user.es_proveedor === true;
+    const tienePerfil = user.perfil_proveedor && 
+                        typeof user.perfil_proveedor === 'object' && 
+                        Object.keys(user.perfil_proveedor).length > 0;
+    
+    return tieneFlag && tienePerfil;
   }
 
   getUserId(): number | null {
@@ -101,9 +110,19 @@ export class AuthService {
     return user?.perfil_proveedor || null;
   }
 
-  // NUEVO: Obtener ID del Proveedor para crear servicios
   getProveedorId(): number | null {
     const user = this.currentUserValue;
     return user?.proveedor_id || null;
+  }
+
+  // NUEVO: Método de depuración para verificar el estado del usuario
+  debugUserStatus(): void {
+    const user = this.currentUserValue;
+    console.log('=== DEBUG USER STATUS ===');
+    console.log('Usuario:', user);
+    console.log('es_proveedor:', user?.es_proveedor);
+    console.log('perfil_proveedor:', user?.perfil_proveedor);
+    console.log('isProveedor():', this.isProveedor());
+    console.log('========================');
   }
 }
