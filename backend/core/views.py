@@ -159,10 +159,55 @@ def register_proveedor(request):
         )
 
 
+# backend/core/views.py - FRAGMENTO CORREGIDO
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    """Registro de usuarios normales"""
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email', '')
+    first_name = request.data.get('first_name', '')
+    last_name = request.data.get('last_name', '')
+    
+    if not username or not password:
+        return Response(
+            {'error': 'Username y password son obligatorios'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if User.objects.filter(username=username).exists():
+        return Response(
+            {'error': 'El usuario ya existe'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        email=email,
+        first_name=first_name,
+        last_name=last_name
+    )
+    
+    # IMPORTANTE: Usuario normal NO es proveedor
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'es_proveedor': False,  # Explícitamente False
+        'perfil_proveedor': None,  # Explícitamente None
+        'message': 'Usuario creado exitosamente'
+    }, status=status.HTTP_201_CREATED)
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
-    """Login de usuarios"""
+    """Login de usuarios - CORREGIDO"""
     username = request.data.get('username')
     password = request.data.get('password')
     
@@ -180,6 +225,7 @@ def login(request):
             status=status.HTTP_401_UNAUTHORIZED
         )
     
+    # VERIFICACIÓN ESTRICTA: Solo es proveedor si tiene perfil_proveedor
     es_proveedor = hasattr(user, 'perfil_proveedor')
     
     response_data = {
@@ -188,17 +234,20 @@ def login(request):
         'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'es_proveedor': es_proveedor,
+        'es_proveedor': es_proveedor,  # True solo si tiene perfil_proveedor
         'message': 'Login exitoso'
     }
     
+    # Solo añadir perfil_proveedor si realmente existe
     if es_proveedor:
         response_data['perfil_proveedor'] = PerfilProveedorSerializer(user.perfil_proveedor).data
         
+        # Obtener o crear el Proveedor asociado
         try:
             proveedor = Proveedor.objects.get(usuario_proveedor=user)
             response_data['proveedor_id'] = proveedor.id
         except Proveedor.DoesNotExist:
+            # Crear Proveedor si no existe
             proveedor = Proveedor.objects.create(
                 nombre=user.perfil_proveedor.nombre_empresa,
                 descripcion=user.perfil_proveedor.descripcion,
@@ -209,8 +258,89 @@ def login(request):
                 usuario_proveedor=user
             )
             response_data['proveedor_id'] = proveedor.id
+    else:
+        # Para usuarios normales, EXPLÍCITAMENTE establecer como None
+        response_data['perfil_proveedor'] = None
+        response_data['proveedor_id'] = None
     
     return Response(response_data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_proveedor(request):
+    """Registro de usuarios proveedores - CORREGIDO"""
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email', '')
+    nombre_empresa = request.data.get('nombre_empresa')
+    descripcion = request.data.get('descripcion', '')
+    telefono = request.data.get('telefono', '')
+    direccion = request.data.get('direccion', '')
+    ciudad = request.data.get('ciudad', '')
+    cif_nif = request.data.get('cif_nif', '')
+    
+    if not username or not password or not nombre_empresa:
+        return Response(
+            {'error': 'Username, password y nombre de empresa son obligatorios'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if User.objects.filter(username=username).exists():
+        return Response(
+            {'error': 'El usuario ya existe'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        with transaction.atomic():
+            # Crear usuario
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                email=email
+            )
+            
+            # Crear perfil de proveedor
+            perfil = PerfilProveedor.objects.create(
+                user=user,
+                nombre_empresa=nombre_empresa,
+                descripcion=descripcion,
+                telefono=telefono,
+                direccion=direccion,
+                ciudad=ciudad,
+                cif_nif=cif_nif
+            )
+            
+            # Crear registro en Proveedor
+            proveedor = Proveedor.objects.create(
+                nombre=nombre_empresa,
+                descripcion=descripcion,
+                telefono=telefono,
+                email=email,
+                direccion=direccion,
+                ciudad=ciudad,
+                usuario_proveedor=user
+            )
+            
+            # IMPORTANTE: Devolver con es_proveedor=True y perfil completo
+            return Response({
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'es_proveedor': True,  # Explícitamente True
+                'proveedor_id': proveedor.id,
+                'perfil_proveedor': PerfilProveedorSerializer(perfil).data,
+                'message': 'Proveedor registrado exitosamente'
+            }, status=status.HTTP_201_CREATED)
+            
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['GET'])
