@@ -143,165 +143,139 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/reservas/`, data);
   }
 
-// ========== CANCELAR RESERVA CON ACTUALIZACIÓN DE PRESUPUESTO ==========
-cancelarReserva(reservaId: number): Observable<any> {
-  return this.http.get(`${this.apiUrl}/reservas/${reservaId}/`).pipe(
-    switchMap((reserva: any) => {
-      console.log('🔍 Reserva a cancelar:', reserva);
-      
-      // Marcar reserva como cancelada
-      const actualizarReserva$ = this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
-        estado: 'cancelada' 
-      });
-
-      // Buscar y actualizar el item de presupuesto relacionado
-      const buscarPresupuesto$ = this.http.get(`${this.apiUrl}/presupuesto/?usuario=${reserva.usuario}`).pipe(
-        switchMap((items: any) => {
-          console.log('💰 Items de presupuesto del usuario:', items);
-          
-          // Encontrar el item relacionado con esta reserva
-          const itemRelacionado = items.find((item: any) => {
-            // Verificar si el item coincide con alguno de los productos de la reserva
-            if (reserva.servicio && item.servicio === reserva.servicio) {
-              console.log('✅ Encontrado item por servicio');
-              return true;
-            }
-            if (reserva.vestido && item.vestido === reserva.vestido) {
-              console.log('✅ Encontrado item por vestido');
-              return true;
-            }
-            if (reserva.traje && item.traje === reserva.traje) {
-              console.log('✅ Encontrado item por traje');
-              return true;
-            }
-            if (reserva.complemento_novia && item.complemento_novia === reserva.complemento_novia) {
-              console.log('✅ Encontrado item por complemento_novia');
-              return true;
-            }
-            if (reserva.complemento_novio && item.complemento_novio === reserva.complemento_novio) {
-              console.log('✅ Encontrado item por complemento_novio');
-              return true;
-            }
-            return false;
-          });
-
-          if (itemRelacionado) {
-            console.log('💵 Item de presupuesto encontrado:', itemRelacionado);
+  // ========== CANCELAR RESERVA CON ACTUALIZACIÓN DE PRESUPUESTO ==========
+  cancelarReserva(reservaId: number): Observable<any> {
+    console.log('🚀 Iniciando cancelación de reserva:', reservaId);
+    
+    // Primero actualizar la reserva a cancelada
+    return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { estado: 'cancelada' }).pipe(
+      switchMap((reservaActualizada: any) => {
+        console.log('✅ Reserva actualizada:', reservaActualizada);
+        
+        // Ahora buscar y actualizar el presupuesto relacionado
+        return this.http.get(`${this.apiUrl}/presupuesto/?usuario=${reservaActualizada.usuario}`).pipe(
+          switchMap((items: any) => {
+            console.log('💰 Items de presupuesto encontrados:', items);
             
-            // Actualizar el item de presupuesto: poner gastado a 0
-            return this.http.patch(`${this.apiUrl}/presupuesto/${itemRelacionado.id}/`, {
-              gastado: 0,
-              pagado: false
-            }).pipe(
-              catchError((error) => {
-                console.error('❌ Error al actualizar presupuesto:', error);
-                // Continuar aunque falle el presupuesto
-                return of(null);
-              })
-            );
-          } else {
-            console.log('⚠️ No se encontró item de presupuesto relacionado');
-            return of(null);
-          }
-        }),
-        catchError((error) => {
-          console.error('❌ Error al buscar presupuesto:', error);
-          // Si no hay presupuesto o falla la búsqueda, continuar
-          return of(null);
-        })
-      );
+            // Buscar el item relacionado con esta reserva
+            const itemRelacionado = items.find((item: any) => {
+              const coincide = (
+                (reservaActualizada.servicio && item.servicio === reservaActualizada.servicio) ||
+                (reservaActualizada.vestido && item.vestido === reservaActualizada.vestido) ||
+                (reservaActualizada.traje && item.traje === reservaActualizada.traje) ||
+                (reservaActualizada.complemento_novia && item.complemento_novia === reservaActualizada.complemento_novia) ||
+                (reservaActualizada.complemento_novio && item.complemento_novio === reservaActualizada.complemento_novio)
+              );
+              
+              if (coincide) {
+                console.log('✅ Item de presupuesto relacionado encontrado:', item);
+              }
+              
+              return coincide;
+            });
 
-      // Ejecutar ambas operaciones
-      return forkJoin({
-        reserva: actualizarReserva$,
-        presupuesto: buscarPresupuesto$
-      }).pipe(
-        map(resultado => {
-          console.log('✅ Resultado final:', resultado);
-          return resultado.reserva;
-        }),
-        catchError((error) => {
-          console.error('❌ Error en forkJoin:', error);
-          // Si falla todo, al menos intentar actualizar la reserva
-          return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
-            estado: 'cancelada' 
-          });
-        })
-      );
-    }),
-    catchError((error) => {
-      console.error('❌ Error al obtener reserva:', error);
-      throw error;
-    })
-  );
-}
+            if (itemRelacionado) {
+              // Actualizar el presupuesto: poner gastado a 0 y pagado a false
+              console.log('💵 Actualizando item de presupuesto:', itemRelacionado.id);
+              
+              return this.http.patch(`${this.apiUrl}/presupuesto/${itemRelacionado.id}/`, {
+                gastado: 0,
+                pagado: false
+              }).pipe(
+                map(() => {
+                  console.log('✅ Presupuesto actualizado correctamente');
+                  return reservaActualizada;
+                }),
+                catchError((error) => {
+                  console.error('⚠️ Error al actualizar presupuesto (pero reserva ya cancelada):', error);
+                  // Retornar la reserva aunque falle el presupuesto
+                  return of(reservaActualizada);
+                })
+              );
+            } else {
+              console.log('ℹ️ No se encontró item de presupuesto relacionado');
+              return of(reservaActualizada);
+            }
+          }),
+          catchError((error) => {
+            console.error('⚠️ Error al buscar presupuesto (pero reserva ya cancelada):', error);
+            // Retornar la reserva aunque falle la búsqueda del presupuesto
+            return of(reservaActualizada);
+          })
+        );
+      }),
+      catchError((error) => {
+        console.error('❌ Error al cancelar reserva:', error);
+        throw error;
+      })
+    );
+  }
 
   // ========== CREAR RESERVA CON PRESUPUESTO AUTOMÁTICO ==========
   crearReservaConPresupuesto(reservaData: any, producto: any, usuarioId: number): Observable<any> {
-    return new Observable(observer => {
-      // Primero crear la reserva
-      this.crearReserva(reservaData).subscribe({
-        next: (reserva: any) => {
-          console.log('✅ Reserva creada:', reserva);
+    console.log('🚀 Iniciando creación de reserva con presupuesto');
+    console.log('📝 Datos de reserva:', reservaData);
+    console.log('📦 Producto:', producto);
+    
+    // Primero crear la reserva
+    return this.crearReserva(reservaData).pipe(
+      switchMap((reserva: any) => {
+        console.log('✅ Reserva creada:', reserva);
 
-          // Determinar tipo de item y categoría
-          let tipo_item = 'personalizado';
-          let categoria = 'otros';
-          let concepto = producto.nombre;
+        // Determinar tipo de item y categoría
+        let tipo_item = 'personalizado';
+        let categoria = 'otros';
+        let concepto = producto.nombre;
 
-          if (reservaData.servicio) {
-            tipo_item = 'servicio';
-            categoria = 'entretenimiento';
-          } else if (reservaData.vestido) {
-            tipo_item = 'vestido';
-            categoria = 'vestuario';
-          } else if (reservaData.traje) {
-            tipo_item = 'traje';
-            categoria = 'vestuario';
-          } else if (reservaData.complemento_novia || reservaData.complemento_novio) {
-            tipo_item = reservaData.complemento_novia ? 'complemento_novia' : 'complemento_novio';
-            categoria = 'vestuario';
-          }
-
-          // Crear item de presupuesto con GASTADO = PRECIO (dinero ya comprometido)
-          const presupuestoData = {
-            usuario: usuarioId,
-            concepto: concepto,
-            categoria: categoria,
-            tipo_item: tipo_item,
-            presupuestado: producto.precio,
-            gastado: producto.precio, // ⚠️ IMPORTANTE: El dinero ya está comprometido
-            pagado: false, // Todavía no se ha pagado
-            // Incluir referencias al producto específico
-            servicio: reservaData.servicio || null,
-            vestido: reservaData.vestido || null,
-            traje: reservaData.traje || null,
-            complemento_novia: reservaData.complemento_novia || null,
-            complemento_novio: reservaData.complemento_novio || null
-          };
-
-          console.log('💰 Creando item de presupuesto:', presupuestoData);
-
-          this.crearItemPresupuesto(presupuestoData).subscribe({
-            next: (presupuesto: any) => {
-              console.log('✅ Presupuesto creado:', presupuesto);
-              observer.next({ reserva, presupuesto });
-              observer.complete();
-            },
-            error: (error: any) => {
-              console.error('❌ Error al crear presupuesto:', error);
-              // Si falla el presupuesto, informar pero devolver la reserva
-              observer.next({ reserva, presupuesto: null, error: 'presupuesto_failed' });
-              observer.complete();
-            }
-          });
-        },
-        error: (error: any) => {
-          console.error('❌ Error al crear reserva:', error);
-          observer.error(error);
+        if (reservaData.servicio) {
+          tipo_item = 'servicio';
+          categoria = 'entretenimiento';
+        } else if (reservaData.vestido) {
+          tipo_item = 'vestido';
+          categoria = 'vestuario';
+        } else if (reservaData.traje) {
+          tipo_item = 'traje';
+          categoria = 'vestuario';
+        } else if (reservaData.complemento_novia || reservaData.complemento_novio) {
+          tipo_item = reservaData.complemento_novia ? 'complemento_novia' : 'complemento_novio';
+          categoria = 'vestuario';
         }
-      });
-    });
+
+        // Crear item de presupuesto
+        const presupuestoData = {
+          usuario: usuarioId,
+          concepto: concepto,
+          categoria: categoria,
+          tipo_item: tipo_item,
+          presupuestado: producto.precio,
+          gastado: producto.precio, // Dinero ya comprometido
+          pagado: false,
+          servicio: reservaData.servicio || null,
+          vestido: reservaData.vestido || null,
+          traje: reservaData.traje || null,
+          complemento_novia: reservaData.complemento_novia || null,
+          complemento_novio: reservaData.complemento_novio || null
+        };
+
+        console.log('💰 Creando item de presupuesto:', presupuestoData);
+
+        return this.crearItemPresupuesto(presupuestoData).pipe(
+          map((presupuesto: any) => {
+            console.log('✅ Presupuesto creado:', presupuesto);
+            return { reserva, presupuesto };
+          }),
+          catchError((error: any) => {
+            console.error('⚠️ Error al crear presupuesto:', error);
+            // Retornar la reserva aunque falle el presupuesto
+            return of({ reserva, presupuesto: null, error: 'presupuesto_failed' });
+          })
+        );
+      }),
+      catchError((error: any) => {
+        console.error('❌ Error al crear reserva:', error);
+        throw error;
+      })
+    );
   }
 
   // ========== VALORACIONES ==========
