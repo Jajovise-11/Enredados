@@ -143,51 +143,98 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/reservas/`, data);
   }
 
-  // ========== CANCELAR RESERVA CON ACTUALIZACIÓN DE PRESUPUESTO ==========
-  cancelarReserva(reservaId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reservas/${reservaId}/`).pipe(
-      switchMap((reserva: any) => {
-        // Marcar reserva como cancelada
-        const actualizarReserva$ = this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
-          estado: 'cancelada' 
-        });
+// ========== CANCELAR RESERVA CON ACTUALIZACIÓN DE PRESUPUESTO ==========
+cancelarReserva(reservaId: number): Observable<any> {
+  return this.http.get(`${this.apiUrl}/reservas/${reservaId}/`).pipe(
+    switchMap((reserva: any) => {
+      console.log('🔍 Reserva a cancelar:', reserva);
+      
+      // Marcar reserva como cancelada
+      const actualizarReserva$ = this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
+        estado: 'cancelada' 
+      });
 
-        // Buscar y actualizar el item de presupuesto relacionado
-        const buscarPresupuesto$ = this.http.get(`${this.apiUrl}/presupuesto/?usuario=${reserva.usuario}`).pipe(
-          switchMap((items: any) => {
-            // Encontrar el item relacionado con esta reserva
-            const itemRelacionado = items.find((item: any) => {
-              if (reserva.servicio && item.servicio === reserva.servicio) return true;
-              if (reserva.vestido && item.vestido === reserva.vestido) return true;
-              if (reserva.traje && item.traje === reserva.traje) return true;
-              if (reserva.complemento_novia && item.complemento_novia === reserva.complemento_novia) return true;
-              if (reserva.complemento_novio && item.complemento_novio === reserva.complemento_novio) return true;
-              return false;
-            });
-
-            if (itemRelacionado) {
-              // Actualizar el item de presupuesto: poner gastado a 0
-              return this.http.put(`${this.apiUrl}/presupuesto/${itemRelacionado.id}/`, {
-                ...itemRelacionado,
-                gastado: 0,
-                pagado: false
-              });
+      // Buscar y actualizar el item de presupuesto relacionado
+      const buscarPresupuesto$ = this.http.get(`${this.apiUrl}/presupuesto/?usuario=${reserva.usuario}`).pipe(
+        switchMap((items: any) => {
+          console.log('💰 Items de presupuesto del usuario:', items);
+          
+          // Encontrar el item relacionado con esta reserva
+          const itemRelacionado = items.find((item: any) => {
+            // Verificar si el item coincide con alguno de los productos de la reserva
+            if (reserva.servicio && item.servicio === reserva.servicio) {
+              console.log('✅ Encontrado item por servicio');
+              return true;
             }
-            return of(null);
-          }),
-          catchError(() => of(null)) // Si no hay presupuesto, continuar
-        );
+            if (reserva.vestido && item.vestido === reserva.vestido) {
+              console.log('✅ Encontrado item por vestido');
+              return true;
+            }
+            if (reserva.traje && item.traje === reserva.traje) {
+              console.log('✅ Encontrado item por traje');
+              return true;
+            }
+            if (reserva.complemento_novia && item.complemento_novia === reserva.complemento_novia) {
+              console.log('✅ Encontrado item por complemento_novia');
+              return true;
+            }
+            if (reserva.complemento_novio && item.complemento_novio === reserva.complemento_novio) {
+              console.log('✅ Encontrado item por complemento_novio');
+              return true;
+            }
+            return false;
+          });
 
-        // Ejecutar ambas operaciones
-        return forkJoin({
-          reserva: actualizarReserva$,
-          presupuesto: buscarPresupuesto$
-        }).pipe(
-          map(resultado => resultado.reserva)
-        );
-      })
-    );
-  }
+          if (itemRelacionado) {
+            console.log('💵 Item de presupuesto encontrado:', itemRelacionado);
+            
+            // Actualizar el item de presupuesto: poner gastado a 0
+            return this.http.patch(`${this.apiUrl}/presupuesto/${itemRelacionado.id}/`, {
+              gastado: 0,
+              pagado: false
+            }).pipe(
+              catchError((error) => {
+                console.error('❌ Error al actualizar presupuesto:', error);
+                // Continuar aunque falle el presupuesto
+                return of(null);
+              })
+            );
+          } else {
+            console.log('⚠️ No se encontró item de presupuesto relacionado');
+            return of(null);
+          }
+        }),
+        catchError((error) => {
+          console.error('❌ Error al buscar presupuesto:', error);
+          // Si no hay presupuesto o falla la búsqueda, continuar
+          return of(null);
+        })
+      );
+
+      // Ejecutar ambas operaciones
+      return forkJoin({
+        reserva: actualizarReserva$,
+        presupuesto: buscarPresupuesto$
+      }).pipe(
+        map(resultado => {
+          console.log('✅ Resultado final:', resultado);
+          return resultado.reserva;
+        }),
+        catchError((error) => {
+          console.error('❌ Error en forkJoin:', error);
+          // Si falla todo, al menos intentar actualizar la reserva
+          return this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
+            estado: 'cancelada' 
+          });
+        })
+      );
+    }),
+    catchError((error) => {
+      console.error('❌ Error al obtener reserva:', error);
+      throw error;
+    })
+  );
+}
 
   // ========== CREAR RESERVA CON PRESUPUESTO AUTOMÁTICO ==========
   crearReservaConPresupuesto(reservaData: any, producto: any, usuarioId: number): Observable<any> {

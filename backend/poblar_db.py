@@ -570,12 +570,202 @@ complementos_novia = [
         'descripcion_larga': 'Elegante velo catedral de 3 metros con borde de encaje',
         'imagen_principal': 'https://images.unsplash.com/photo-1594552072238-f036ca1de1b9?w=400',
         'caracteristicas': '3 metros, Encaje francés, Tul suave'
+        },
+    {
+        'nombre': 'Peineta Floral Dorada',
+        'categoria': 'accesorios_cabello',
+        'precio': 45.00,
+        'descripcion': 'Peineta dorada con diseño floral',
+        'descripcion_larga': 'Peineta floral dorada con detalles metálicos perfecta para un look romántico',
+        'imagen_principal': 'https://images.unsplash.com/photo-1560067174-b353a478dbbd?w=400',
+        'caracteristicas': 'Baño dorado, Diseño floral, Sujeción firme'
     },
     {
-        'nombre': 'Zapatos Brillantes con Pedrería',
-        'categoria': 'zapatos',
-        'precio': 120.00,
-        'descripcion': 'Zapatos de tacón con cristales',
-        'descripcion_larga': 'Zapatos elegantes decorados con cristales Swarovski',
-        'imagen_principal': 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400',
-        'caracter
+        'nombre': 'Tocado de Perlas y Cristales',
+        'categoria': 'accesorios_cabello',
+        'precio': 60.00,
+        'descripcion': 'Tocado elegante para novia',
+        'descripcion_larga': 'Tocado elaborado a mano con perlas naturales y cristales premium',
+        'imagen_principal': 'https://images.unsplash.com/photo-1601582586427-828a126dfe66?w=400',
+        'caracteristicas': 'Perlas naturales, Hecho a mano, Ajustable'
+    },
+    {
+        'nombre': 'Ramo Artificial Premium',
+        'categoria': 'ramos',
+        'precio': 95.00,
+        'descripcion': 'Ramo de novia eterno',
+        'descripcion_larga': 'Ramo de flores artificiales premium que parece totalmente natural',
+        'imagen_principal': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400',
+        'caracteristicas': 'Flores premium, No se marchita, Material hipoalergénico'
+    },
+    {
+        'nombre': 'Ramo de Rosas Preservadas',
+        'categoria': 'ramos',
+        'precio': 130.00,
+        'descripcion': 'Ramo de rosas naturales preservadas',
+        'descripcion_larga': 'Ramo elegante fabricado con rosas naturales preservadas que duran años',
+        'imagen_principal': 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400',
+        'caracteristicas': 'Rosas preservadas, Duración larga, Aromatizado'
+    },
+    {
+        'nombre': 'Liguero Encaje Blanco',
+        'categoria': 'lenceria',
+        'precio': 25.00,
+        'descripcion': 'Liguero clásico para novia',
+        'descripcion_larga': 'Liguero de encaje blanco con detalles delicados',
+        'imagen_principal': 'https://images.unsplash.com/photo-1589174700692-1bdaf2b0dba3?w=400',
+        'caracteristicas': 'Encaje suave, Elástico, Talla única'
+    },
+    {
+        'nombre': 'Lencería Bridal Premium',
+        'categoria': 'lenceria',
+        'precio': 80.00,
+        'descripcion': 'Set de lencería elegante',
+        'descripcion_larga': 'Conjunto de lencería blanca ideal para el día de la boda',
+        'imagen_principal': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400',
+        'caracteristicas': 'Encaje bordado, Suave y cómodo, Varios talles'
+    },
+    {
+        'nombre': 'Diadema con Cristales',
+        'categoria': 'accesorios_cabello',
+        'precio': 70.00,
+        'descripcion': 'Diadema brillante para novia',
+        'descripcion_larga': 'Diadema plateada con cristales que aporta elegancia y luz',
+        'imagen_principal': 'https://images.unsplash.com/photo-1587223968140-5fbd4e81f625?w=400',
+        'caracteristicas': 'Cristales brillantes, Base metálica, Ajuste perfecto'
+    },
+    {
+        'nombre': 'Guantes de Encaje Vintage',
+        'categoria': 'guantes',
+        'precio': 40.00,
+        'descripcion': 'Guantes largos estilo vintage',
+        'descripcion_larga': 'Guantes de encaje blanco ideales para novias clásicas',
+        'imagen_principal': 'https://images.unsplash.com/photo-1520964564270-4691a5b1dbce?w=400',
+        'caracteristicas': 'Encaje suave, Largos, Cierre cómodo'
+    },
+    {
+        'nombre': 'Capa de Novia con Tul',
+        'categoria': 'capas',
+        'precio': 150.00,
+        'descripcion': 'Capa estilizada con caída suave',
+        'descripcion_larga': 'Capa larga hecha de tul suave que sustituye al velo tradicional',
+        'imagen_principal': 'https://images.unsplash.com/photo-1601582586427-828a126dfe66?w=400',
+        'caracteristicas': 'Tul suave, Transparente, Ligera'
+    },
+    {
+        'nombre': 'Bolso Elegante Perlado',
+        'categoria': 'bolsos',
+        'precio': 55.00,
+        'descripcion': 'Bolso pequeño decorado con perlas',
+        'descripcion_larga': 'Clutch decorado con perlas y cadena dorada desmontable',
+        'imagen_principal': 'https://images.unsplash.com/photo-1587223968140-5fbd4e81f625?w=400',
+        'caracteristicas': 'Perlas, Cadena desmontable, Elegante'
+    },
+]
+for comp in complementos_novia:
+    ComplementoNovia.objects.get_or_create(
+        nombre=comp['nombre'],
+        defaults={**comp, 'disponible': True, 'proveedor': usuario_proveedor1}
+    )
+# ========== CREAR COMPLEMENTOS NOVIO ==========
+print("🎩 Creando complementos de novio...")
+
+complementos_novio = [
+    {
+        'nombre': 'Corbata Azul Marino Seda',
+        'categoria': 'corbatas',
+        'precio': 35.00,
+        'descripcion': 'Corbata elegante de seda',
+        'descripcion_larga': 'Corbata de seda azul marino, ideal para trajes clásicos',
+        'imagen_principal': 'https://images.unsplash.com/photo-1592878904946-b3cd8b37e1e2?w=400',
+        'caracteristicas': 'Seda 100%, Slim fit, Alta calidad'
+    },
+    {
+        'nombre': 'Pajarita Negra Satinada',
+        'categoria': 'pajaritas',
+        'precio': 25.00,
+        'descripcion': 'Pajarita clásica negra',
+        'descripcion_larga': 'Pajarita satinada ideal para esmoquin o traje formal',
+        'imagen_principal': 'https://images.unsplash.com/photo-1534215861858-9f5f36fb9c6c?w=400',
+        'caracteristicas': 'Satén, Ajustable, Clásica'
+    },
+    {
+        'nombre': 'Gemelos Plateados Minimalistas',
+        'categoria': 'gemelos',
+        'precio': 40.00,
+        'descripcion': 'Gemelos en acabado plata',
+        'descripcion_larga': 'Gemelos minimalistas de acero inoxidable',
+        'imagen_principal': 'https://images.unsplash.com/photo-1587223968140-5fbd4e81f625?w=400',
+        'caracteristicas': 'Acero inoxidable, Diseño minimalista, Caja incluida'
+    },
+    {
+        'nombre': 'Gemelos Personalizados Iniciales',
+        'categoria': 'gemelos',
+        'precio': 60.00,
+        'descripcion': 'Gemelos personalizados con iniciales',
+        'descripcion_larga': 'Gemelos grabados a láser con iniciales del novio',
+        'imagen_principal': 'https://images.unsplash.com/photo-1601582586427-828a126dfe66?w=400',
+        'caracteristicas': 'Personalizables, Acero pulido, Elegantes'
+    },
+    {
+        'nombre': 'Reloj Clásico de Acero',
+        'categoria': 'relojes',
+        'precio': 150.00,
+        'descripcion': 'Reloj masculino elegante',
+        'descripcion_larga': 'Reloj analógico de acero inoxidable con diseño clásico',
+        'imagen_principal': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+        'caracteristicas': 'Acero, Correa ajustable, Resistente al agua'
+    },
+    {
+        'nombre': 'Cinturón de Piel Negro',
+        'categoria': 'cinturones',
+        'precio': 45.00,
+        'descripcion': 'Cinturón elegante de piel',
+        'descripcion_larga': 'Cinturón de piel negra con hebilla metálica',
+        'imagen_principal': 'https://images.unsplash.com/photo-1587223968140-5fbd4e81f625?w=400',
+        'caracteristicas': 'Piel auténtica, Hebilla acero, Ajustable'
+    },
+    {
+        'nombre': 'Tirantes Blancos de Ceremonia',
+        'categoria': 'tirantes',
+        'precio': 30.00,
+        'descripcion': 'Tirantes blancos para traje',
+        'descripcion_larga': 'Tirantes regulables con detalles metálicos',
+        'imagen_principal': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+        'caracteristicas': 'Ajustables, Elásticos, Resistentes'
+    },
+    {
+        'nombre': 'Pañuelo de Bolsillo Perlado',
+        'categoria': 'panuelos',
+        'precio': 20.00,
+        'descripcion': 'Pañuelo elegante para la solapa',
+        'descripcion_larga': 'Pañuelo blanco con detalles perlados',
+        'imagen_principal': 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400',
+        'caracteristicas': 'Algodón suave, Diseño elegante'
+    },
+    {
+        'nombre': 'Botoniera de Flor Blanca',
+        'categoria': 'flores',
+        'precio': 18.00,
+        'descripcion': 'Flor para la solapa del traje',
+        'descripcion_larga': 'Botoniera clásica hecha a mano con flores naturales',
+        'imagen_principal': 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400',
+        'caracteristicas': 'Hecho a mano, Flor natural, Alambre oculto'
+    },
+    {
+        'nombre': 'Chaleco Gris Elegante',
+        'categoria': 'chalecos',
+        'precio': 75.00,
+        'descripcion': 'Chaleco para traje de novio',
+        'descripcion_larga': 'Chaleco gris claro ideal para combinar con trajes oscuros o chaqué',
+        'imagen_principal': 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400',
+        'caracteristicas': 'Corte slim, Botones metálicos, Elegante'
+    },
+]
+
+for comp in complementos_novio:
+    ComplementoNovio.objects.get_or_create(
+        nombre=comp['nombre'],
+        defaults={**comp, 'disponible': True, 'proveedor': usuario_proveedor1}
+    )
+print("✅ Proveedores, servicios, vestidos, trajes y complementos creados con éxito.")    

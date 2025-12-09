@@ -26,6 +26,10 @@ export class PrincipalComponent implements OnInit {
   
   cargando: boolean = true;
 
+  // NUEVO: Control de menús desplegables
+  menuAbierto: { [key: string]: boolean } = {};
+  private timeouts: { [key: string]: any } = {};
+
   // Categorías con iconos
   categoriasDestacadas = [
     { 
@@ -63,6 +67,22 @@ export class PrincipalComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarDatos();
+  }
+
+  // NUEVO: Métodos para controlar los menús
+  abrirMenu(menu: string): void {
+    if (this.timeouts[menu]) {
+      clearTimeout(this.timeouts[menu]);
+      delete this.timeouts[menu];
+    }
+    this.menuAbierto[menu] = true;
+  }
+
+  cerrarMenu(menu: string): void {
+    this.timeouts[menu] = setTimeout(() => {
+      this.menuAbierto[menu] = false;
+      delete this.timeouts[menu];
+    }, 300); // Aumentado a 300ms para dar más tiempo
   }
 
   cargarDatos(): void {

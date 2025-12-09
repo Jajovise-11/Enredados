@@ -74,6 +74,7 @@
   width: 100%;
 }
 
+/* Menú de usuario con mejor hover */
 .user-menu {
   position: relative;
 }
@@ -98,14 +99,45 @@
 .user-dropdown {
   display: none;
   position: absolute;
-  top: 120%;
+  top: calc(100% + 0.5rem);
   right: 0;
   background: white;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   border-radius: 16px;
   min-width: 200px;
   overflow: hidden;
-  animation: fadeInDown 0.3s ease;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  /* IMPORTANTE: Añadir padding superior para crear área de hover */
+  padding-top: 0.5rem;
+  margin-top: -0.5rem;
+}
+
+/* Mostrar dropdown cuando el menú esté abierto */
+.user-menu.open .user-dropdown {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.user-dropdown a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: #444;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.user-dropdown a:last-child {
+  border-bottom: none;
+}
+
+.user-dropdown a:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
 }
 
 @keyframes fadeInDown {

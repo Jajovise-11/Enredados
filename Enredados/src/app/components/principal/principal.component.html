@@ -11,13 +11,16 @@
       <a routerLink="/mi-boda" *ngIf="authService.isLoggedIn()">Mi Boda</a>
       
       <!-- Usuario autenticado -->
-      <div class="user-menu" *ngIf="authService.isLoggedIn()">
+      <div class="user-menu" *ngIf="authService.isLoggedIn()" 
+           [class.open]="menuAbierto['usuario']"
+           (mouseenter)="abrirMenu('usuario')" 
+           (mouseleave)="cerrarMenu('usuario')">
         <button class="user-button">
           👤 {{ authService.getUsername() }}
         </button>
         <div class="user-dropdown">
           <a routerLink="/perfil">Mi Perfil</a>
-          <a href="#" (click)="logout()">Cerrar Sesión</a>
+          <a href="#" (click)="logout(); $event.preventDefault()">Cerrar Sesión</a>
         </div>
       </div>
 

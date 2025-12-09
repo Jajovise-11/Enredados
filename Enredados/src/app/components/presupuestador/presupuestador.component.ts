@@ -69,13 +69,20 @@ export class PresupuestadorComponent implements OnInit {
       return;
     }
 
+    console.log('💰 Cargando presupuesto para usuario:', usuarioId);
+
     this.apiService.getPresupuesto(usuarioId).subscribe({
       next: (data: any) => {
+        console.log('✅ Datos de presupuesto recibidos:', data);
         this.gastos = data;
         this.cargando = false;
+        
+        // Mostrar resumen en consola
+        console.log('📊 Total gastos:', this.totalGastado);
+        console.log('📊 Restante:', this.restante);
       },
       error: (error: any) => {
-        console.error('Error al cargar presupuesto:', error);
+        console.error('❌ Error al cargar presupuesto:', error);
         this.cargando = false;
       }
     });
