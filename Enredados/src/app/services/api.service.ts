@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -142,17 +143,61 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/reservas/`, data);
   }
 
-  cancelarReserva(id: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/reservas/${id}/`, { estado: 'cancelada' });
+  // ========== CANCELAR RESERVA CON ACTUALIZACIÓN DE PRESUPUESTO ==========
+  cancelarReserva(reservaId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservas/${reservaId}/`).pipe(
+      switchMap((reserva: any) => {
+        // Marcar reserva como cancelada
+        const actualizarReserva$ = this.http.patch(`${this.apiUrl}/reservas/${reservaId}/`, { 
+          estado: 'cancelada' 
+        });
+
+        // Buscar y actualizar el item de presupuesto relacionado
+        const buscarPresupuesto$ = this.http.get(`${this.apiUrl}/presupuesto/?usuario=${reserva.usuario}`).pipe(
+          switchMap((items: any) => {
+            // Encontrar el item relacionado con esta reserva
+            const itemRelacionado = items.find((item: any) => {
+              if (reserva.servicio && item.servicio === reserva.servicio) return true;
+              if (reserva.vestido && item.vestido === reserva.vestido) return true;
+              if (reserva.traje && item.traje === reserva.traje) return true;
+              if (reserva.complemento_novia && item.complemento_novia === reserva.complemento_novia) return true;
+              if (reserva.complemento_novio && item.complemento_novio === reserva.complemento_novio) return true;
+              return false;
+            });
+
+            if (itemRelacionado) {
+              // Actualizar el item de presupuesto: poner gastado a 0
+              return this.http.put(`${this.apiUrl}/presupuesto/${itemRelacionado.id}/`, {
+                ...itemRelacionado,
+                gastado: 0,
+                pagado: false
+              });
+            }
+            return of(null);
+          }),
+          catchError(() => of(null)) // Si no hay presupuesto, continuar
+        );
+
+        // Ejecutar ambas operaciones
+        return forkJoin({
+          reserva: actualizarReserva$,
+          presupuesto: buscarPresupuesto$
+        }).pipe(
+          map(resultado => resultado.reserva)
+        );
+      })
+    );
   }
 
-  // Método especial para crear reserva + presupuesto
+  // ========== CREAR RESERVA CON PRESUPUESTO AUTOMÁTICO ==========
   crearReservaConPresupuesto(reservaData: any, producto: any, usuarioId: number): Observable<any> {
-    // Primero crear la reserva
     return new Observable(observer => {
+      // Primero crear la reserva
       this.crearReserva(reservaData).subscribe({
         next: (reserva: any) => {
-          // Determinar tipo de item y concepto
+          console.log('✅ Reserva creada:', reserva);
+
+          // Determinar tipo de item y categoría
           let tipo_item = 'personalizado';
           let categoria = 'otros';
           let concepto = producto.nombre;
@@ -171,32 +216,41 @@ export class ApiService {
             categoria = 'vestuario';
           }
 
-          // Crear item de presupuesto
+          // Crear item de presupuesto con GASTADO = PRECIO (dinero ya comprometido)
           const presupuestoData = {
             usuario: usuarioId,
             concepto: concepto,
             categoria: categoria,
             tipo_item: tipo_item,
             presupuestado: producto.precio,
-            gastado: 0,
-            pagado: false,
-            ...reservaData // Incluir referencias a servicio/vestido/traje/complemento
+            gastado: producto.precio, // ⚠️ IMPORTANTE: El dinero ya está comprometido
+            pagado: false, // Todavía no se ha pagado
+            // Incluir referencias al producto específico
+            servicio: reservaData.servicio || null,
+            vestido: reservaData.vestido || null,
+            traje: reservaData.traje || null,
+            complemento_novia: reservaData.complemento_novia || null,
+            complemento_novio: reservaData.complemento_novio || null
           };
+
+          console.log('💰 Creando item de presupuesto:', presupuestoData);
 
           this.crearItemPresupuesto(presupuestoData).subscribe({
             next: (presupuesto: any) => {
+              console.log('✅ Presupuesto creado:', presupuesto);
               observer.next({ reserva, presupuesto });
               observer.complete();
             },
             error: (error: any) => {
+              console.error('❌ Error al crear presupuesto:', error);
               // Si falla el presupuesto, informar pero devolver la reserva
-              console.error('Error al crear presupuesto:', error);
-              observer.next({ reserva, presupuesto: null });
+              observer.next({ reserva, presupuesto: null, error: 'presupuesto_failed' });
               observer.complete();
             }
           });
         },
         error: (error: any) => {
+          console.error('❌ Error al crear reserva:', error);
           observer.error(error);
         }
       });
